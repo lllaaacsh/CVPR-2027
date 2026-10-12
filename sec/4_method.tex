@@ -4,8 +4,9 @@
 % ---- 草稿说明（改完删除）----------------------------------------------------
 % Claude 起草的粗稿，供修改。PDF 中蓝色 [Claude: ...] 是需要你决定或核对的地方，
 % \draftfalse 后自动消失（\note 内只能写英文，pdfLaTeX 不支持中文）。
-% 目前只有 4.1--4.3。原 4.4（训练目标、straight-through、两阶段训练、fold、计算量公式）
-% 已删除，原文在 git 提交 9935f2e 中可找回。
+% 目前只有 4.1--4.3，不含 Setup 段，也不引用尚未写的 Sec. 3 / Sec. 5 内容。
+% 删掉的 Setup 段与原 4.4（训练目标、straight-through、两阶段训练、fold、计算量公式）
+% 可在 git 提交 9935f2e 中找回。
 % 所有超参数取自已采用格（contiguous-t，冻结 v2-gtmix router + 新训 LoRA 1500 步）。
 % ---------------------------------------------------------------------------
 
@@ -14,34 +15,24 @@
   \placeholder{4.5cm}
   % \includegraphics[width=\linewidth]{overview}
   \caption{\textbf{Overview of \method.}
-  After block $\ell_c$ of the frozen video DiT, an action-aware router scores the future tokens.
+  After an early block of the frozen video DiT, an action-aware router scores the future tokens.
   Spatially, the highest-scoring $2{\times}2$ blocks keep full resolution and every other block is merged into a single tube;
   temporally, each tube is pooled into a number of segments set by its relevance, and the segments are re-indexed contiguously in time.
-  Blocks $\ell_c{+}1,\dots,\ell_a$ run on the compact sequence, whose block-$\ell_a$ output conditions the action decoder.
+  The remaining blocks run on the compact sequence, whose output conditions the action decoder.
   \TODO{overview figure}}
   \label{fig:overview}
 \end{figure*}
 
-\cref{sec:analysis} showed that the token grid of a world action model is shaped by video generation, while the action decoder depends on only part of it, and that neither similarity-based selection nor deletion recovers that part at the deployment point.
-\method reshapes the grid according to what the action needs (\cref{fig:overview}).
-It decides, per region of the scene, at which spatial and temporal resolution the backbone computes, using relevance learned from the action decoder itself.
-
-\paragraph{Setup.}
-The video DiT processes $T = T_o + T_f$ latent frames on an $H{\times}W$ grid of $P = HW$ tokens per frame:
-$T_o$ observation frames and $T_f$ future frames, which at the deployment point are noise placeholders (\cref{sec:analysis}).
-Let $X_o$ denote the observation tokens and $X_f \in \R^{T_f \times P \times D}$ the future tokens after block $\ell_c$.
-\method replaces $X_f$ with a compact set of $N_f$ tokens, leaves $X_o$ untouched, and runs blocks $\ell_c{+}1,\dots,\ell_a$ on $N = T_o P + N_f$ tokens;
-the action decoder cross-attends to the block-$\ell_a$ output as in the original model~\cite{pai2025mimicvideo}.
-The keep ratio $\rho = N_f / (T_f P)$ applies to future tokens only.
-We use $\ell_c = 2$, $\ell_a = 20$, $T_o = 2$, $T_f = 14$ and $H{\times}W = 30{\times}40$, so the native sequence has $N_0 = 19{,}200$ tokens.
-The backbone and the decoder stay frozen; only the router and a low-rank adapter in the decoder are trained.
+\method compresses the future-frame tokens of the video backbone after an early block (\cref{fig:overview}).
+It decides, per region of the scene, at which spatial and temporal resolution the backbone computes, using relevance learned from the action decoder; observation tokens are left untouched.
 
 % ---------------------------------------------------------------------------
 \subsection{Action-Aware Router}
 \label{sec:router}
 
 The router assigns each future token a relevance score.
-A token $x_{t,p}$ of $X_f$ is projected and attends to the instruction tokens $c$, the same text tokens that condition the video DiT;
+Let $x_{t,p} \in \R^D$ be the token of future frame $t \in \{1, \dots, T_f\}$ at grid position $p$ after block $\ell_c$ of the video DiT.
+It is projected and attends to the instruction tokens $c$, the same text tokens that condition the video DiT;
 an MLP maps the result to a gate
 \begin{equation}
   g_{t,p} = \sigma\big(\mathrm{MLP}(\mathrm{Attn}(W x_{t,p},\, c,\, c))\big).
@@ -61,18 +52,18 @@ What makes the router action-aware is its training signal, the sensitivity of th
 \subsection{Spatial Resolution Allocation}
 \label{sec:spatial}
 
-We partition the grid into $HW/4$ non-overlapping $2{\times}2$ blocks (300 here) and rank them by $b_j$.
+We partition the $H{\times}W$ token grid into $HW/4$ non-overlapping $2{\times}2$ blocks (300 for our $30{\times}40$ grid) and rank them by $b_j$.
 The top-$F$ blocks ($F = 100$) keep all four tokens;
 each remaining block is replaced by the mean of its four tokens, separately in every frame.
 This yields $M = 4F + (HW/4 - F) = 600$ spatial tubes $u_i \in \R^{T_f \times D}$.
 Every region of the scene stays represented, at a resolution set by its relevance:
-the operator merges rather than deletes, which \cref{sec:analysis} identified as the condition for graceful degradation.
+the operator merges rather than deletes.
 Each tube inherits the score of its block, $a_i = b_{j(i)}$.
 
 \paragraph{Spatial positions.}
 Tubes keep their coordinates on the original grid:
 a full-resolution tube keeps its own $(h, w)$, and a merged tube takes the coordinate of its block's top-left cell.
-We do not re-index merged tubes onto a smaller grid, because spatial positions tell the backbone where content lies in the scene (\cref{sec:analysis}).
+We do not re-index merged tubes onto a smaller grid, because spatial positions tell the backbone where content lies in the scene.
 
 % ---------------------------------------------------------------------------
 \subsection{Temporal Resolution Allocation}
@@ -90,8 +81,7 @@ where $\bar\delta_i$ is the mean cosine distance between consecutive frames of t
 The $n_1$ lowest-utility tubes receive $k_1$ segments, the next $n_2$ receive $k_2$, and so on.
 A tube is split into $K_i$ contiguous, non-empty segments whose boundaries lie at equal quantiles of its cumulative $\delta$ (solved exactly by dynamic programming),
 and each segment is mean-pooled into one token.
-For example, $\rho = 10\%$ uses $k = (1, 2, 4)$ and $n = (120, 180, 300)$, giving $N_f = 1{,}680$ and $N = 4{,}080$;
-the tiers for all budgets are listed in \cref{sec:exp}.
+For example, keeping 10\% of the $T_f HW = 16{,}800$ future tokens uses $k = (1, 2, 4)$ and $n = (120, 180, 300)$, giving $N_f = 1{,}680$.
 % 按现行实现写（utility 含 delta 项、切点按 delta 分位）。按约定不写"按运动自适应"、不声称优于固定 K。
 % 诊断事实：K 档与 router 的 fine/coarse 划分完全重合，给定 K 时切点近乎固定（K=4 时段长 4/3/3/4），
 % 部署噪声固定（seed 0）时不同观测间 K 分配 97.3% 相同。即分配实际上由 router 决定。
@@ -99,7 +89,5 @@ the tiers for all budgets are listed in \cref{sec:exp}.
 
 \paragraph{Temporal positions.}
 Unlike the spatial axis, the temporal axis is re-indexed contiguously:
-the $k$-th segment of every tube receives temporal index $T_o + k - 1$, whichever source frames it covers.
-Keeping source-frame indices instead leaves gaps in the temporal positions and performs markedly worse (\cref{sec:exp}).
-This is consistent with \cref{sec:analysis}: future frames carry no frame-specific content at the deployment point, so their temporal positions act as slots the backbone expects to be consecutive.
-The two axes thus follow opposite position conventions.
+the $k$-th segment of every tube receives temporal index $T_o + k - 1$, where $T_o$ is the number of observation frames, whichever source frames it covers.
+Temporal positions therefore index segments rather than source frames, and the two axes follow opposite position conventions.
