@@ -1,0 +1,56 @@
+%% Project macros, loaded after hyperref by main.tex and rebuttal.tex.
+
+%% ===========================================================================
+%% Draft switch: set \draftfalse before submission -- every \TODO and \note
+%% disappears and \todo / \red text turns black.
+%% ===========================================================================
+\newif\ifdraft
+\drafttrue
+
+\ifdraft
+  \newcommand{\TODO}[1]{\textbf{\color{red}[TODO: #1]}}   % missing content
+  \newcommand{\todo}[1]{{\color{red}#1}}                  % text that needs revision
+  \newcommand{\red}[1]{{\color{red}#1}}
+  \newcommand{\note}[2]{{\color{blue}[\textbf{#1}: #2]}}  % \note{YW}{comment}
+\else
+  \newcommand{\TODO}[1]{}
+  \newcommand{\todo}[1]{#1}
+  \newcommand{\red}[1]{#1}
+  \newcommand{\note}[2]{}
+\fi
+
+%% ===========================================================================
+%% Names (rename in one place)
+%% ===========================================================================
+\newcommand{\method}{MethodName\xspace}
+
+%% ===========================================================================
+%% Notation
+%% ===========================================================================
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+
+%% ===========================================================================
+%% Tables
+%% ===========================================================================
+\newcommand{\cmark}{\ding{51}}                              % check mark
+\newcommand{\xmark}{\ding{55}}                              % cross
+\newcommand{\best}[1]{\textbf{#1}}
+\newcommand{\second}[1]{\underline{#1}}
+\newcommand{\gain}[1]{{\scriptsize\color{ForestGreen}(+#1)}} % \gain{4.6}
+\newcommand{\drop}[1]{{\scriptsize\color{BrickRed}(-#1)}}    % \drop{3.0}
+\newcommand{\pp}{\,pp\xspace}                                % percentage points
+\newcommand{\oursrow}{\rowcolor{cvprblue!8}}                 % shade "ours" rows
+
+%% ===========================================================================
+%% Figures: gray box with the final size, until the real figure exists.
+%%   \placeholder{3cm}                 -> full column width, 3 cm tall
+%%   \placeholder[0.48\linewidth]{3cm} -> custom width
+%% ===========================================================================
+\newcommand{\placeholder}[2][\linewidth]{%
+  \fbox{\parbox[c][#2][c]{\dimexpr #1-2\fboxsep-2\fboxrule\relax}%
+    {\centering\small\color{gray}placeholder}}}

@@ -1,0 +1,26 @@
+\section{Method}
+\label{sec:method}
+
+% ---- 脉络（写完删除）--------------------------------------------------------
+% 0. 总览图（fig:overview）：block 2 之后插入 -> router -> 空间分配 -> 时间分配 -> 打包
+%    -> block 3--20 -> action decoder。
+% 1. Action-aware router：输入 block-2 token 与指令；训练信号为对全上下文 teacher 的蒸馏
+%    + 少量 GT，与 decoder 适配联合训练；要点：在部署算子下训练才有效。
+% 2. 空间分辨率分配：2x2 分组，前 F 块保留满分辨率，其余均值池化；所有区域保留；
+%    空间位置使用原坐标。
+% 3. 时间分辨率分配：每条 tube 按 router 相关性分配时间段数，段内池化，时间位置紧凑重编号。
+%    注意：写"由 router 引导"，不写"按运动自适应"；不声称优于固定 K。
+% 4. 适配与部署：cross-attention LoRA，推理时 fold 进权重，零额外开销；计算量分析。
+% 注意：video 权重冻结，只训练 router 与 decoder LoRA；用 action-aware token allocation /
+%      action-conditioned computation 的说法，不说 joint training of video and action。
+% ---------------------------------------------------------------------------
+
+% 总览图模板（图放入 figures/ 后取消注释）：
+% \begin{figure*}[t]
+%   \centering
+%   \includegraphics[width=\linewidth]{overview}
+%   \caption{Overview.}
+%   \label{fig:overview}
+% \end{figure*}
+
+\TODO{Method.}

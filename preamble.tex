@@ -1,51 +1,46 @@
-%% This file contains a number of tweaks that are typically applied to the main document.
-%% They are not enabled by default, but can be enabled by uncommenting the relevant lines.
+%% Packages and layout tweaks, loaded by main.tex and rebuttal.tex before hyperref.
+%%
+%% Already loaded by cvpr.sty -- do NOT load again (option clashes):
+%%   times, xspace, xcolor[dvipsnames], graphicx, amsmath, amssymb, booktabs,
+%%   natbib, caption, subcaption, url, etoolbox, enumitem, cleveref (after hyperref)
+%% Project macros (notes, method name, notation, table helpers) live in macros.tex.
 
-%%
-%% Inline annotations; for predefined colors, refer to "dvipsnames" in the xcolor package:
-%% https://tinyurl.com/overleaf-colors
-%%
-\newcommand{\red}[1]{{\color{red}#1}}
-\newcommand{\todo}[1]{{\color{red}#1}}
-\newcommand{\TODO}[1]{\textbf{\color{red}[TODO: #1]}}
-%%
-%% disable for camera ready / submission by uncommenting these lines  
-%%
-% \renewcommand{\TODO}[1]{}
-% \renewcommand{\todo}[1]{#1}
+%% ---------------------------------------------------------------------------
+%% Packages
+%% ---------------------------------------------------------------------------
+\usepackage{multirow}    % \multirow in tables
+\usepackage{tabularx}    % X columns that fill \linewidth
+\usepackage{colortbl}    % \rowcolor / \cellcolor (xcolor is already loaded)
+\usepackage{bm}          % bold math symbols, \bm{x}
+\usepackage{pifont}      % \ding symbols for \cmark / \xmark
 
-%%
-%% work harder in optimizing text layout. Typically shrinks text by 1/6 of page, enable
-%% it at the very end of the writing process, when you are just above the page limit
-%%
+% Uncomment if needed:
+% \usepackage{algorithm}
+% \usepackage{algpseudocode}
+% \usepackage{wrapfig}
+% \usepackage{siunitx}   % aligned numeric columns, e.g. S[table-format=2.1]
+
+%% ---------------------------------------------------------------------------
+%% Paths
+%% ---------------------------------------------------------------------------
+\graphicspath{{figures/}}
+
+%% ---------------------------------------------------------------------------
+%% Layout tweaks -- enable only near the end, when fighting the page limit
+%% ---------------------------------------------------------------------------
+% Tighter text layout (typically saves ~1/6 page):
 % \usepackage{microtype}
 
-%%
-%% fine-tune paragraph spacing
-%%
+% Compact run-in paragraph headings:
 % \renewcommand{\paragraph}[1]{\vspace{.5em}\noindent\textbf{#1.}}
 
-%%
-%% globally adjusts space between figure and caption
-%%
+% Less space between figure and caption:
 % \setlength{\abovecaptionskip}{.5em}
 
+% Less space around floats:
+% \setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+% \setlength{\dbltextfloatsep}{10pt plus 2pt minus 2pt}
 
-%%
-%% Allows "the use of \paper to refer to the project name"
-%% with automatic management of space at the end of the word
-%%
-% \usepackage{xspace}
-% \newcommand{\paper}{ProjectName\xspace}
-
-%%
-%% Commonly used math definitions
-%%
-% \DeclareMathOperator*{\argmin}{arg\,min}
-% \DeclareMathOperator*{\argmax}{arg\,max}
-
-%%
-%% Tigthen underline
-%%
+% Tighter underline:
 % \usepackage{soul}
 % \setuldepth{foobar}

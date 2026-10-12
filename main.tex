@@ -1,4 +1,5 @@
-% CVPR 2026 Paper Template; see https://github.com/cvpr-org/author-kit
+% CVPR 2027 submission, built on the CVPR 2026 author kit (https://github.com/cvpr-org/author-kit).
+% Replace cvpr.sty / ieeenat_fullname.bst with the official 2027 kit once it is released.
 
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
@@ -7,57 +8,80 @@
 \usepackage[review]{cvpr}      % To produce the REVIEW version
 % \usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
 
-% Import additional packages in the preamble file, before hyperref
+% Packages and layout tweaks (must come before hyperref)
 \input{preamble}
 
 % It is strongly recommended to use hyperref, especially for the review version.
 % hyperref with option pagebackref eases the reviewers' job.
-% Please disable hyperref *only* if you encounter grave issues, 
-% e.g. with the file validation for the camera-ready version.
-%
 % If you comment hyperref and then uncomment it, you should delete *.aux before re-running LaTeX.
-% (Or just hit 'q' on the first LaTeX run, let it finish, and you should be clear).
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 \usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+% Project macros: draft notes, method name, notation, table helpers
+\input{macros}
 
 %%%%%%%%% PAPER ID  - PLEASE UPDATE
 \def\paperID{*****} % *** Enter the Paper ID here
 \def\confName{CVPR}
-\def\confYear{2026}
+\def\confYear{2027}
 
 %%%%%%%%% TITLE - PLEASE UPDATE
-\title{\LaTeX\ Author Guidelines for \confName~Proceedings}
+\title{Paper Title}
 
-%%%%%%%%% AUTHORS - PLEASE UPDATE
+%%%%%%%%% AUTHORS - PLEASE UPDATE (hidden automatically in review mode)
 \author{First Author\\
 Institution1\\
-Institution1 address\\
 {\tt\small firstauthor@i1.org}
-% For a paper whose authors are all at the same institution,
-% omit the following lines up until the closing ``}''.
-% Additional authors and addresses can be added with ``\and'',
-% just like the second author.
-% To save space, use either the email address or home page, not both
 \and
 Second Author\\
 Institution2\\
-First line of institution2 address\\
 {\tt\small secondauthor@i2.org}
 }
 
 \begin{document}
+
+%%%%%%%%% TITLE (+ OPTIONAL FULL-WIDTH TEASER)
+% Default: plain title. For a full-width teaser under the title, comment out
+% \maketitle and uncomment the block below (put the image in figures/).
 \maketitle
-\input{sec/0_abstract}    
+% \twocolumn[{%
+%   \renewcommand\twocolumn[1][]{#1}%
+%   \maketitle
+%   \begin{center}
+%     \centering
+%     \includegraphics[width=\linewidth]{teaser}
+%     \captionof{figure}{Teaser caption.}
+%     \label{fig:teaser}
+%   \end{center}%
+%   \vspace{1em}
+% }]
+
+%%%%%%%%% MAIN PAPER (8 pages, references excluded)
+\input{sec/0_abstract}
 \input{sec/1_intro}
-\input{sec/2_formatting}
-\input{sec/3_finalcopy}
+\input{sec/2_related}
+\input{sec/3_analysis}
+\input{sec/4_method}
+\input{sec/5_experiments}
+\input{sec/6_conclusion}
+
+% The base model is cited in any case; \nocite keeps BibTeX from failing while
+% the text has no \cite yet. Harmless to keep.
+\nocite{pai2025mimicvideo}
 {
     \small
     \bibliographystyle{ieeenat_fullname}
     \bibliography{main}
 }
 
-% WARNING: do not forget to delete the supplementary pages from your submission 
-% \input{sec/X_suppl}
+%%%%%%%%% SUPPLEMENTARY
+% \suppltrue appends the supplementary to this PDF (e.g. for arXiv or for
+% splitting off later). For the CVPR submission keep \supplfalse and upload
+% the supplementary as a separate PDF.
+\newif\ifsuppl
+\supplfalse
+\ifsuppl
+  \input{sec/X_suppl}
+\fi
 
 \end{document}
