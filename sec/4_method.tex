@@ -4,11 +4,8 @@
 % ---- 草稿说明（改完删除）----------------------------------------------------
 % Claude 起草的粗稿，供修改。PDF 中蓝色 [Claude: ...] 是需要你决定或核对的地方，
 % \draftfalse 后自动消失（\note 内只能写英文，pdfLaTeX 不支持中文）。
-% 结构相对原脉络的调整：
-%   - router 的训练从 4.1 移到 4.4：梯度通路（straight-through）依赖 4.2--4.3 定义的算子，
-%     先讲算子再讲怎么训练更顺；4.1 只讲 router 输出什么。
-%   - 4.4 只放"由构造即可知"的内容：训练目标、fold、解析计算量公式；
-%     所有实测数字（FLOPs、延迟、fold 前后闭环、router/分配开销）放 Sec. 5 效率小节。
+% 目前只有 4.1--4.3。原 4.4（训练目标、straight-through、两阶段训练、fold、计算量公式）
+% 已删除，原文在 git 提交 9935f2e 中可找回。
 % 所有超参数取自已采用格（contiguous-t，冻结 v2-gtmix router + 新训 LoRA 1500 步）。
 % ---------------------------------------------------------------------------
 
@@ -37,7 +34,7 @@ Let $X_o$ denote the observation tokens and $X_f \in \R^{T_f \times P \times D}$
 the action decoder cross-attends to the block-$\ell_a$ output as in the original model~\cite{pai2025mimicvideo}.
 The keep ratio $\rho = N_f / (T_f P)$ applies to future tokens only.
 We use $\ell_c = 2$, $\ell_a = 20$, $T_o = 2$, $T_f = 14$ and $H{\times}W = 30{\times}40$, so the native sequence has $N_0 = 19{,}200$ tokens.
-The backbone and the decoder stay frozen; only the router and a low-rank adapter in the decoder are trained (\cref{sec:training}).
+The backbone and the decoder stay frozen; only the router and a low-rank adapter in the decoder are trained.
 
 % ---------------------------------------------------------------------------
 \subsection{Action-Aware Router}
@@ -56,9 +53,9 @@ Allocation is decided once for the whole horizon, so we reduce over time and the
   \label{eq:block_score}
 \end{equation}
 Nothing in \cref{eq:gate} measures visual similarity.
-What makes the router action-aware is its training signal, the sensitivity of the decoder's output to each block (\cref{sec:training}), not its architecture.
+What makes the router action-aware is its training signal, the sensitivity of the decoder's output to each block, not its architecture.
 \note{Claude}{Do not call the router instruction-dependent or dynamic: on our diagnostics swapping the instruction leaves the allocation almost unchanged (Spearman 0.96), i.e.\ it behaves as a learned, near-static prior per suite.}
-\note{Claude}{The router architecture and the pseudo-label recipe in \cref{sec:training} come from an existing KnowledgeRouter implementation; cite its source if it is published work.}
+\note{Claude}{The router architecture and its pseudo-label training recipe come from an existing KnowledgeRouter implementation; cite its source if it is published work.}
 
 % ---------------------------------------------------------------------------
 \subsection{Spatial Resolution Allocation}
@@ -106,68 +103,3 @@ the $k$-th segment of every tube receives temporal index $T_o + k - 1$, whicheve
 Keeping source-frame indices instead leaves gaps in the temporal positions and performs markedly worse (\cref{sec:exp}).
 This is consistent with \cref{sec:analysis}: future frames carry no frame-specific content at the deployment point, so their temporal positions act as slots the backbone expects to be consecutive.
 The two axes thus follow opposite position conventions.
-
-% ---------------------------------------------------------------------------
-\subsection{Training and Deployment}
-\label{sec:training}
-
-\paragraph{Trainable parameters.}
-We train the router and a LoRA adapter~\cite{hu2022lora} (rank 16, $\alpha = 8$) on the query, key, value and output projections of every cross-attention layer of the action decoder, the only layers that read the compressed context.
-All other weights are frozen.
-\TODO{parameter counts of router and adapter}
-
-\paragraph{Objective.}
-The action decoder is a flow-matching policy~\cite{lipman2023flow}:
-given a noised action chunk $x_\tau = (1 - \tau) x_0 + \tau \epsilon$, the flow time $\tau$ and the proprioceptive state $q$, it predicts a velocity $v(x_\tau, \tau, q, h)$ conditioned on block-$\ell_a$ features $h$.
-Let $h$ be the native features and $\tilde h$ those computed from the compressed sequence.
-The teacher is the frozen decoder reading $h$; the student is the adapted decoder $v_\theta$ reading $\tilde h$, with the same $x_\tau$, $\tau$ and $q$~\cite{hinton2015distilling}.
-Writing $v(h)$ for $v(x_\tau, \tau, q, h)$, we minimize
-\begin{equation}
-  \mathcal{L} = \norm{v_\theta(\tilde h) - v(h)}^2 + \lambda \norm{v_\theta(\tilde h) - (\epsilon - x_0)}^2 .
-  \label{eq:loss}
-\end{equation}
-The first term asks the student to act as if nothing had been compressed;
-if compression lost no information, the identity adapter would be optimal.
-The ground-truth term is kept small ($\lambda = 0.02$) so that the teacher dominates.
-% 早期观察：纯 GT 回归离线误差更低、闭环却崩溃（n=10/100 级别）。若想在正文提，需在 Sec. 5 给出对应消融。
-
-\paragraph{Training the router through the operator.}
-Top-$F$ selection and tier assignment are discrete, so $\mathcal{L}$ has no gradient with respect to the block scores.
-We multiply each tube by $1 + a_i - \mathrm{sg}(a_i)$, where $\mathrm{sg}$ is the stop-gradient operator~\cite{bengio2013estimating}.
-The factor equals one in the forward pass, so training runs exactly the deployed operator,
-while its backward pass exposes $\partial \mathcal{L} / \partial b_j$.
-The action saliency $r_j = \max(0, -\partial \mathcal{L} / \partial b_j)$ is smoothed with an exponential moving average, its top-$F$ blocks become binary targets $y_j$,
-and the router is trained with a focal loss~\cite{lin2017focal} plus budget and entropy regularizers:
-\begin{equation}
-  \mathcal{L}_r = \mathrm{FL}(b, y) + \lambda_b \mathcal{L}_{\mathrm{budget}} + \lambda_e \mathcal{L}_{\mathrm{ent}} .
-  \label{eq:router_loss}
-\end{equation}
-A block is therefore kept at full resolution when refining it most reduces the decoder's deviation from the full-context teacher:
-relevance is defined by the action, not by appearance.
-
-\paragraph{Schedule.}
-Training has two stages.
-First, the router and an adapter are trained jointly under the spatial allocation, with the temporal axis uniformly merged to a rate drawn at random each step.
-Second, the router is frozen and a fresh adapter is trained under the complete operator at each target budget.
-\TODO{steps, learning rates, batch size $\rightarrow$ supplementary}
-% 现状：已采用格 = 冻结 v2-gtmix router（第一阶段 step 1500，K 从 {8,10,12} 中逐步随机）+ 第二阶段新 LoRA 1500 步。
-% 第一阶段的时间轴是均匀合并，这是训练配方本身，不是对照实验。
-\note{Claude}{Pending: the warm-started joint-router run on the final operator (job 47197269) decides whether stage two also updates the router. Update this paragraph once it is read out.}
-
-\paragraph{Deployment.}
-After training, each adapted projection is folded into its base weight, $W \leftarrow W + \frac{\alpha}{r} B A$.
-The deployed decoder has exactly the architecture, parameter count and FLOPs of the original, so the adapter costs nothing at inference.
-The only additions to the forward pass are the router, a single cross-attention layer and an MLP over the future tokens at block $\ell_c$,
-and the allocation itself, which consists of top-$k$, pooling and gather operations.
-
-\paragraph{Cost.}
-Let $C(n) = \kappa_1 n + \kappa_2 n^2$ be the cost of one DiT block on $n$ tokens, where the quadratic term is self-attention.
-The native model costs $\ell_a C(N_0)$ per query; \method costs
-\begin{equation}
-  \ell_c \, C(N_0) + (\ell_a - \ell_c) \, C(N) + C_{\mathrm{router}} .
-  \label{eq:cost}
-\end{equation}
-Thus 18 of the 20 executed blocks run on $N$ tokens.
-At $\rho = 10\%$ ($N = 0.21 N_0$) their self-attention cost drops by about $22\times$ and their linear cost by about $4.7\times$.
-The decoder's cross-attention, evaluated at every flow step, also scales with $N$ instead of $N_0$.
-Measured FLOPs and latency are reported in \cref{sec:exp}.

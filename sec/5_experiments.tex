@@ -7,7 +7,7 @@
 % 1. 主结果：成功率--token 预算曲线；对照 native、LoRA 匹配的全上下文、
 %    同 router 的 token/tube 删除。对 native 只写"不可区分"。
 % 2. 效率：FLOPs、video DiT 延迟、端到端延迟（含固定开销；分别报有无 CUDA graphs）。
-%    从 Method 4.4 移来的实测项：router + 分配链的开销；LoRA fold 前后的闭环对比与延迟；
+%    另含：router + 分配链的开销；LoRA fold 前后的闭环对比与延迟；
 %    各预算的 K 档与配额表（Method 4.3 用 \cref{sec:exp} 指向这里）。
 % 3. 消融（每个组件一组）：router 训练方式；合并 vs 删除；时间位置 contiguous vs source；
 %    空间位置；有无 adapter。
