@@ -76,7 +76,7 @@ Relevance is thus defined by the action rather than by visual content.
 \label{sec:spatial}
 
 The video model represents each future frame as a $30{\times}40$ grid of tokens.
-We call the sequence of tokens at one grid position across the 14 future frames a \emph{tube}, which gives 1,200 tubes.
+We call the sequence of tokens at grid position $p$ across the 14 future frames \emph{tube} $p$, which gives 1,200 tubes.
 We then group the tubes into $2{\times}2$ neighborhoods, giving 300 groups.
 We use $2{\times}2$ groups for three reasons.
 Neighboring tokens cover adjacent image regions, so averaging a small neighborhood still keeps a coarse view of that region.
@@ -99,8 +99,10 @@ In every other group, the four tubes are averaged frame by frame into a single t
 This leaves 600 tubes, and no region of the scene is removed: relevant regions keep full resolution and the rest are kept at a coarser one.
 The group scores thus decide which regions of the scene the backbone sees in detail, and the number of full-resolution groups sets how many.
 
-Every tube keeps its position on the original grid; a merged tube takes the position of the top-left tube of its group.
-We do not re-index the tubes onto a smaller grid, so the backbone still sees where each region lies in the scene.
+Every tube keeps its position on the original grid; a merged tube takes the position $p$ of the top-left tube of its group,
+so every remaining tube is still identified by a grid position $p$.
+We do not re-index the tubes onto a smaller grid:
+the observation frames stay on the original grid, so a future tube at position $p$ still refers to the same part of the scene as the observed tokens at $p$.
 
 % ---------------------------------------------------------------------------
 \subsection{Temporal Resolution Allocation}
@@ -114,13 +116,13 @@ We therefore give each tube its own temporal resolution as a single temporal res
 Tubes are split into $K$ segments, and more segments mean finer temporal detail.
 
 The number of segments follows relevance.
-Each tube $i$ receives a priority
+Each tube $p$ receives a priority
 \begin{equation}
-  u_i = S_{g(i)} \cdot \Delta_i ,
+  u_p = S_{g(p)} \cdot \Delta_p ,
   \label{eq:priority}
 \end{equation}
-where $S_{g(i)}$ is the score (\cref{eq:group_score}) of the group $g(i)$ that contains tube $i$,
-and $\Delta_i$ is the average change of the tube's features between consecutive frames, measured as one minus their cosine similarity.
+where $S_{g(p)}$ is the score (\cref{eq:group_score}) of the group $g(p)$ that contains position $p$,
+and $\Delta_p$ is the average change of the features of tube $p$ between consecutive frames, measured as one minus their cosine similarity.
 A tube thus ranks high when it is relevant to the action and its features change across frames.
 We give the most segments to the tubes with the highest priority, with a fixed number of tubes at each level.
 For example, when 10\% of the future tokens are kept, the top 300 tubes receive 4 segments, the next 180 receive 2, and the last 120 receive 1, giving 1,680 tokens.
@@ -130,6 +132,14 @@ As a result, temporal detail is concentrated on the tubes that matter for the ac
 Every tube keeps at least one token, so no region disappears from the sequence, and averaging rather than dropping frames keeps information from all of them.
 Because the number of tubes at each level is fixed, every sample is represented by the same number of tokens, independent of the scene.
 
-The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers.
-The temporal positions thus stay consecutive, as in the original sequence, instead of leaving gaps.
-This is the opposite of the spatial axis, where tubes keep their original positions.
+The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers, so the temporal positions stay consecutive as in the original sequence.
+This differs from the spatial axis (\cref{sec:spatial}) because the two kinds of position carry different information.
+A spatial position says where a token lies in the scene, and it must stay aligned with the observation frames, which remain on the original grid.
+A temporal position only says in which order the future frames come.
+After slicing, a segment spans several frames, so no single original frame index describes it; what must be preserved is the order of the segments.
+Consecutive indices keep this order and match the pattern of consecutive frames the video model was trained on,
+whereas original frame indices would leave gaps between segments, a pattern the model never sees during training.
+% 实验依据（写 Sec. 5 时用，正文暂不引用）：
+%   空间：2x1 池化后改为紧凑重编号 4/100 vs 保留原坐标 83/100（LIBERO-Spatial 7200 tok，n=100）。
+%   时间：contiguous vs source 354 vs 275、441 vs 396、460 vs 437（10/20/30%，n=500，配对 McNemar 均 p<0.005）。
+%   "时间位置是槽位"是解释，只能写"一致于"，不能写"证明"。
