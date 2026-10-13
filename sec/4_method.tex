@@ -55,8 +55,14 @@ The small ground-truth term keeps the adapted decoder anchored to the demonstrat
 Keeping or merging a token is a discrete choice, so $\mathcal{L}_{\text{act}}$ has no gradient with respect to the scores.
 We multiply each token by a factor that equals one in the forward pass but passes the gradient to its score (a straight-through estimator~\cite{bengio2013estimating}).
 The forward pass is therefore unchanged, while every score still receives a gradient from the action loss.
-From this gradient we read off how much raising a score would lower $\mathcal{L}_{\text{act}}$, and average it over training steps to reduce noise.
-The highest-ranked tokens, as many as are kept at full resolution, are labeled relevant and the others irrelevant.
+From this gradient we compute the action saliency of every score:
+\begin{equation}
+  r = \max\Big(0,\, -\frac{\partial \mathcal{L}_{\text{act}}}{\partial s}\Big),
+  \label{eq:saliency}
+\end{equation}
+where $s$ is a router score and $r$ measures how much raising $s$ would lower the action loss $\mathcal{L}_{\text{act}}$ of \cref{eq:act_loss}.
+We average $r$ over training steps to reduce noise.
+The tokens with the highest $r$, as many as are kept at full resolution, are labeled relevant and the others irrelevant.
 The router is trained to predict these labels with a focal loss~\cite{lin2017focal},
 plus two small terms that keep the average score at the kept fraction and push scores towards 0 or 1.
 
@@ -110,8 +116,15 @@ its 14 frames are split into a few consecutive segments, and the tokens within e
 A tube split into $K$ segments contributes $K$ tokens, and more segments mean finer temporal detail.
 
 The number of segments follows relevance.
-We rank the tubes by the score of their group, weighted by how much the tube's features change between consecutive frames,
-and give the most segments to the highest-ranked tubes, with a fixed number of tubes at each level.
+Each tube $i$ receives a priority
+\begin{equation}
+  u_i = S_{g(i)} \cdot \Delta_i ,
+  \label{eq:priority}
+\end{equation}
+where $S_{g(i)}$ is the score (\cref{eq:group_score}) of the group $g(i)$ that contains tube $i$,
+and $\Delta_i$ is the average change of the tube's features between consecutive frames, measured as one minus their cosine similarity.
+A tube thus ranks high when it is relevant to the action and its features change across frames.
+We give the most segments to the tubes with the highest priority, with a fixed number of tubes at each level.
 For example, when 10\% of the future tokens are kept, the top 300 tubes receive 4 segments, the next 180 receive 2, and the last 120 receive 1, giving 1,680 tokens.
 Within a tube, segment boundaries are placed so that each segment covers a similar amount of feature change.
 
