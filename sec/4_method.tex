@@ -2,12 +2,9 @@
 \label{sec:method}
 
 % ---- 草稿说明（改完删除）----------------------------------------------------
-% Claude 起草的粗稿，供修改。PDF 中蓝色 [Claude: ...] 是需要你决定或核对的地方，
-% \draftfalse 后自动消失（\note 内只能写英文，pdfLaTeX 不支持中文）。
-% 目前只有 4.1--4.3，不含 Setup 段，也不引用尚未写的 Sec. 3 / Sec. 5 内容。
-% 删掉的 Setup 段与原 4.4（训练目标、straight-through、两阶段训练、fold、计算量公式）
-% 可在 git 提交 9935f2e 中找回。
-% 所有超参数取自已采用格（contiguous-t，冻结 v2-gtmix router + 新训 LoRA 1500 步）。
+% Claude 起草的粗稿，供修改。目前只有 4.1--4.3，不引用尚未写的 Sec. 3 / Sec. 5。
+% 所有设置取自已采用格（contiguous-t，2x2 分组、前 100 组满分辨率）。
+% 待核对：router 结构与伪标签配方来自已有 KnowledgeRouter 实现，若出自已发表工作需引用。
 % ---------------------------------------------------------------------------
 
 \begin{figure*}[t]
@@ -30,62 +27,110 @@ It decides, per region of the scene, at which spatial and temporal resolution th
 \subsection{Action-Aware Router}
 \label{sec:router}
 
-The router is a lightweight module that scores how relevant each future token is to the action.
-It takes the future-frame tokens after an early block of the video DiT, together with the instruction embedding,
-and outputs a score between 0 and 1 for every token:
-each token attends to the instruction through one cross-attention layer, and an MLP with a sigmoid produces the score.
+The router gives every future token a score between 0 and 1 that indicates how relevant the token is to the action.
+It reads the future-frame tokens after the second block of the video DiT together with the instruction:
+each token attends to the instruction tokens through one cross-attention layer, and an MLP with a sigmoid outputs its score $s_{t,p}$,
+where $t$ indexes the future frame and $p$ the position on the token grid.
+The router is small compared with the video model, and its scores drive both allocation steps (\cref{sec:spatial,sec:temporal}).
 
-Since the allocation is decided once for the whole prediction horizon, we summarize the scores per spatial region.
-We take the maximum score of each position over the future frames, and average it over each $2{\times}2$ block of the token grid:
+\paragraph{Training data.}
+The router is trained on the demonstrations of the target task suite, the same data used to train the policy.
+Video features are computed as at inference, with the future frames at the inference noise level and the compression applied,
+so the router learns on the inputs it will see when deployed.
+The video model and the action decoder are frozen.
+The router is trained together with a LoRA adapter~\cite{hu2022lora} on the cross-attention layers of the action decoder, which lets the decoder adjust to the compressed input.
+
+\paragraph{Action loss.}
+The action decoder is a flow-matching model~\cite{lipman2023flow} that predicts a velocity for a noised action chunk.
+We train with
 \begin{equation}
-  b_j = \operatorname*{mean}_{p \in \text{block } j} \; \max_t \, g_t(p),
-  \label{eq:block_score}
+  \mathcal{L}_{\text{act}} = \norm{v - v_{\text{full}}}^2 + \lambda \norm{v - v_{\text{gt}}}^2 ,
+  \label{eq:act_loss}
 \end{equation}
-where $g_t(p)$ is the score of the token at position $p$ in future frame $t$.
+where $v$ is the velocity predicted by the adapted decoder from the compressed video features,
+$v_{\text{full}}$ is the velocity predicted by the original decoder from the full, uncompressed features for the same noised action and robot state,
+$v_{\text{gt}}$ is the ground-truth velocity from the demonstration,
+and $\lambda = 0.02$.
+The first term isolates the effect of compression: it is zero exactly when compression leaves the predicted action unchanged.
+It therefore measures what the action loses, rather than how well the policy fits the demonstrations.
+The small ground-truth term keeps the adapted decoder anchored to the demonstrations.
 
-The router does not measure visual similarity.
-It is action-aware because it is trained from the action decoder:
-its supervision is how much each block affects the decoder's output.
-\note{Claude}{Do not call the router instruction-dependent or dynamic: on our diagnostics swapping the instruction leaves the allocation almost unchanged (Spearman 0.96), i.e.\ it behaves as a learned, near-static prior per suite.}
-\note{Claude}{The router architecture and its pseudo-label training recipe come from an existing KnowledgeRouter implementation; cite its source if it is published work.}
+\paragraph{Router loss.}
+Keeping or merging a token is a discrete choice, so $\mathcal{L}_{\text{act}}$ has no gradient with respect to the scores.
+We multiply each token by a factor that equals one in the forward pass but passes the gradient to its score (a straight-through estimator~\cite{bengio2013estimating}).
+The forward pass is therefore unchanged, while every score still receives a gradient from the action loss.
+From this gradient we read off how much raising a score would lower $\mathcal{L}_{\text{act}}$, and average it over training steps to reduce noise.
+The highest-ranked tokens, as many as are kept at full resolution, are labeled relevant and the others irrelevant.
+The router is trained to predict these labels with a focal loss~\cite{lin2017focal},
+plus two small terms that keep the average score at the kept fraction and push scores towards 0 or 1.
+
+\paragraph{Why the scores are action-relevant.}
+The only supervision the router receives comes from the action loss:
+no term involves appearance, reconstruction, or similarity between tokens.
+A token is labeled relevant only if emphasizing it brings the predicted action closer to the one predicted from the full video features.
+Relevance is thus defined by the action rather than by visual content.
 
 % ---------------------------------------------------------------------------
 \subsection{Spatial Resolution Allocation}
 \label{sec:spatial}
 
-We divide the $30{\times}40$ token grid into 300 blocks of $2{\times}2$ tokens and rank them by the block score $b_j$.
-The 100 highest-scoring blocks keep all four tokens.
-Every other block is merged into a single token by averaging its four tokens, separately in each frame.
-This leaves 600 spatial positions, each followed through the 14 future frames; we call such a sequence a \emph{tube}.
+\paragraph{Tubes and groups.}
+The video model represents each future frame as a $30{\times}40$ grid of tokens.
+We call the sequence of tokens at one grid position across the 14 future frames a \emph{tube}, which gives 1,200 tubes.
+We then group the tubes into $2{\times}2$ neighborhoods, giving 300 groups.
+We use $2{\times}2$ groups for three reasons.
+Neighboring tokens cover adjacent image regions, so averaging a small neighborhood still keeps a coarse view of that region.
+A $2{\times}2$ group is the smallest square neighborhood, so merging reduces resolution equally in both directions.
+And it tiles the $30{\times}40$ grid exactly, so every token belongs to exactly one group.
 
-No region is removed: relevant regions keep full resolution and the rest are represented at a coarser one.
+\paragraph{Group scores.}
+Each group receives one score from the router:
+\begin{equation}
+  S_g = \frac{1}{4} \sum_{p \in g} \max_t \, s_{t,p} ,
+  \label{eq:group_score}
+\end{equation}
+where $g$ is a group, $p$ runs over its four positions, and $s_{t,p}$ is the router score of \cref{sec:router}.
+Taking the maximum over the future frames means that a position counts as relevant if it matters in any frame;
+averaging over the group gives its overall relevance.
+During training, the router supervision of \cref{sec:router} is computed on these group scores.
+
+\paragraph{Resolution allocation.}
+We rank the groups by $S_g$.
+The 100 highest-scoring groups keep their four tubes at full resolution.
+In every other group, the four tubes are averaged frame by frame into a single tube.
+This leaves 600 tubes, and no region of the scene is removed: relevant regions keep full resolution and the rest are kept at a coarser one.
+The number of full-resolution groups sets the spatial budget, and the group scores decide where it is spent.
 
 \paragraph{Spatial positions.}
-Every token keeps its position on the original grid.
-A merged token takes the position of the top-left token of its block.
-We do not re-index the tokens onto a smaller grid, so the backbone still sees where each region lies in the scene.
+Every tube keeps its position on the original grid; a merged tube takes the position of the top-left tube of its group.
+We do not re-index the tubes onto a smaller grid, so the backbone still sees where each region lies in the scene.
 
 % ---------------------------------------------------------------------------
 \subsection{Temporal Resolution Allocation}
 \label{sec:temporal}
+% 按现行实现写：排序用组分数 x 帧间特征变化，切点使各段覆盖的特征变化相近。按约定不写"按运动自适应"、不声称优于固定 K。
+% 诊断事实：段数档位与满分辨率/合并划分完全重合，给定段数时切点近乎均匀，部署时不同观测间段数分配 97.3% 相同。
 
-Each tube is then shortened along time.
-We split its 14 frames into a few consecutive segments and average the tokens within each segment, so a tube with $K$ segments contributes $K$ tokens.
+\paragraph{Why temporal slicing.}
+After spatial allocation, each of the 600 tubes still carries one token per future frame, 8,400 tokens in total, so the time axis now dominates the remaining cost.
+Not every tube needs the same temporal detail:
+a tube in a region that does not matter for the action gains little from 14 separate tokens, while a relevant tube benefits from finer detail.
+We therefore shorten each tube by splitting its 14 frames into a few consecutive segments and averaging the tokens within each segment.
+A tube split into $K$ segments contributes $K$ tokens.
 
-Tubes receive different numbers of segments according to their relevance.
-We rank the tubes by the score of their block, weighted by how much the tube's features change between consecutive frames.
-The most relevant tubes receive the most segments, using a fixed number of tubes per level.
+\paragraph{How many segments per tube.}
+The number of segments follows relevance.
+We rank the tubes by the score of their group, weighted by how much the tube's features change between consecutive frames,
+and give the most segments to the highest-ranked tubes, with a fixed number of tubes at each level.
 For example, when 10\% of the future tokens are kept, the top 300 tubes receive 4 segments, the next 180 receive 2, and the last 120 receive 1, giving 1,680 tokens.
-Because the numbers per level are fixed, every sample has exactly the same token count.
-
 Within a tube, segment boundaries are placed so that each segment covers a similar amount of feature change.
-% 按现行实现写：排序用 router 分数 x 帧间特征变化（cosine 距离），切点按累计变化的等分位（动态规划求解）。
-% 按约定不写"按运动自适应"、不声称优于固定 K。
-% 诊断事实：K 档与 router 的 fine/coarse 划分完全重合，给定 K 时切点近乎固定（K=4 时段长 4/3/3/4），
-% 部署噪声固定（seed 0）时不同观测间 K 分配 97.3% 相同。即分配实际上由 router 决定。
-\note{Claude}{Written as implemented. In practice the levels coincide with the router's full/merged split and the cuts are near-uniform, so the allocation is effectively decided by the router; decide whether to drop the feature-change weighting from the text and describe the cuts as even splits.}
+
+\paragraph{Benefits.}
+The token budget is concentrated on the tubes that matter for the action.
+Every tube keeps at least one token, so no region disappears from the sequence, and averaging rather than dropping frames keeps information from all of them.
+Because the number of tubes at each level is fixed, every sample has exactly the same token count, so the budget is met exactly and the cost of every query is the same.
 
 \paragraph{Temporal positions.}
-Unlike the spatial axis, temporal positions are re-indexed:
-the $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers.
-Temporal positions therefore count segments rather than original frames, the opposite of the spatial convention.
+The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers.
+The temporal positions thus stay consecutive, as in the original sequence, instead of leaving gaps.
+This is the opposite of the spatial axis, where tubes keep their original positions.
