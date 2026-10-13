@@ -30,7 +30,7 @@ The router gives every future token a score between 0 and 1 that indicates how r
 It reads the future-frame tokens after the second block of the video DiT together with the instruction:
 each token attends to the instruction tokens through one cross-attention layer, and an MLP with a sigmoid outputs its score $s_{t,p}$,
 where $t$ indexes the future frame and $p$ the position on the token grid.
-The router is small compared with the video model, and its scores drive both allocation steps (\cref{sec:spatial,sec:temporal}).
+The scores provided by this small router then drive both allocation steps (\cref{sec:spatial,sec:temporal}).
 
 \paragraph{Training data.}
 The router is trained on the demonstrations of the target task suite, the same data used to train the policy.
