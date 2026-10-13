@@ -39,16 +39,19 @@ The video model and the action decoder are frozen.
 The router is trained together with a LoRA adapter~\cite{hu2022lora} on the cross-attention layers of the action decoder, which lets the decoder adjust to the compressed input.
 
 The action decoder is a flow-matching model~\cite{lipman2023flow} that predicts a velocity for a noised action chunk.
-We train with
+Both the adapter and the router are trained from one action loss,
 \begin{equation}
   \mathcal{L}_{\text{act}} = \norm{v - v_{\text{full}}}^2 + \lambda \norm{v - v_{\text{gt}}}^2 ,
   \label{eq:act_loss}
 \end{equation}
 where $v$ and $v_{\text{full}}$ are the velocities predicted, for the same noised action and robot state, by the adapted decoder from the compressed features and by the original decoder from the full features,
 $v_{\text{gt}}$ is the ground-truth velocity, and $\lambda = 0.02$.
-The purpose of this loss is to identify the tokens the action depends on, not to fit a new policy.
-Its first term takes the original policy as a fixed reference and measures how much compression changes its action, so its gradient tells how much each token matters to that action.
-A loss dominated by the ground truth, or a retrained decoder, would instead let the policy change together with the router, mixing a token's action information with how it helps the decoder refit the demonstrations.
+The adapter minimizes $\mathcal{L}_{\text{act}}$ directly.
+Its job is only to let the original decoder read the compressed input, so the first term asks it to reproduce what the original decoder predicts from the full features.
+The router is trained from the gradient of $\mathcal{L}_{\text{act}}$ with respect to its scores (described next).
+Because the first term measures how far compression moves the action away from that of the original policy, this gradient tells how much each token matters to the action.
+If the decoder were retrained, or the ground-truth term dominated, the decoder would drift away from the original policy during training,
+and the router's signal would mix a token's action information with how it helps the decoder refit the demonstrations.
 The ground-truth term is therefore kept small and only anchors the adapted decoder to the demonstrations.
 % 回应的质疑："既然拿到了真正 action-relevant 的信息，为什么不重训 decoder / 加大 GT 权重？"
 % 依据（正文暂不引用）：早期纯 GT 回归离线误差更低、闭环却 0/100；蒸馏目标的最优解即 teacher，
