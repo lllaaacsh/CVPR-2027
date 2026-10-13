@@ -108,12 +108,10 @@ We do not re-index the tubes onto a smaller grid, so the backbone still sees whe
 % 按现行实现写：排序用组分数 x 帧间特征变化，切点使各段覆盖的特征变化相近。按约定不写"按运动自适应"、不声称优于固定 K。
 % 诊断事实：段数档位与满分辨率/合并划分完全重合，给定段数时切点近乎均匀，部署时不同观测间段数分配 97.3% 相同。
 
-The scene is not static: as the robot and the objects move, the action-relevant content of a region changes over the prediction horizon.
+Since the scene is changing as the robot and the objects move, the action-relevant content of a region also changes over the prediction horizon.
 Regions that matter for the action therefore need finer temporal detail to follow how they evolve, while other regions are adequately described by a few tokens.
-A single temporal resolution shared by all tubes cannot reflect this.
-We therefore give each tube its own temporal resolution:
-its 14 frames are split into a few consecutive segments, and the tokens within each segment are averaged into one.
-A tube split into $K$ segments contributes $K$ tokens, and more segments mean finer temporal detail.
+We therefore give each tube its own temporal resolution as a single temporal resolution shared by all tubes cannot reflect this. So we further split 14 frames into a few consecutive segments, where the tokens within each segment are averaged into one.
+Tubes are split into $K$ segments, and more segments mean finer temporal detail.
 
 The number of segments follows relevance.
 Each tube $i$ receives a priority
