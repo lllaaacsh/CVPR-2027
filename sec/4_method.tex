@@ -39,42 +39,40 @@ The video model and the action decoder are frozen.
 The router is trained together with a LoRA adapter~\cite{hu2022lora} on the cross-attention layers of the action decoder, which lets the decoder adjust to the compressed input.
 
 The action decoder is a flow-matching model~\cite{lipman2023flow} that predicts a velocity for a noised action chunk.
-Both the adapter and the router are trained from one action loss,
+The adapter is trained on the compressed context to match the output of the same decoder evaluated on the full context, with a small ground-truth term:
 \begin{equation}
-  \mathcal{L}_{\text{act}} = \norm{v - v_{\text{full}}}^2 + \lambda \norm{v - v_{\text{gt}}}^2 ,
-  \label{eq:act_loss}
+  \mathcal{L}_{\text{task}} =
+  \underbrace{\norm{v - v_{\text{full}}}^2}_{\mathcal{L}_{\text{distill}}}
+  + \, 0.02 \underbrace{\norm{v - v_{\text{gt}}}^2}_{\mathcal{L}_{\text{GT}}} ,
+  \label{eq:task_loss}
 \end{equation}
-where $v$ and $v_{\text{full}}$ are the velocities predicted, for the same noised action and robot state, by the adapted decoder from the compressed features and by the original decoder from the full features,
-$v_{\text{gt}}$ is the ground-truth velocity, and $\lambda = 0.02$.
-The adapter minimizes $\mathcal{L}_{\text{act}}$ directly.
-Its job is only to let the original decoder read the compressed input, so the first term asks it to reproduce what the original decoder predicts from the full features.
-The router is trained from the gradient of $\mathcal{L}_{\text{act}}$ with respect to its scores (described next).
-Because the first term measures how far compression moves the action away from that of the original policy, this gradient tells how much each token matters to the action.
-If the decoder were retrained, or the ground-truth term dominated, the decoder would drift away from the original policy during training,
-and the router's signal would mix a token's action information with how it helps the decoder refit the demonstrations.
-The ground-truth term is therefore kept small and only anchors the adapted decoder to the demonstrations.
-% 回应的质疑："既然拿到了真正 action-relevant 的信息，为什么不重训 decoder / 加大 GT 权重？"
-% 依据（正文暂不引用）：早期纯 GT 回归离线误差更低、闭环却 0/100；蒸馏目标的最优解即 teacher，
-% 因此对 native 只写"不可区分"。
+where $v$ is the velocity predicted by the adapted decoder from the compressed context,
+$v_{\text{full}}$ is the velocity predicted by the original decoder from the full context for the same noised action and robot state,
+and $v_{\text{gt}}$ is the ground-truth velocity.
 
-Keeping or merging a token is a discrete choice, so $\mathcal{L}_{\text{act}}$ has no gradient with respect to the scores.
-We multiply each token by a factor that equals one in the forward pass but passes the gradient to its score (a straight-through estimator~\cite{bengio2013estimating}).
-The forward pass is therefore unchanged, while every score still receives a gradient from the action loss.
-From this gradient we compute the action saliency of every score:
+
+
+The adapter only needs to let the decoder read the compressed context, not to learn a new policy.
+Distillation keeps the decoder close to the original policy, so the router signal derived from $\mathcal{L}_{\text{task}}$ below reflects what this policy needs, rather than what helps a changing decoder refit the demonstrations;
+the ground-truth term only anchors the decoder to the demonstrations.
+
+The router learns which groups of tokens (\cref{sec:spatial}) should keep full resolution under a fixed token budget.
+Its supervision is the gradient saliency of the decoder objective with respect to the group scores:
 \begin{equation}
-  r = \max\Big(0,\, -\frac{\partial \mathcal{L}_{\text{act}}}{\partial s}\Big),
+  r_g = \max\Big(0,\, -\frac{\partial \mathcal{L}_{\text{task}}}{\partial S_g}\Big),
   \label{eq:saliency}
 \end{equation}
-where $s$ is a router score and $r$ measures how much raising $s$ would lower the action loss $\mathcal{L}_{\text{act}}$ of \cref{eq:act_loss}.
-We average $r$ over training steps to reduce noise.
-The tokens with the highest $r$, as many as are kept at full resolution, are labeled relevant and the others irrelevant.
-The router is trained to predict these labels with a focal loss~\cite{lin2017focal},
-plus two small terms that keep the average score at the kept fraction and push scores towards 0 or 1.
+where $S_g$ is the score of group $g$ (\cref{eq:group_score}) and $r_g$ measures how much raising it would lower $\mathcal{L}_{\text{task}}$.
+Keeping a group at full resolution is a discrete choice, so we multiply its tokens by a straight-through factor~\cite{bengio2013estimating} that equals one in the forward pass; this makes the gradient defined without changing the forward computation.
+We smooth $r_g$ with an exponential moving average over training steps, label the top-$k$ groups as relevant and the rest as irrelevant, where $k$ is the number of groups kept at full resolution, and train the router on these labels with
+\begin{equation}
+  \mathcal{L}_{\text{router}} = \mathcal{L}_{\text{focal}} + \lambda_b \mathcal{L}_{\text{budget}} + \lambda_e \mathcal{L}_{\text{entropy}} ,
+  \label{eq:router_loss}
+\end{equation}
+where $\mathcal{L}_{\text{focal}}$ is a focal binary cross-entropy~\cite{lin2017focal} between the scores and the labels,
+$\mathcal{L}_{\text{budget}}$ keeps the mean score at the fraction of groups kept at full resolution,
+$\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b = \lambda_e = 0.1$.
 
-The only supervision the router receives comes from the action loss:
-no term involves appearance, reconstruction, or similarity between tokens.
-A token is labeled relevant only if emphasizing it brings the predicted action closer to the one predicted from the full video features.
-Relevance is thus defined by the action rather than by visual content.
 
 % ---------------------------------------------------------------------------
 \subsection{Spatial Resolution Allocation}
