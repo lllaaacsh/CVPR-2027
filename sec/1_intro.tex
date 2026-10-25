@@ -17,4 +17,83 @@
 % 若用 teaser：main.tex 中有整栏 teaser 的写法，label 为 fig:teaser。
 % ---------------------------------------------------------------------------
 
-\TODO{Introduction.}
+% ---- 数字来源与措辞边界（Claude 起草时记录）----------------------------------
+% 框架：action-aware router，不写成 pruning；效率只作为副产品，延迟尚未测量（见文末 \TODO）。
+% 只引用已写的 Sec. 4 与 fig:overview。Sec. 3 已删除，P3 与结果段的论据（相似度不优于随机、删除在小预算下崩溃）需在 Sec. 5 给出。
+% 本节新增的 16 个 \cite 条目还没有加入 main.bib（按"只改 intro"的要求没有动 main.bib），加入之前这些引用显示为 [?]。
+% LIBERO，每个套件 n=500，逐 episode 配对 exact McNemar；预算只作用于 16,800 个 future token，2,400 个 observation token 全部保留：
+%   20% future（总 5,760 = 30%）：Spatial 441 vs 452（p=0.22），Object 470 vs 470（p=1），Goal 447 vs 451（p=0.71）-> 只写"不可区分"。
+%     Object 的冻结 router 配方与 Spatial/Goal 不同（v2-distill），Sec. 5 需注明。
+%   30% future（总 7,440）：92.0 / 96.4 / 90.2 vs 90.4 / 94.0 / 90.2；Object p=0.036，Holm 后 0.32 -> 同样只写"不可区分"。
+%   10% future（总 4,080，Spatial）：354 = 70.8%；同一 router、各自重训 adapter 的 token 删除 93 = 18.6%、tube 删除 259 = 51.8%；
+%     同一算子但段用原帧号作时间位置 275 = 55.0%（p=7.5e-13）。
+%   E1（反转排序 + 按反转分配重训 adapter，Spatial）：20% 88.2 vs 66.2（-22.0pp），10% 70.8 vs 28.4（-42.4pp），Holm p<=6e-21。
+%   E3（仿真分割，Spatial）：满分辨率组覆盖任务物体像素 90%、机械臂 84%、背景 26%，随机分配为 33%。
+%     不能写"按指令选择"：同类干扰碗无差别，换指令后 96--97% 的满分辨率组不变。
+%   E2（离线，Spatial）：router 的动作失真低于 similarity / motion / block-2 self-attention / edge / random（Holm p<=4e-4）。
+%     不与 decoder cross-attention 比较，不写"优于 attention 类准则"。
+%   "相似度不优于随机"：E2 中 similarity 的失真点估计高于 random；早期闭环（Object 6,000 tokens，n=100）随机排序 96 = 相似度排序 96。
+%   adapter 可 fold：闭环核查是在旧算子上做的（合并 -1.10pp，p=0.15），定稿算子上尚未复核。
+% 可选，是否纳入第二个 backbone 由你决定（DeVA 尚未达到 >= native，不建议进 intro）：
+%   On a second WAM, DiT4DiT~\cite{ma2026dit4dit}, allocating the future tokens in the same way removes 24.9\% of all tokens on LIBERO
+%   without changing the success rate over 1,500 paired episodes (98.9\% for both).
+%   依据：589/784 tokens，合并 1483 vs 1483，9/9 不一致对。LIBERO 上只有 1 个 future slice，只验证了空间部分；
+%   时间部分只在 RoboCasa-GR1 上验证（490/588 tokens，55.4% vs 54.9%，n=1,200），两部分没有在同一格中同时启用。
+% ---------------------------------------------------------------------------
+
+Video generation models trained on large-scale video learn how scenes look and how they evolve~\cite{nvidia2025cosmos,wan2025wan}.
+World action models (WAMs) turn such models into robot policies~\cite{pai2025mimicvideo,hu2025vpp,kim2026cosmospolicy,ye2026dreamzero,ma2026dit4dit,zhang2026deva}.
+In a common design~\cite{pai2025mimicvideo,ma2026dit4dit,zhang2026deva}, a video diffusion transformer (DiT)~\cite{peebles2023dit} predicts how the scene will evolve from the current observation and the instruction,
+and an action decoder reads the backbone's intermediate representation of this predicted future to generate the robot's actions.
+The policy thus inherits the visual and physical knowledge of the video model instead of learning it from robot demonstrations alone.
+
+The representation the action decoder reads, however, keeps the layout of video generation.
+Generating a video requires every region of every frame, so each future frame is a dense grid of tokens at uniform resolution;
+in the mimic-video policy we build on~\cite{pai2025mimicvideo}, the 14 future frames alone account for 16,800 of the 19,200 tokens the backbone computes.
+The action depends on much less: the robot, the objects it acts on and the space it moves through occupy only part of the scene.
+Yet the backbone computes every region at full resolution, and the decoder attends to all of them, whether or not they matter for the action.
+The representation, and with it the cost of inference, is shaped by what video generation needs rather than by what control needs.
+This raises the question we study: which part of the predicted future does the action rely on, and where can the backbone compute at a coarser resolution without changing the action?
+
+Token reduction methods address a related question with visual criteria.
+They merge tokens that look alike~\cite{bolya2023tome,bolya2023tomesd,hyun2025sttm}, drop tokens that receive little attention~\cite{liang2022evit,chen2024fastv},
+or, in vision-language-action models, reuse tokens that change little between control steps and keep those that attend to the instruction~\cite{xu2025vlacache,yang2025efficientvla}.
+These criteria measure whether a token is redundant in appearance or salient to the model, not whether the action depends on it, and many of these methods discard the tokens they do not keep.
+In a WAM, both choices fall short.
+Choosing which regions keep full resolution by feature similarity is no better than choosing them at random,
+and deleting tokens removes parts of the scene from the representation altogether, which degrades the policy sharply when few tokens are kept.
+
+We argue that in a WAM, the action should decide where the backbone computes in detail.
+We call a token action-relevant if reducing its resolution changes the predicted action.
+The objective of the action decoder measures this change directly, so it can supervise where the resolution goes.
+This adds a path from the action to the video backbone, alongside the usual path from the video to the action.
+
+We propose \method, an action-aware router for WAMs (\cref{fig:overview}).
+After an early block of the frozen video DiT, a lightweight router scores every future token by its relevance to the action (\cref{sec:router}).
+The router is supervised only through the action decoder:
+its labels come from the gradient of the decoder's objective with respect to the router's scores, and no term of its loss involves appearance, reconstruction or similarity between tokens.
+The scores then decide at which resolution the remaining blocks compute each region, in space and in time.
+Spatially, we group the tubes, the tokens at one grid position across the future frames, into $2{\times}2$ neighborhoods;
+the most relevant groups keep full resolution, and every other group is merged into a single tube at its original grid position, so no region of the scene is removed (\cref{sec:spatial}).
+Temporally, each tube is divided into a number of segments set by its relevance, and the segments take consecutive temporal positions, the pattern of consecutive frames the video model was trained on (\cref{sec:temporal}).
+The video model and the action decoder stay frozen; only the router and a low-rank adapter~\cite{hu2022lora} in the decoder are trained, and the adapter can be folded into the decoder's weights after training.
+Because the blocks after the router and the cross-attention of the decoder operate on the reduced sequence, the allocation also reduces computation.
+
+On LIBERO~\cite{liu2023libero}, with 20\% of the future tokens kept (30\% of all tokens), \method is statistically indistinguishable from the full-context policy on all three suites
+(Spatial 88.2\% vs.\ 90.4\%, Object 94.0\% vs.\ 94.0\%, Goal 89.4\% vs.\ 90.2\%; 500 paired episodes per suite).
+With 10\% kept on LIBERO-Spatial, \method achieves 70.8\% success, whereas deleting tokens or whole tubes ranked by the same router, each with its own adapter, reaches 18.6\% and 51.8\%;
+giving the segments their original frame positions instead of consecutive ones reaches 55.0\%.
+Three analyses on LIBERO-Spatial indicate that the router captures what the action relies on.
+Reversing its ranking at the same budget lowers success by 22.0 points at 20\% and by 42.4 points at 10\%, even when the adapter is retrained for the reversed allocation.
+The full-resolution regions cover 90\% of the pixels of the task objects and 84\% of those of the robot, but only 26\% of the background, where a random allocation would cover 33\%.
+Offline, the router's choice of full-resolution regions distorts the predicted action less than choosing them by feature similarity, motion, early-layer self-attention or edge energy, or at random.
+\TODO{Efficiency: latency of the deployed budgets, once measured.}
+
+In summary, our contributions are as follows.
+\begin{itemize}
+  \item We propose an action-aware router for WAMs that is supervised only through the gradient of the action decoder's objective,
+  and show that the regions it keeps at full resolution are necessary for the policy and cover the robot and the task objects.
+  \item We allocate spatial resolution by action relevance: the most relevant regions keep full resolution and the others are merged rather than deleted,
+  with every token kept at its original grid position so that it stays aligned with the observation.
+  \item We allocate temporal resolution by action relevance: each region receives a number of time segments set by its relevance, and the segments take consecutive temporal positions.
+\end{itemize}
