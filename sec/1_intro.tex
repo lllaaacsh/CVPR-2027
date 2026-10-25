@@ -17,4 +17,62 @@
 % 若用 teaser：main.tex 中有整栏 teaser 的写法，label 为 fig:teaser。
 % ---------------------------------------------------------------------------
 
-\TODO{Introduction.}
+% ---- 数字来源与措辞边界（Claude 起草时记录）----------------------------------
+% 写法：由一般到具体逐步收窄，P2、P3 末尾各提一个问题，P4 隐晦地指向方法；正文不出现具体模型名。
+% 引用共 4 篇：pai2025mimicvideo 已在 main.bib 中；ye2026dreamzero（提出 "world action model" 一词）、
+%   bolya2023tome、liu2023libero 三条尚未加入 main.bib，加入前显示为 [?]。
+% 只引用已写的 Sec. 4 与 fig:overview。Sec. 3 已删除，P3 的论断（相似度不等于动作相关、删除会丢掉场景）需在 Sec. 5 给出依据。
+% P6 数字（LIBERO，每个套件 n=500，逐 episode 配对 exact McNemar；预算只作用于 16,800 个 future token，
+%   2,400 个 observation token 全部保留）：20% future（总 5,760 = 30%）Spatial 441 vs 452（p=0.22），
+%   Object 470 vs 470（p=1），Goal 447 vs 451（p=0.71）-> 只写"不可区分"。Object 的冻结 router 配方不同，Sec. 5 需注明。
+% "necessary for the policy"：E1 反转排序（Spatial），20% -22.0pp、10% -42.4pp，Holm p<=6e-21。
+% "concentrate on the robot and the objects"：E3（Spatial）满分辨率组覆盖任务物体像素 90%、机械臂 84%、背景 26%（随机 33%）；
+%   不能写"按指令选择"。
+% adapter 可 fold：闭环核查只在旧算子上做过（合并 -1.10pp，p=0.15），定稿算子上尚未复核。
+% 第二个 backbone（DiT4DiT / DeVA）按"暂不提具体模型名"的要求不放 intro。
+% ---------------------------------------------------------------------------
+
+Large video generation models, trained on vast amounts of video, capture how the visual world looks and how it changes over time.
+World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero} bring this knowledge to robot control:
+a pretrained video model predicts how the scene will evolve under an instruction, and the robot's actions are derived from this predicted future,
+typically by an action decoder that reads the internal representation of the video model.
+Such policies inherit visual and physical priors from video pretraining, rather than learning them from robot demonstrations alone.
+
+A video model, however, is built to generate video.
+Its representation of the future covers every region of every frame on a dense, uniform grid, because generation must render the entire scene.
+Acting in the scene asks for something narrower: the next actions depend mostly on the robot, the objects it interacts with, and the space it is about to move through.
+Yet the action decoder receives the full, generation-shaped representation, and the video model computes all of it at full resolution, regardless of which parts the action actually uses.
+This raises a question that has received little attention:
+does a policy need the predicted future at the resolution at which it would be generated, and if not, which parts of it does the action rely on?
+
+A natural tool for making such a representation more compact is token reduction, which merges tokens that look alike~\cite{bolya2023tome} or discards tokens that receive little attention.
+These criteria, however, describe the image rather than the task: they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it.
+What is redundant for describing a scene need not be what is irrelevant for acting in it.
+Discarding tokens also removes parts of the scene altogether, even though a policy may still need a coarse view of them.
+If relevance to the action cannot be read off the visual content, where should it come from?
+
+In a WAM, one component already knows what the action needs: the action decoder.
+How much its prediction changes when part of the predicted future is represented more coarsely directly measures how much the action relies on that part.
+This suggests reversing the usual direction of information flow.
+Instead of the video model alone deciding what the action decoder sees, the action can in turn tell the video model where to compute in detail and where a coarser view suffices.
+
+Building on this idea, we propose \method, an action-aware router for WAMs (\cref{fig:overview}).
+A lightweight router, placed after an early block of the frozen video model, scores every token of the predicted future by its relevance to the action.
+It is supervised only through the action decoder:
+its training signal is the gradient of the decoder's objective with respect to the scores, and no term depends on appearance or similarity (\cref{sec:router}).
+The scores then set the resolution at which the rest of the video model computes each region.
+In space, the most relevant regions keep full resolution, while the others are merged into coarser tokens at their original positions rather than removed (\cref{sec:spatial}).
+In time, the frames of each region are grouped into segments, more of them for more relevant regions, and the segments keep consecutive temporal positions, matching the frame order the video model was trained on (\cref{sec:temporal}).
+Only the router and a low-rank adapter in the action decoder are trained, and the adapter can be merged into the decoder after training.
+Because the video model processes fewer tokens after the router, the allocation also reduces computation.
+
+On the three LIBERO task suites~\cite{liu2023libero}, \method keeps 20\% of the future tokens (30\% of all tokens) while remaining statistically indistinguishable from the policy that reads the full representation.
+Further analysis shows that the regions it keeps at full resolution are necessary for the policy and concentrate on the robot and the objects it manipulates.
+\TODO{Efficiency: latency of the deployed budgets, once measured.}
+
+In summary, our contributions are as follows.
+\begin{itemize}
+  \item An action-aware router for WAMs, supervised only through the objective of the action decoder, which identifies the parts of the predicted future that the action relies on.
+  \item A spatial resolution allocation that keeps the most relevant regions at full resolution and merges the others instead of removing them, keeping every token at its original position.
+  \item A temporal resolution allocation that gives each region a number of time segments set by its relevance, with consecutive temporal positions.
+\end{itemize}
