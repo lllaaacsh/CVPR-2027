@@ -49,6 +49,8 @@ The adapter is trained on the compressed context to match the output of the same
 where $v$ is the velocity predicted by the adapted decoder from the compressed context,
 $v_{\text{full}}$ is the velocity predicted by the original decoder from the full context for the same noised action and robot state,
 and $v_{\text{gt}}$ is the ground-truth velocity.
+$\mathcal{L}_{\text{distill}}$ makes the adapted decoder reproduce the original decoder's full-context prediction, and $\mathcal{L}_{\text{GT}}$ weakly anchors it to the demonstrated ground-truth velocity. Since the adapter only compresses the context rather than learning a new policy, $\mathcal{L}_{\text{distill}}$ is the main objective. This keeps the decoder close to the original policy, so the router signal from $\mathcal{L}_{\text{task}}$ reflects the policy's needs rather than compensating for a drifting decoder; $\mathcal{L}_{\text{GT}}$ only prevents it from drifting too far from the demonstrations.
+
 
 
 
