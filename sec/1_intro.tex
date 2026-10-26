@@ -18,9 +18,8 @@
 % ---------------------------------------------------------------------------
 
 % ---- 数字来源与措辞边界（Claude 起草时记录）----------------------------------
-% 写法：由一般到具体逐步收窄，P2、P3 末尾各提一个问题，P4 隐晦地指向方法；正文不出现具体模型名。
-% 引用共 4 篇：pai2025mimicvideo 已在 main.bib 中；ye2026dreamzero（提出 "world action model" 一词）、
-%   bolya2023tome、liu2023libero 三条尚未加入 main.bib，加入前显示为 [?]。
+% 写法：由一般到具体逐步收窄，P2、P3 末尾用陈述句点出问题（intro 中不用疑问句），P4 隐晦地指向方法；正文不出现具体模型名。
+% 引用共 4 篇：pai2025mimicvideo、ye2026dreamzero（提出 "world action model" 一词）、bolya2023tome、liu2023libero，均已在 main.bib 中。
 % 只引用已写的 Sec. 4 与 fig:overview。Sec. 3 已删除，P3 的论断（相似度不等于动作相关、删除会丢掉场景）需在 Sec. 5 给出依据。
 % P6 数字（LIBERO，每个套件 n=500，逐 episode 配对 exact McNemar；预算只作用于 16,800 个 future token，
 %   2,400 个 observation token 全部保留）：20% future（总 5,760 = 30%）Spatial 441 vs 452（p=0.22），
@@ -42,14 +41,13 @@ A video model, however, is built to generate video.
 Its representation of the future covers every region of every frame on a dense, uniform grid, because generation must render the entire scene.
 Acting in the scene asks for something narrower: the next actions depend mostly on the robot, the objects it interacts with, and the space it is about to move through.
 Yet the action decoder receives the full, generation-shaped representation, and the video model computes all of it at full resolution, regardless of which parts the action actually uses.
-This raises a question that has received little attention:
-does a policy need the predicted future at the resolution at which it would be generated, and if not, which parts of it does the action rely on?
+Whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has so far received little attention.
 
 A natural tool for making such a representation more compact is token reduction, which merges tokens that look alike~\cite{bolya2023tome} or discards tokens that receive little attention.
 These criteria, however, describe the image rather than the task: they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it.
 What is redundant for describing a scene need not be what is irrelevant for acting in it.
 Discarding tokens also removes parts of the scene altogether, even though a policy may still need a coarse view of them.
-If relevance to the action cannot be read off the visual content, where should it come from?
+Relevance to the action therefore cannot simply be read off the visual content.
 
 In a WAM, one component already knows what the action needs: the action decoder.
 How much its prediction changes when part of the predicted future is represented more coarsely directly measures how much the action relies on that part.
