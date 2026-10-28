@@ -28,7 +28,9 @@
 % "concentrate on the robot and the objects"：E3（Spatial）满分辨率组覆盖任务物体像素 90%、机械臂 84%、背景 26%（随机 33%）；
 %   不能写"按指令选择"。
 % adapter 可 fold：闭环核查只在旧算子上做过（合并 -1.10pp，p=0.15），定稿算子上尚未复核。
-% 第二个 backbone（DiT4DiT / DeVA）按"暂不提具体模型名"的要求不放 intro。
+% 第二个 backbone（DiT4DiT）按"暂不提具体模型名"的要求不放 intro；DeVA 不在论文中出现。
+% P4 讨论 decoder attention 的利弊：只从"时机"（要先算完全分辨率的 future）和"度量的量不同"两点论证，
+%   不说 router 优于 decoder attention——E2 离线中完整上下文的 decoder cross-attention 比 router 好 7%（p=0.0078）。
 % ---------------------------------------------------------------------------
 
 Large video generation models, trained on vast amounts of video, capture how the visual world looks and how it changes over time.
@@ -50,9 +52,16 @@ Discarding tokens also removes parts of the scene altogether, even though a poli
 Relevance to the action therefore cannot simply be read off the visual content.
 
 In a WAM, one component already knows what the action needs: the action decoder.
-How much its prediction changes when part of the predicted future is represented more coarsely directly measures how much the action relies on that part.
-This suggests reversing the usual direction of information flow.
-Instead of the video model alone deciding what the action decoder sees, the action can in turn tell the video model where to compute in detail and where a coarser view suffices.
+The most direct readout of its needs is its attention over the predicted future.
+Attention comes without any training, reflects the action rather than the appearance of the scene, and shows which regions the decoder reads.
+As a basis for deciding where the video model computes, however, it has two limitations.
+First, it arrives too late: the decoder attends to features that the video model produces late in its forward pass,
+so attention exists only after every token of the future has been computed at full resolution, when the computation it could have guided has already been spent.
+Second, attention shows where the decoder looks, which need not coincide with how much its prediction would change if a region were represented more coarsely,
+and it is the latter that decides whether a region can be coarsened.
+What is needed instead is the decoder's judgment, measured by the effect of coarsening on the predicted action and made available early in the video model.
+This suggests reversing the usual direction of information flow:
+through its objective, the action decoder can teach the video model where to compute in detail and where a coarser view suffices.
 
 Building on this idea, we propose \method, an action-aware router for WAMs (\cref{fig:overview}).
 A lightweight router, placed after an early block of the frozen video model, scores every token of the predicted future by its relevance to the action.
