@@ -1,0 +1,46 @@
+% Sources: mimic docs/CONTIG_SUITE_EXTENSION.md section 6;
+% docs/DELETION_SUITE_EXTENSION.md section 5.4; figures/paper/figure_numbers.json;
+% eval/analysis/results/teaser_latency_48432029/latency_r{10,20,30}.json.
+% Bold is the largest COMPLETED point estimate in a fixed-budget group, not significance.
+\begin{table*}[t]
+  \centering
+  \caption{\textbf{Accuracy and inference cost on mimic-video.}
+  Each success rate uses 500 paired LIBERO episodes; Avg. is the mean of the three suites.
+  Budgets count future tokens; all 2,400 observation tokens remain.
+  Efficiency is measured with Spatial checkpoints on an exclusively allocated H100, batch size 1, including text encoding.
+  Ours uses a folded low-rank adapter and CUDA graphs in the action decoder; native is also graphed.
+  Speedup uses the graphed native latency.
+  Bold marks the highest completed success-rate point estimate within each budget, without comparing to native.
+  $\dagger$ marks ours below native after Holm correction over its nine suite--budget tests.
+  Token/tube deletion are internal references using our router; external and full-context-adapted rows are pending.}
+  \label{tab:main_results}
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{lrrrrrrrr}
+    \toprule
+    Method & Tokens & TFLOPs $\downarrow$ & ms $\downarrow$ & Speedup & Spatial $\uparrow$ & Object $\uparrow$ & Goal $\uparrow$ & Avg. $\uparrow$ \\
+    \midrule
+    Native & 19,200 & 98.0 & 701.7 & $1.00\times$ & 90.4 & 94.0 & 90.2 & 91.5 \\
+    Native + LoRA & 19,200 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+    \shortstack[l]{CF-Prune port\\(training-free)} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+    \midrule
+    \multicolumn{9}{l}{\emph{10\% of future tokens}} \\
+    Token deletion & 4,080 & \TODO{--} & \TODO{--} & \TODO{--} & 18.6 & 88.4 & 71.2 & 59.4 \\
+    Tube deletion & 4,080 & \TODO{--} & \TODO{--} & \TODO{--} & 51.8 & 83.6 & 32.6 & 56.0 \\
+    External + LoRA & 4,080 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+    \method & 4,080 & 35.7 & 404.2 & $1.74\times$ & \textbf{70.8}$\dagger$ & \textbf{93.8} & \textbf{74.8}$\dagger$ & \textbf{79.8} \\
+    \midrule
+    \multicolumn{9}{l}{\emph{20\% of future tokens}} \\
+    Token deletion & 5,760 & \TODO{--} & \TODO{--} & \TODO{--} & 36.8 & 92.8 & 87.2 & 72.3 \\
+    Tube deletion & 5,760 & \TODO{--} & \TODO{--} & \TODO{--} & 72.0 & 92.4 & 76.0 & 80.1 \\
+    External + LoRA & 5,760 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+    \method & 5,760 & 42.7 & 440.7 & $1.59\times$ & \textbf{88.2} & \textbf{94.0} & \textbf{89.4} & \textbf{90.5} \\
+    \midrule
+    \multicolumn{9}{l}{\emph{30\% of future tokens}} \\
+    Token deletion & 7,440 & \TODO{--} & \TODO{--} & \TODO{--} & 79.0 & 93.6 & 86.8 & 86.5 \\
+    Tube deletion & 7,440 & \TODO{--} & \TODO{--} & \TODO{--} & 83.4 & 91.8 & \textbf{91.4} & 88.9 \\
+    External + LoRA & 7,440 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+    \method & 7,440 & 49.6 & 477.1 & $1.47\times$ & \textbf{92.0} & \textbf{96.4} & 90.2 & \textbf{92.9} \\
+    \bottomrule
+  \end{tabular}
+\end{table*}

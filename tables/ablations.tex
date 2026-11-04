@@ -1,0 +1,24 @@
+% Sources: ACTION_RELEVANCE_EXPERIMENTS.md section 7;
+% AGGRESSIVE_CONTIG_EXECUTION.md sections 6.3/6.5.
+% Deletion stays in the main table until an external baseline is available.
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Allocation and adaptation ablations.}
+  LIBERO-Spatial success rate (\%), 500 paired episodes per cell.
+  Columns are future-token budgets.
+  Reversal replaces $S_g$ by $1-S_g$ in both allocation stages and retrains its own adapter; source-t also uses its own adapter.
+  Dashes denote unmeasured cells.}
+  \label{tab:ablations}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lrrr}
+    \toprule
+    Variant & 10\% & 20\% & 30\% \\
+    \midrule
+    \method & 70.8 & 88.2 & 92.0 \\
+    Reversed scores + retrained LoRA & 28.4 & 66.2 & --- \\
+    Without decoder LoRA & 56.6 & 81.0 & --- \\
+    Source-t instead of contiguous-t & 55.0 & 79.2 & 87.4 \\
+    \bottomrule
+  \end{tabular}
+\end{table}

@@ -1,0 +1,25 @@
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Paired uncertainty for ours versus native.}
+  All cells have 500 paired episodes.
+  $\Delta$ and unadjusted paired Wald 95\% intervals are in percentage points; $p_H$ is Holm-corrected over these nine tests.
+  In particular, the nominal Object 30\% interval does not establish significance after correction.}
+  \label{tab:paired_uncertainty}
+  \small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{lrlr}
+    \toprule
+    Suite & Future & $\Delta$ [95\% CI] & $p_H$ \\
+    \midrule
+    Spatial & 10\% & $-19.6$ [$-24.0$, $-15.2$] & $4.8\!\times\!10^{-16}$ \\
+    Spatial & 20\% & $-2.2$ [$-5.4$, $+1.0$] & 1.00 \\
+    Spatial & 30\% & $+1.6$ [$-1.2$, $+4.4$] & 1.00 \\
+    Object & 10\% & $-0.2$ [$-2.8$, $+2.4$] & 1.00 \\
+    Object & 20\% & $+0.0$ [$-2.3$, $+2.3$] & 1.00 \\
+    Object & 30\% & $+2.4$ [$+0.3$, $+4.5$] & 0.25 \\
+    Goal & 10\% & $-15.4$ [$-19.6$, $-11.2$] & $1.6\!\times\!10^{-11}$ \\
+    Goal & 20\% & $-0.8$ [$-4.0$, $+2.4$] & 1.00 \\
+    Goal & 30\% & $+0.0$ [$-2.9$, $+2.9$] & 1.00 \\
+    \bottomrule
+  \end{tabular}
+\end{table}

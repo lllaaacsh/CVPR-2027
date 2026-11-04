@@ -2,6 +2,16 @@
 \setcounter{page}{1}
 \maketitlesupplementary
 
+\setcounter{section}{0}
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand{\theHsection}{supp.\arabic{section}}
+\setcounter{table}{0}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\theHtable}{supp.\arabic{table}}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theHfigure}{supp.\arabic{figure}}
+
 % Compiled only when main.tex sets \suppltrue.
 % Sections here can be referenced from the main paper (e.g. \cref{sec:supp_impl}) and vice versa.
 
@@ -13,4 +23,88 @@
 \section{Implementation Details}
 \label{sec:supp_impl}
 
-\TODO{Supplementary material.}
+The main text specifies the LIBERO training and evaluation settings.
+The Object router uses pure distillation during router training, while all budget-specific decoder adapters use distillation plus the 0.02-weight ground-truth term.
+Bridge uses its separately trained pure-distillation router; its training data and camera setup differ from LIBERO.
+For DiT4DiT, the 442-token LIBERO setting pools all future spatial groups and additionally coarsens the observed slice; it is not the 589-token future allocation with only the observation budget changed.
+
+\section{Statistical and Efficiency Details}
+\label{sec:supp_stats}
+
+\input{tables/paired_uncertainty}
+
+Confidence intervals describe paired episode differences, not variation over independently trained models.
+All adapter configurations use one training seed.
+The nine ours--native comparisons in the main table use a common Holm family; its Object 30\% adjusted $p$-value is 0.250.
+The deletion reference comparisons are separate from that family and do not change the dagger marks.
+The original Goal/Object ours--deletion analysis uses a post-hoc family of 12 contrasts, as documented with the results.
+
+The timing benchmark uses Spatial checkpoints on an exclusively allocated H100, batch size one, with text encoding included.
+There are three warmup calls and eight interleaved rounds of four calls per arm; reported values are medians of 32 synchronized wall-clock measurements.
+The graphed native reference is 701.7\,ms; the eager native reference has median 770.4\,ms across the three budget runs.
+The deployed 10\%/20\%/30\% configurations run in 404.2/440.7/477.1\,ms and use 35.7/42.7/49.6 TFLOPs per query.
+Speedups relative to graphed native are reported in the main table; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
+The folded-adapter configuration is the one used for timing; these measurements are not a separate closed-loop evaluation of graph/fold equivalence.
+\TODO{Numerical equivalence checks for the deployed fold/graph configuration, deletion/external-method timing, and DiT4DiT timing.}
+
+\section{Additional Transfer and Router-Training Results}
+\label{sec:supp_transfer}
+
+With 100 full-resolution groups, the three Bridge budgets give 20/96, 24/96 and 27/96 successes, versus 46/96 for native.
+Their paired differences are $-27.1$ [$-38.1$,$-16.1$], $-22.9$ [$-32.7$,$-13.1$] and $-19.8$ [$-29.6$,$-9.9$] percentage points, with exact McNemar $p=1.3\times10^{-5}$, $2.7\times10^{-5}$ and $3.1\times10^{-4}$, respectively.
+These failed points motivate reporting the entire higher-budget $F=200$ sweep rather than only its best point estimate.
+
+The tested combined spatial/temporal DiT4DiT configurations on GR1 have lower point estimates than native.
+Some differences are not significant: for example, the completed future-space/time 441-token configuration with 41 full-resolution groups reaches 53.2\%, versus 54.9\% for native, a $-1.8$ point difference with interval [$-4.5$,$+1.0$].
+This does not establish a joint configuration preserving native performance, but it also does not show that every combined configuration is significantly worse.
+The 466-token follow-up was selected after inspecting intermediate results; it is not included in the transfer table while incomplete, and any later inclusion must disclose that selection.
+
+Continuing to train the router jointly with the adapter for 1,500 steps gives the following success rates, in 10\%/20\%/30\% budget order:
+Spatial 72.2/90.8/91.6\%, Goal 76.2/86.2/89.4\%, and Object 91.8/94.4/96.0\%.
+Relative to frozen-router training, no improvement survives Holm correction over nine suite--budget comparisons; the pooled, post-hoc paired test has $p=0.83$.
+The individual adjusted $p$-values, in the same order, are 1.00/0.68/1.00, 1.00/0.10/1.00 and 0.77/1.00/1.00.
+This is a lack of detected benefit for that recipe and sample size, not evidence of equivalence.
+
+\section{Detailed Action-Relevance Analysis}
+\label{sec:supp_relevance}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig5_action_relevance.pdf}
+  \caption{\textbf{Ranking reversal and offline action distortion.}
+  (a) Deployed and inverted full-resolution groups at the same budget.
+  (b) Spatial success over 500 paired episodes, with separately trained low-rank adapters (solid) or without adapters (hatched); bars show Wilson 95\% confidence intervals.
+  (c) Spatial insertion curves over 200 windows from 50 held-out episodes: the top-$n$ groups retain full resolution, the rest are merged, and all 14 future frames remain.
+  Distortion is the normalized mean squared difference from the native decoder's first five actions under full context, geometrically averaged over windows.
+  The dashed line is the full-resolution numerical floor.
+  (d) Router-to-criterion distortion ratios, averaged over six group counts in log space, with episode-level Student's $t$ 95\% intervals.
+  The five criteria are similarity, motion, block-2 self-attention, observed-frame edge energy and random selection.}
+  \label{fig:supp_relevance}
+\end{figure*}
+
+The pre-registered offline family also included full-context decoder cross-attention, which has approximately 7\% lower distortion than the router ($p=0.0078$ after correction).
+It requires completing the uncompressed video/decoder forward pass and therefore is not an equal-cost block-2 scoring substitute.
+Claims of superiority apply only to the five task-agnostic criteria shown in the figure.
+Similarity ranking in this analysis is not a complete ToMe implementation.
+The matched offline coverage-versus-resolution comparison does not distinguish the two allocations after correction, so it is not used to attribute the closed-loop operator gap to coarse coverage alone.
+
+\section{Absolute Cross-Policy Success Rates}
+\label{sec:supp_absolute}
+
+\input{tables/absolute_success}
+
+The results in \cref{tab:absolute_success} provide context rather than a common-backbone or common-protocol comparison.
+The main claims concern changes relative to each policy's own native backbone.
+For $\pi_0$ and $\pi_0$-FAST, the listed numbers are the released-model results tabulated by OpenVLA-OFT; $\pi_{0.5}$ uses the OpenPI release numbers reproduced in the LeRobot documentation.
+The three-suite means are recomputed, rather than copied from four-suite LIBERO averages.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_bubble_params.pdf}
+  \caption{\textbf{Performance versus model size on LIBERO.}
+  Points show three-suite mean success; the horizontal axis is total parameter count and circle area represents backbone size.
+  Our points use 20\% of mimic-video's future tokens and 589/784 DiT4DiT tokens.
+  The plot uses a selected set of policies and omits frozen instruction encoders from parameter totals; the table above includes the omitted SmolVLA and Cosmos Policy results and both native evaluations.
+  This figure does not establish a matched efficiency comparison across architectures.}
+  \label{fig:supp_bubble}
+\end{figure*}

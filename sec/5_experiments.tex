@@ -20,53 +20,112 @@
 \label{sec:exp_setup}
 
 We evaluate \method on LIBERO-Spatial, LIBERO-Object and LIBERO-Goal~\cite{liu2023libero}, using the released suite-specific mimic-video checkpoints~\cite{pai2025mimicvideo}.
-Each suite contains ten tasks; we run 50 episodes per task and report the success rate over 500 episodes.
-Within each suite, all configurations use evaluation seed 0 and the same initial states, allowing outcomes to be paired episode by episode.
-The video model runs a single forward pass, and the policy executes five predicted actions before replanning.
-Our reference is the native policy: the original video model and action decoder evaluated on the full token sequence.
+LIBERO-Long is excluded because our reproduction has no corresponding evaluation configuration or checkpoint.
+Each suite contains ten tasks, with 50 evaluation episodes per task.
+All configurations use evaluation seed 0 and the same task-specific initial states, allowing episode-wise paired comparisons.
+The video model runs a single forward pass, and the policy executes five actions before replanning.
+Native denotes the original policy evaluated on the full context.
 
-The budget is the fraction of the 16,800 future tokens retained after the second video DiT block; all 2,400 observation tokens remain.
-Keeping 10\%, 20\% and 30\% of the future tokens gives sequences of 4,080, 5,760 and 7,440 tokens, respectively, compared with 19,200 for native.
-The spatial allocation keeps 100 of the 300 groups at full resolution at every budget.
-In order of increasing priority, the three temporal tiers contain 120, 180 and 300 tubes; their segment counts are $(1,2,4)$, $(3,5,7)$ and $(5,8,10)$ at the three budgets, respectively.
+Budgets retain 10\%, 20\% or 30\% of the 16,800 future tokens after video block 2, while preserving all 2,400 observation tokens.
+The resulting context lengths are 4,080, 5,760 and 7,440, versus 19,200 for native.
+The spatial stage keeps 100 of 300 groups at full resolution.
+In increasing priority order, 120, 180 and 300 tubes receive $(1,2,4)$, $(3,5,7)$ or $(5,8,10)$ segments at the respective budgets.
+For each suite and budget, we freeze the router and train a fresh rank-16 decoder cross-attention LoRA for 1,500 steps with \cref{eq:task_loss}, learning rate $4\times10^{-5}$, 100 warmup steps, cosine decay and effective batch size eight.
+The Object router has a distinct initialization and pretraining recipe: fixed segment counts $8/6/4$ and pure distillation, versus $12/10/8$ and a 0.02-weight ground-truth term for Spatial/Goal.
+All budget-specific adapters use the same objective; each configuration uses one training seed.
+We use two-sided exact McNemar tests and report statistically indistinguishable results at the available sample size, rather than infer equivalence.
+The nine ours--native suite--budget comparisons form one Holm-corrected family at $\alpha=0.05$.
 
-For each suite, we freeze a router trained on that suite and train a fresh rank-16 low-rank adapter (LoRA) in the decoder cross-attention for each budget.
-The video model and the original decoder weights remain frozen.
-Each adapter is trained for 1,500 steps with the objective in \cref{eq:task_loss}, a learning rate of $4\times10^{-5}$, 100 warmup steps, cosine decay and an effective batch size of eight.
-The Object router uses a different initialization and training recipe: fixed segment counts of $8/6/4$ and pure distillation, whereas the Spatial and Goal routers use $12/10/8$ and the additional ground-truth term of weight 0.02.
-This difference concerns router training; the budget-specific adapters use the same objective on all three suites.
-We use one training seed per configuration.
+Efficiency is measured per policy query with Spatial checkpoints, batch size one, on an exclusively allocated H100, including text encoding.
+We report median wall-clock latency over 32 calls in eight interleaved rounds after warmup.
+The deployed timing configuration folds LoRA into the decoder weights and uses CUDA graphs for the action decoder; the native denominator also enables graphs.
+Supplementary material reports the eager reference and confidence intervals.
 
-We compare paired success outcomes with two-sided exact McNemar tests and apply Holm correction over the nine suite--budget comparisons with native, at a significance level of 0.05.
-The error bars and native bands in \cref{fig:main_results} are Wilson 95\% confidence intervals for the individual success rates.
-Non-significant comparisons are described as statistically indistinguishable at this sample size.
-
-\subsection{Main Results}
+\subsection{Accuracy and Efficiency on mimic-video}
 \label{sec:exp_main}
+
+\input{tables/main_results}
+
+\Cref{tab:main_results} measures how much of the native representation each configuration requires for control.
+At 20\% of the future tokens, \method reaches 88.2\%, 94.0\% and 89.4\% on Spatial, Object and Goal, respectively, and is statistically indistinguishable from native on every suite.
+The mean success rate is 90.5\%, versus 91.5\% for native, with 5,760 rather than 19,200 tokens after routing.
+At 30\%, the mean is 92.9\%; all three suites remain statistically indistinguishable from native after correction.
+At 10\%, Spatial and Goal fall significantly below native, whereas Object remains statistically indistinguishable from it.
+The corresponding deployed latencies are 404.2, 440.7 and 477.1\,ms, giving $1.74\times$, $1.59\times$ and $1.47\times$ speedups over graphed native.
+At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
+
+Token and tube deletion are internal operator references using the same frozen router and an independently trained adapter for each budget.
+Their gaps are largest on Spatial, while token deletion is much closer on Goal and Object: at 20\%, it reaches 87.2\% and 92.8\%, versus 89.4\% and 94.0\% for ours.
+At 30\% on Goal, tube deletion has the highest point estimate, 91.4\%, versus 90.2\% for ours; their paired difference is not significant ($p=0.48$).
+\TODO{Complete the external baseline and native + LoRA rows before making cross-method or adaptation-attribution claims.
+CF-Prune~\cite{kim2026cfprune} is the preferred candidate, subject to a documented port to the cascaded mimic-video interface; report its training-free version separately.}
+
+\subsection{Transfer across Backbones and Benchmarks}
+\label{sec:exp_transfer}
+
+\input{tables/transfer}
+
+\Cref{tab:transfer} separates the axes actually tested in each setting.
+On SIMPLER-Bridge, we increase the number of full-resolution groups to $F=200$ and report all three budgets.
+They achieve 45, 42 and 41 successes out of 96, versus 46 for native; the differences are statistically indistinguishable at this sample size, with wide confidence intervals.
+The non-monotonic point estimates do not establish that a larger budget is harmful.
+With $F=100$, success is only 20--27 out of 96; supplementary material includes all three failed operating points.
+The Bridge router is trained with pure distillation and a different initialization, so its recipe also differs from Spatial/Goal.
+
+On DiT4DiT~\cite{ma2026dit4dit}, LIBERO has one future slice and therefore tests spatial allocation alone.
+The 589-token setting coarsens only the future; the 442-token setting coarsens both observed and future spatial grids and uses a coarser future grid than the 589-token setting.
+Both are statistically indistinguishable from native in paired evaluation.
+RoboCasa-GR1 instead tests temporal allocation with spatial pooling disabled, reducing 588 tokens to 539 or 490.
+Both settings are statistically indistinguishable from native, but their confidence intervals do not establish equivalence.
+Spatial and temporal transfer are thus demonstrated in different settings; combined GR1 configurations still have lower success-rate point estimates than native and do not establish a joint operating point preserving native performance.
+\TODO{Measure DiT4DiT latency before claiming faster inference.
+The incomplete, post-hoc-selected GR1 f41\_466 configuration is excluded pending complete evaluation and disclosure of its selection.}
+
+\subsection{Allocation and Adaptation Ablations}
+\label{sec:exp_ablation}
+
+\input{tables/ablations}
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{fig4_main_results.pdf}
-  \caption{\textbf{Success rate versus future-token budget.}
-  Each point uses 500 paired episodes; the 2,400 observation tokens are always kept.
-  Blue: \method; black line and grey band: native, which reads all 16,800 future tokens.
-  Grey curves (Spatial only): token or tube deletion using the same router and the same budgets, each with its own trained low-rank adapter.
-  Token deletion keeps the highest-scoring future tokens; tube deletion keeps the highest-scoring tubes with all 14 frames.
-  Error bars and band: Wilson 95\% confidence intervals.
-  Asterisks mark \method results that differ from native under two-sided exact McNemar tests with Holm correction over the nine suite--budget comparisons.
-  The Object router uses the distinct training recipe described in \cref{sec:exp_setup}.}
-  \label{fig:main_results}
+  \caption{\textbf{Internal operator comparisons.}
+  Ours (blue), token deletion and tube deletion use the same router and matched future-token budgets, each with its own trained low-rank adapter.
+  The 2,400 observation tokens are always retained.
+  Black lines and grey bands show native; error bars and bands are Wilson 95\% confidence intervals over 500 paired episodes.
+  Asterisks mark ours significantly below native after Holm correction over its nine suite--budget tests.
+  These are method variants, not external baselines; the Object router uses the distinct recipe described in \cref{sec:exp_setup}.}
+  \label{fig:operator_ablation}
 \end{figure*}
 
-At 20\% of the future tokens, \method is statistically indistinguishable from native on all three suites (\cref{fig:main_results}).
-Success rates are 88.2\% on Spatial, 94.0\% on Object and 89.4\% on Goal, compared with 90.4\%, 94.0\% and 90.2\% for native.
-The corresponding uncorrected paired-test $p$-values are 0.22, 1.00 and 0.71; none is significant after correction.
-At this operating point, the remaining video blocks and action decoder receive 5,760 tokens, or 30\% of the native sequence.
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig6_ground_truth.pdf}
+  \caption{\textbf{Content receiving full spatial resolution.}
+  Left: one LIBERO-Spatial query, with full-resolution groups in blue, merged groups in grey, and simulator outlines for task objects, the robot and its future path.
+  Right: the share of each pixel category in full-resolution groups, averaged over 50 episodes per suite with Student's $t$ 95\% confidence intervals.
+  Randomly allocating 100 of 300 groups gives 33\%.
+  The path is simulator ground truth for subsequent motion, not a path prediction by the router.}
+  \label{fig:ground_truth}
+\end{figure*}
 
-The effect of a tighter budget differs across suites.
-At 10\% of the future tokens, success falls to 70.8\% on Spatial and 74.8\% on Goal, both significantly below native after correction, while Object reaches 93.8\% and remains statistically indistinguishable from native.
-At 30\%, the respective success rates on Spatial, Object and Goal are 92.0\%, 96.4\% and 90.2\%; all three are statistically indistinguishable from native after correction.
-Thus, 20\% of the future tokens is the smallest tested budget at which all three suites are statistically indistinguishable from native in this evaluation.
+\Cref{tab:ablations,fig:operator_ablation} examine the learned allocation and decoder adaptation.
+Reversing the router scores lowers Spatial success by 42.4 and 22.0 percentage points at 10\% and 20\%, even after retraining the adapter for the reversed allocation (Holm-corrected $p\leq6\times10^{-21}$).
+Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the separate full-context LoRA reference remains pending.
+Contiguous temporal positions improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
+Jointly continuing router training yields no detected benefit after correction; supplementary material gives the complete comparisons.
+The deletion references change spatial support and temporal processing together, so their closed-loop gap does not by itself isolate the value of coarse coverage.
 
-\TODO{Remaining experiments: merging versus deletion; contiguous versus source temporal positions; E1--E3 action-relevance analyses; transfer to DiT4DiT if included.}
-\TODO{Efficiency: FLOPs and latency of the deployed contiguous-t budgets have not been measured.}
+\subsection{Action-Relevant Content}
+\label{sec:exp_relevance}
+
+Offline spatial coarsening gives lower action distortion with router scores than with similarity, motion, block-2 self-attention, edge energy or random selection (Holm-corrected $p\leq4.2\times10^{-4}$).
+The respective router-to-criterion distortion ratios are 0.495, 0.478, 0.785, 0.838 and 0.598.
+This comparison concerns these five task-agnostic criteria, not full-context decoder attention; the latter has lower distortion but requires the full forward pass.
+The detailed insertion curves and ranking-reversal plot are in the supplementary material.
+
+
+
+Simulator segmentation in \cref{fig:ground_truth} shows that full-resolution groups cover 90\% of Spatial task-object pixels, 84\% of robot pixels and 82\% of the robot's future path, versus 26\% of background pixels.
+On Goal, the corresponding object, robot and background shares are 64\%, 98\% and 21\%.
+These results identify action-relevant workspace content, while the allocation remains largely stable across observations and instructions; they do not support instruction-specific selection or per-step scene tracking.

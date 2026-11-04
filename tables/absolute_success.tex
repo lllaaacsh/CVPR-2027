@@ -1,0 +1,38 @@
+\begin{table*}[t]
+  \centering
+  \caption{\textbf{Absolute LIBERO success rates for context.}
+  Avg. is recomputed over Spatial/Object/Goal only; LIBERO-Long is omitted for every row.
+  Published rows have different training, sensing and evaluation protocols and are not matched compression baselines.
+  Source links identify the actual result table or release, including secondary reporting where used.
+  Our rows use 500 episodes per suite and the same-cluster native evaluations.
+  The table also includes SmolVLA and Cosmos Policy, which are omitted from the parameter bubble figure.}
+  \label{tab:absolute_success}
+  \small
+  \setlength{\tabcolsep}{6pt}
+  \begin{tabular}{lrrrrl}
+    \toprule
+    Policy & Spatial & Object & Goal & Avg. & Result source \\
+    \midrule
+    OpenVLA & 84.7 & 88.4 & 79.2 & 84.1 & \href{https://arxiv.org/abs/2406.09246}{App. E} \\
+    OpenVLA-OFT & 97.6 & 98.4 & 97.9 & 98.0 & \href{https://arxiv.org/abs/2502.19645}{Tab. I} \\
+    $\pi_0$ & 96.8 & 98.8 & 95.8 & 97.1 & \href{https://arxiv.org/abs/2502.19645}{Tab. I} \\
+    $\pi_{0.5}$ & 98.8 & 98.2 & 98.0 & 98.3 & \href{https://huggingface.co/docs/lerobot/libero}{OpenPI results} \\
+    $\pi_0$-FAST & 96.4 & 96.8 & 88.6 & 93.9 & \href{https://arxiv.org/abs/2502.19645}{Tab. I} \\
+    Octo & 78.9 & 85.7 & 84.6 & 83.1 & \href{https://arxiv.org/abs/2406.09246}{App. E} \\
+    SpatialVLA & 88.2 & 89.9 & 78.6 & 85.6 & \href{https://arxiv.org/abs/2501.15830}{Tab. III} \\
+    CoT-VLA & 87.5 & 91.6 & 87.6 & 88.9 & \href{https://arxiv.org/abs/2503.22020}{LIBERO results} \\
+    UniVLA & 96.5 & 96.8 & 95.6 & 96.3 & \href{https://arxiv.org/abs/2505.06111}{Tab. I} \\
+    NORA-Long & 92.2 & 95.4 & 89.4 & 92.3 & \href{https://arxiv.org/abs/2504.19854}{Tab. 2} \\
+    VLA-RL & 90.2 & 91.8 & 82.2 & 88.1 & \href{https://arxiv.org/abs/2505.18719}{Tab. 1} \\
+    WorldVLA & 87.6 & 96.2 & 83.4 & 89.1 & \href{https://arxiv.org/abs/2506.21539}{Tab. 2} \\
+    SmolVLA (0.45B) & 90.0 & 96.0 & 92.0 & 92.7 & \href{https://arxiv.org/html/2506.01844v1}{Tab. 2} \\
+    SmolVLA (2.25B) & 93.0 & 94.0 & 91.0 & 92.7 & \href{https://arxiv.org/html/2506.01844v1}{Tab. 2} \\
+    Cosmos Policy & 98.1 & 100.0 & 98.2 & 98.8 & \href{https://research.nvidia.com/labs/cosmos-lab/cosmos-policy/}{Author results} \\
+    \midrule
+    mimic-video native & 90.4 & 94.0 & 90.2 & 91.5 & Our evaluation \\
+    mimic-video+ (20\% future) & 88.2 & 94.0 & 89.4 & 90.5 & Our evaluation \\
+    DiT4DiT native & 98.6 & 99.4 & 98.6 & 98.9 & Our evaluation \\
+    DiT4DiT+ (589 tokens) & 98.0 & 100.0 & 98.6 & 98.9 & Our evaluation \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
