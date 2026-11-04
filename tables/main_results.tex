@@ -8,7 +8,6 @@
   Each success rate uses 500 paired LIBERO episodes; Avg. is the mean of the three suites.
   Budgets count future tokens; all 2,400 observation tokens remain.
   Efficiency is measured with Spatial checkpoints on an exclusively allocated H100, batch size 1, including text encoding.
-  Ours uses a folded low-rank adapter and CUDA graphs in the action decoder; native is also graphed.
   Speedup uses the graphed native latency.
   Bold marks the highest completed success-rate point estimate within each budget, without comparing to native.
   $\dagger$ marks ours below native after Holm correction over its nine suite--budget tests.
