@@ -1,12 +1,15 @@
 % Sources: docs/CONTIG_BRIDGE.md sections 6/8;
-% docs/CONTIG_TRANSFER_DEVA_DIT4DIT.md sections 2/2b/3.
+% docs/CONTIG_TRANSFER_DEVA_DIT4DIT.md sections 2/2b/3e.
+% Bridge 11,400: user-confirmed separate-seed/machine run, 2026-11-04; paired CI pending.
 \begin{table*}[t]
   \centering
   \caption{\textbf{Transfer across backbones and benchmarks.}
   Axes name the representations actually coarsened; these rows do not all enable the same operator stages.
   Token reduction is relative to each native sequence.
-  Success rates are percentages; $\Delta$ is ours minus native in percentage points, with unadjusted paired 95\% confidence intervals.
-  Bridge uses 96 paired episodes, DiT4DiT LIBERO 1,500 across three suites, and RoboCasa-GR1 1,200.
+  Success rates are percentages; $\Delta$ is ours minus native in percentage points, with unadjusted paired 95\% confidence intervals where available.
+  Bridge uses 96 episodes per setting; DiT4DiT LIBERO uses 1,500 paired episodes across three suites, and RoboCasa-GR1 1,200.
+  $\ddagger$ marks the Bridge result from a different-seed run on another machine, with its interval pending verification.
+  $\ast$ marks the joint GR1 setting selected after inspecting intermediate results, with one training seed.
   No speedup is inferred from token reduction; DiT4DiT latency remains unmeasured.}
   \label{tab:transfer}
   \footnotesize
@@ -15,7 +18,7 @@
     \toprule
     Backbone / benchmark & Coarsened axes & Tokens (native $\to$ ours) & Removed & Native & Ours & $\Delta$ [95\% CI] \\
     \midrule
-    mimic / Bridge & Future space + time ($F=200$) & 19,200 $\to$ 11,400 & 40.6\% & 47.9 & 50.0 & $2.1$ [$-9.9$, $+7.9$] \\
+    mimic / Bridge$^{\ddagger}$ & Future space + time ($F=200$) & 19,200 $\to$ 11,400 & 40.6\% & 47.9 & 50.0 & $+2.1$ [\TODO{--}] \\
     mimic / Bridge & Future space + time ($F=200$) & 19,200 $\to$ 12,300 & 35.9\% & 47.9 & 43.8 & $-4.2$ [$-13.3$, $+4.9$] \\
     mimic / Bridge & Future space + time ($F=200$) & 19,200 $\to$ 13,200 & 31.3\% & 47.9 & 42.7 & $-5.2$ [$-14.0$, $+3.6$] \\
     \midrule
@@ -24,6 +27,7 @@
     \midrule
     DiT4DiT / RoboCasa-GR1 & Future time & 588 $\to$ 539 & 8.3\% & 54.9 & 56.8 & $+1.8$ [$-0.6$, $+4.3$] \\
     DiT4DiT / RoboCasa-GR1 & Future time & 588 $\to$ 490 & 16.7\% & 54.9 & 55.4 & $+0.5$ [$-2.3$, $+3.3$] \\
+    DiT4DiT / RoboCasa-GR1$^{\ast}$ & Future space + time & 588 $\to$ 466 & 20.7\% & 54.9 & 55.0 & $+0.1$ [$-2.7$, $+2.8$] \\
     \bottomrule
   \end{tabular}
 \end{table*}

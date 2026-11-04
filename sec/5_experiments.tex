@@ -54,9 +54,6 @@ At 10\%, Spatial and Goal fall significantly below native, whereas Object remain
 The corresponding deployed latencies are 404.2, 440.7 and 477.1\,ms, giving $1.74\times$, $1.59\times$ and $1.47\times$ speedups over graphed native.
 At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
 
-Token and tube deletion are internal operator references using the same frozen router and an independently trained adapter for each budget.
-Their gaps are largest on Spatial, while token deletion is much closer on Goal and Object: at 20\%, it reaches 87.2\% and 92.8\%, versus 89.4\% and 94.0\% for ours.
-At 30\% on Goal, tube deletion has the highest point estimate, 91.4\%, versus 90.2\% for ours; their paired difference is not significant ($p=0.48$).
 The pending external reference is a FastV-style early-attention adaptation~\cite{chen2024fastv} to the video backbone.
 It ranks future tokens by the self-attention they receive in block 2, averaged over all visual queries and heads, and retains the exact top-$k$ tokens with their original features and positions.
 This visual self-attention score is an explicit adaptation, rather than a reproduction of the original vision-language model algorithm.
@@ -70,19 +67,21 @@ Native + LoRA uses the full context and the same fresh-adapter training recipe.}
 
 \Cref{tab:transfer} separates the axes actually tested in each setting.
 On SIMPLER-Bridge, we increase the number of full-resolution groups to $F=200$ and report all three budgets.
-They achieve 45, 42 and 41 successes out of 96, versus 46 for native; the differences are statistically indistinguishable at this sample size, with wide confidence intervals.
-The non-monotonic point estimates do not establish that a larger budget is harmful.
+Their success rates are 50.0\%, 43.8\% and 42.7\%, versus 47.9\% for native.
+The 11,400-token point comes from a separate run with a different seed on another machine; its paired uncertainty remains to be verified.
+The other two settings are statistically indistinguishable from native at this sample size, with wide confidence intervals.
+These point estimates do not establish a budget trend, particularly because the lowest-budget point uses a separate run.
 With $F=100$, success is only 20--27 out of 96; supplementary material includes all three failed operating points.
 The Bridge router is trained with pure distillation and a different initialization, so its recipe also differs from Spatial/Goal.
 
 On DiT4DiT~\cite{ma2026dit4dit}, LIBERO has one future slice and therefore tests spatial allocation alone.
 The 589-token setting coarsens only the future; the 442-token setting coarsens both observed and future spatial grids and uses a coarser future grid than the 589-token setting.
 Both are statistically indistinguishable from native in paired evaluation.
-RoboCasa-GR1 instead tests temporal allocation with spatial pooling disabled, reducing 588 tokens to 539 or 490.
-Both settings are statistically indistinguishable from native, but their confidence intervals do not establish equivalence.
-Spatial and temporal transfer are thus demonstrated in different settings; combined GR1 configurations still have lower success-rate point estimates than native and do not establish a joint operating point preserving native performance.
-\TODO{Measure DiT4DiT latency before claiming faster inference.
-The incomplete, post-hoc-selected GR1 f41\_466 configuration is excluded pending complete evaluation and disclosure of its selection.}
+On RoboCasa-GR1, temporal-only allocation reduces 588 tokens to 539 or 490; both settings are statistically indistinguishable from native.
+Joint future-space and temporal allocation reduces the sequence to 466 tokens, a 20.7\% reduction, and achieves 55.0\% success versus 54.9\% for native over 1,200 paired episodes.
+This joint setting is also statistically indistinguishable from native ($p=1.00$; paired difference $+0.08$ points, 95\% CI [$-2.66$,$+2.83$]), which does not establish equivalence.
+It was selected after inspecting intermediate results and evaluated with one training seed, so it is an exploratory follow-up.
+\TODO{Measure DiT4DiT latency before claiming faster inference.}
 
 \subsection{Allocation and Adaptation Ablations}
 \label{sec:exp_ablation}
@@ -112,12 +111,17 @@ The incomplete, post-hoc-selected GR1 f41\_466 configuration is excluded pending
   \label{fig:ground_truth}
 \end{figure*}
 
-\Cref{tab:ablations,fig:operator_ablation} examine the learned allocation and decoder adaptation.
+\Cref{fig:operator_ablation} compares token and tube deletion with our allocation at matched budgets.
+Token and tube deletion are internal operator references using the same frozen router and an independently trained adapter for each budget.
+Their gaps are largest on Spatial, while token deletion is much closer on Goal and Object: at 20\%, it reaches 87.2\% and 92.8\%, versus 89.4\% and 94.0\% for ours.
+At 30\% on Goal, tube deletion has the highest point estimate, 91.4\%, versus 90.2\% for ours; their paired difference is not significant ($p=0.48$).
+The deletion references change spatial support and temporal processing together, so their closed-loop gap does not by itself isolate the value of coarse coverage.
+
+\Cref{tab:ablations} examines the learned allocation and decoder adaptation.
 Reversing the router scores lowers Spatial success by 42.4 and 22.0 percentage points at 10\% and 20\%, even after retraining the adapter for the reversed allocation (Holm-corrected $p\leq6\times10^{-21}$).
 Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the separate full-context LoRA reference remains pending.
 Contiguous temporal positions improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
 Jointly continuing router training yields no detected benefit after correction; supplementary material gives the complete comparisons.
-The deletion references change spatial support and temporal processing together, so their closed-loop gap does not by itself isolate the value of coarse coverage.
 
 \subsection{Action-Relevant Content}
 \label{sec:exp_relevance}

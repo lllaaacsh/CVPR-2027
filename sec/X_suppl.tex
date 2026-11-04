@@ -54,10 +54,17 @@ With 100 full-resolution groups, the three Bridge budgets give 20/96, 24/96 and 
 Their paired differences are $-27.1$ [$-38.1$,$-16.1$], $-22.9$ [$-32.7$,$-13.1$] and $-19.8$ [$-29.6$,$-9.9$] percentage points, with exact McNemar $p=1.3\times10^{-5}$, $2.7\times10^{-5}$ and $3.1\times10^{-4}$, respectively.
 These failed points motivate reporting the entire higher-budget $F=200$ sweep rather than only its best point estimate.
 
-The tested combined spatial/temporal DiT4DiT configurations on GR1 have lower point estimates than native.
-Some differences are not significant: for example, the completed future-space/time 441-token configuration with 41 full-resolution groups reaches 53.2\%, versus 54.9\% for native, a $-1.8$ point difference with interval [$-4.5$,$+1.0$].
-This does not establish a joint configuration preserving native performance, but it also does not show that every combined configuration is significantly worse.
-The 466-token follow-up was selected after inspecting intermediate results; it is not included in the transfer table while incomplete, and any later inclusion must disclose that selection.
+The original $F=200$, 11,400-token run gives 45/96 successes (46.9\%), versus 46/96 for native; its paired difference is $-1.0$ points [95\% CI $-9.9$,$+7.9$], with discordant counts 9/10 and exact McNemar $p=1.00$.
+The 50.0\% point estimate in the transfer table comes from a separate run on another machine with a different seed.
+Its interval and paired comparison remain pending; the original run's interval is not reused for it.
+
+Earlier combined spatial/temporal DiT4DiT configurations on GR1 have lower point estimates than native.
+For example, the future-space/time 441-token configuration with 41 full-resolution groups reaches 53.2\%, versus 54.9\% for native, a $-1.8$ point difference with interval [$-4.5$,$+1.0$].
+The completed 466-token follow-up keeps 41 future $2\times2$ groups at full resolution and merges 74 spatial tubes across time; it removes 48 tokens spatially and 74 temporally while leaving the observation unchanged.
+Its frozen router and 1,500-step decoder adapter yield 660/1,200 successes, versus 659/1,200 for native.
+The paired difference is $+0.08$ points [95\% CI $-2.66$,$+2.83$], with discordant counts 142/141 and exact McNemar $p=1.00$.
+This configuration was selected after inspecting the intermediate 441-token results and uses one training seed.
+It demonstrates simultaneous spatial and temporal allocation in this evaluated setting, but its confidence interval does not establish equivalence to native.
 
 Continuing to train the router jointly with the adapter for 1,500 steps gives the following success rates, in 10\%/20\%/30\% budget order:
 Spatial 72.2/90.8/91.6\%, Goal 76.2/86.2/89.4\%, and Object 91.8/94.4/96.0\%.
