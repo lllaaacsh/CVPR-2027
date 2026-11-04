@@ -57,8 +57,11 @@ At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
 Token and tube deletion are internal operator references using the same frozen router and an independently trained adapter for each budget.
 Their gaps are largest on Spatial, while token deletion is much closer on Goal and Object: at 20\%, it reaches 87.2\% and 92.8\%, versus 89.4\% and 94.0\% for ours.
 At 30\% on Goal, tube deletion has the highest point estimate, 91.4\%, versus 90.2\% for ours; their paired difference is not significant ($p=0.48$).
-\TODO{Complete the external baseline and native + LoRA rows before making cross-method or adaptation-attribution claims.
-CF-Prune~\cite{kim2026cfprune} is the preferred candidate, subject to a documented port to the cascaded mimic-video interface; report its training-free version separately.}
+The pending external reference is a FastV-style early-attention adaptation~\cite{chen2024fastv} to the video backbone.
+It ranks future tokens by the self-attention they receive in block 2, averaged over all visual queries and heads, and retains the exact top-$k$ tokens with their original features and positions.
+This visual self-attention score is an explicit adaptation, rather than a reproduction of the original vision-language model algorithm.
+\TODO{Complete its nine suite--budget evaluations and the three native + LoRA evaluations before making cross-method or adaptation-attribution claims.
+Native + LoRA uses the full context and the same fresh-adapter training recipe.}
 
 \subsection{Transfer across Backbones and Benchmarks}
 \label{sec:exp_transfer}
