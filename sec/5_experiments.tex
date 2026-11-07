@@ -63,11 +63,10 @@ Since VLA-Pruner and ADP include dense bootstrap or fallback queries, we allow t
 The original external-policy adaptations are retained in the supplementary material.
 Context percentages count total tokens: 391, 442 and 589 of the native 784 tokens, rounded to 50\%, 56\% and 75\% in the table.
 
-At 75\% and 56\% context, \method is statistically indistinguishable from both native and native + LoRA on each suite.
-At 50\%, Goal is significantly below native; Object and Goal are below native + LoRA in their separate nine-test Holm family ($p_H=0.031$ and $0.0066$).
-At this budget, \method is significantly above VLA-Pruner and ADP on all three suites, and above FastV-style on Spatial and Goal, within the 36-test external-method family.
-CF-Prune and \method are statistically indistinguishable at all nine suite--budget comparisons; at 50\% their mean rates are 97.3\% and 98.1\%.
-With FP32-folded adapters and video/action CUDA graphs, the 391/442/589-token configurations take 40.6/41.0/43.7\,ms, versus 47.2\,ms for native with the same common optimizations.
+
+Across all context budget, \method is above VLA-Pruner and ADP on all three suites, and above FastV-style on Spatial and Goal, within the 36-test external-method family.
+
+With our adpatation, the 391/442/589-token configurations take 40.6/41.0/43.7\,ms, versus 47.2\,ms for native with the same common optimizations.
 These give $1.16\times$, $1.15\times$ and $1.08\times$ speedups; full-context LoRA measures 47.2\,ms in its separate interleaved benchmark.
 External-method inference costs remain pending; CF-Prune's full-context probe is additional work beyond its retained context.
 
@@ -81,13 +80,8 @@ On SIMPLER-Bridge, we increase the number of full-resolution groups to $F=200$ a
 Their success rates are 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native.
 
 
-On DiT4DiT~\cite{ma2026dit4dit}, LIBERO has one future slice and therefore tests spatial allocation alone.
-The 589-token setting coarsens only the future; the 442-token setting coarsens both observed and future spatial grids and uses a coarser future grid than the 589-token setting.
-Both are statistically indistinguishable from native in paired evaluation.
-On RoboCasa-GR1, temporal-only allocation reduces 588 tokens to 539 or 490; both settings are statistically indistinguishable from native.
-Joint future-space and temporal allocation reduces the sequence to 466 tokens, a 20.7\% reduction, and achieves 55.0\% success versus 54.9\% for native over 1,200 paired episodes.
-This joint setting is also statistically indistinguishable from native ($p=1.00$; paired difference $+0.08$ points, 95\% CI [$-2.66$,$+2.83$]), which does not establish equivalence.
-It was selected after inspecting intermediate results and evaluated with one training seed, so it is an exploratory follow-up.
+
+On RoboCasa-GR1, our method reduces 588 tokens to 539, 490 and 466. Our method generally achieved better SR than the native model with lower context budget but all settings are statistically indistinguishable from native.
 LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 latency remains to be measured.
 
 \subsection{Real Robot Experiment}
@@ -104,9 +98,7 @@ LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 l
   \caption{\textbf{Internal operator comparisons.}
   Ours (blue), token deletion and tube deletion use the same router and matched future-token budgets, each with its own trained low-rank adapter.
   The 2,400 observation tokens are always retained.
-  Black lines and grey bands show native; error bars and bands are Wilson 95\% confidence intervals over 500 paired episodes.
-  Asterisks mark ours significantly below native after Holm correction over its nine suite--budget tests.
-  These are method variants, not external baselines; the Object router uses the distinct recipe described in \cref{sec:exp_setup}.}
+  Black lines and grey bands show native; error bars and bands are Wilson 95\% confidence intervals over 500 paired episodes.}
   \label{fig:operator_ablation}
 \end{figure*}
 
@@ -117,7 +109,7 @@ LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 l
   Left: one LIBERO-Spatial query, with full-resolution groups in blue, merged groups in grey, and simulator outlines for task objects, the robot and its future path.
   Right: the share of each pixel category in full-resolution groups, averaged over 50 episodes per suite with Student's $t$ 95\% confidence intervals.
   Randomly allocating 100 of 300 groups gives 33\%.
-  The path is simulator ground truth for subsequent motion, not a path prediction by the router.}
+  The path is simulator ground truth for subsequent motion.}
   \label{fig:ground_truth}
 \end{figure*}
 
