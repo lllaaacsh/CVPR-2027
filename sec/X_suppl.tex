@@ -37,6 +37,12 @@ Confidence intervals describe paired episode differences, not variation over ind
 All adapter configurations use one training seed.
 The nine mimic-video ours--native comparisons in the main table use a common Holm family; its Object 30\% adjusted $p$-value is 0.250.
 The deletion reference comparisons are separate from that family and do not change the dagger marks.
+\input{tables/native_lora_controls}
+The full-context LoRA controls are statistically indistinguishable from original native on each suite for both backbones (\cref{tab:native_lora_controls}).
+Relative to these adapted references, all 20\%/30\% mimic-video and 75\%/56\% DiT4DiT cells remain statistically indistinguishable; DiT4DiT at 50\% has Object and Goal decreases with Holm-adjusted $p=0.03125$ and $0.00656$ (\cref{tab:ours_native_lora}).
+The DiT4DiT fixed-budget external-method family contains all 36 registered comparisons.
+Mimic-video's completed FastV comparisons retain their separate nine-test family; its 27-/36-test external families await ADP and do not support a combined significance claim yet.
+
 The original Goal/Object ours--deletion analysis uses a post-hoc family of 12 contrasts, as documented with the results.
 
 The timing benchmark uses Spatial checkpoints on an exclusively allocated H100, batch size one, with text encoding included.
@@ -70,8 +76,18 @@ Encoding only the real observed frame reduces this to 2.90 TFLOPs and is shared 
 With this common change, the folded 589/442/391-token configurations use 2.44/2.10/1.98 TFLOPs including VAE; the main table excludes the common 0.67-TFLOP VAE cost.
 The exact eager functions underlying the graphs reproduce the previous FLOPs reference, with maximum relative difference zero across the 20 timed configurations.
 Graph replay changes latency, not arithmetic; folding removes the low-rank branch.
+The separately trained full-context LoRA benchmark uses the same FP32 fold and both graphs: 65.5\,ms live eager, 58.8\,ms folded eager, and 47.0\,ms with both graphs, with 2.229 TFLOPs excluding VAE.
+Its interleaved native anchor is 47.1\,ms in the same job; this second run does not replace the 47.2\,ms anchor used for the original compressed-arm speedups.
+
 The earlier reductions relative to the released path therefore describe arithmetic rather than wall-clock speedup or compression alone.
-\TODO{Numerical equivalence checks for the deployed mimic-video fold/graph configuration and deletion/external-method timing.}
+For mimic-video, the formal full-context LoRA and FastV-style measurements pass the registered fold and graph numerical gates, use 32 calls each, and verify the exact trained-adapter hashes.
+Spatial full-context LoRA uses 98.0 TFLOPs and takes 704.0\,ms; FastV-style uses 37.1/44.0/50.9 TFLOPs and takes 538.2/570.3/607.0\,ms at the three budgets.
+These are fixed-input numerical and timing checks, rather than new closed-loop equivalence evaluations.
+VLA-Pruner and CF-sel. efficiency remains unmeasured.
+For mimic-video VLA-Pruner, the query-weighted mean context lengths are 5,535/7,240/8,788 tokens; the suite-specific means range over [5,468,5,623], [7,148,7,373] and [8,664,8,919], respectively.
+Every episode starts with three dense queries, so these values exceed the compressed-branch targets in the table.
+The two unmeasured Table~\ref{tab:ablations} 30\% controls remain unfilled: reversed allocation with its own adapter, and deployed allocation without LoRA.
+
 
 \section{Original External-Policy Adaptations}
 \label{sec:supp_original_external}
@@ -80,12 +96,12 @@ The earlier reductions relative to the released path therefore describe arithmet
 
 The original VLA-Pruner and ADP adaptations use more context than their compressed-branch targets because of dense calls (\cref{tab:dit4dit_original_external}).
 They therefore do not constitute fixed-context comparisons.
-The main table instead reserves explicit fixed-budget selection ports (FB), with 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 total context tokens.
+The main table instead reports completed explicit fixed-budget selection ports, with 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 total context tokens.
 ADP-sel. removes trajectory-gated dense fallback and tests the text-guided selection component.
 VLA-sel. uses three semantic-only compressed bootstrap queries and scatters their action attention to source positions before maintaining its causal history.
 FastV-style and CF-sel. also select observation tokens at the two lower budgets; their selection scores and source positions remain method-specific.
 CF-sel. retains a paid full-context probe, which must be included in its inference cost.
-All fixed-context ports use a fresh matched decoder adapter; their old-policy success rates are not reused.
+All 36 fixed-context cells use fresh matched decoder adapters and complete 500-episode evaluations; their old-policy success rates are not reused.
 
 \section{Additional Transfer and Router-Training Results}
 \label{sec:supp_transfer}

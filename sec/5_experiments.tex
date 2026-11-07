@@ -51,25 +51,25 @@ At 10\%, Spatial and Goal fall significantly below native, whereas Object remain
 The corresponding deployed latencies are 404.2, 440.7 and 477.1\,ms, giving $1.74\times$, $1.59\times$ and $1.47\times$ speedups over graphed native.
 At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
 
-We compare adaptations of FastV~\cite{chen2024fastv}, VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp} and CF-Prune~\cite{kim2026cfprune} at the same early selection point, each with a fresh decoder LoRA.
+We compare adaptations of FastV~\cite{chen2024fastv}, VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp} and CF-Prune~\cite{kim2026cfprune}, each with a fresh decoder LoRA.
 FastV-style ranks tokens by received visual self-attention; VLA-Pruner combines semantic scores with historical action attention; ADP gates text-guided selection using robot motion; CF-sel. combines instruction and action attention without the original phase gate.
-For DiT4DiT, the initial VLA-Pruner and ADP adaptations exceed their nominal context budgets because of dense warm starts and dense queries; their results are retained in the supplementary material.
-The main table reserves fixed-budget selection ports (FB), including compressed VLA bootstrap queries and ADP selection without dense fallback, with the same observed/future token quotas as ours.
-CF-sel. additionally requires a full-context probe per query, whose cost remains to be measured.
-Pending cells and external inference costs remain explicitly marked.
-Native + LoRA uses the full context and the same fresh-adapter training recipe.
-For DiT4DiT, this control uses one adapter trained on \texttt{libero\_all} for 1,500 steps, followed by 500 paired episodes per suite at the full 784-token context.
-\TODO{Complete the DiT4DiT full-context LoRA control and its folded, graphed deployment measurements; assess the compressed configurations against this additional reference.}
+On mimic-video, the FastV-style, VLA-Pruner and CF-sel. evaluations are complete; ADP evaluations remain pending.
+At the 20\% compressed-branch target, their mean success rates are 15.3\%, 87.7\% and 86.3\%, respectively, compared with 90.5\% for \method.
+VLA-Pruner uses three dense bootstrap queries per episode, so its measured token means exceed the compressed target; these calls and the paid full-context CF-sel. probe must be charged in their pending inference costs.
+The full-context LoRA control averages 91.5\%; \method at 20\% and 30\% remains statistically indistinguishable from this additional reference on every suite.
 
-\Cref{tab:main_dit4dit} adds the same external methods on DiT4DiT~\cite{ma2026dit4dit}, with 500 paired episodes per suite and one adapter per budget trained jointly across the three suites.
-Its 589-token configuration coarsens future space; 442 and 391 tokens also coarsen observed space.
-DiT4DiT context percentages count total tokens: 75.1\%, 56.4\% and 49.9\% of native.
-The fixed-budget ports also select observation tokens at the two lower budgets.
-\TODO{Complete the 36 paired suite--budget evaluations of the four explicitly adapted fixed-budget selection ports.}
+\Cref{tab:main_dit4dit} reports all 36 external-method cells on DiT4DiT~\cite{ma2026dit4dit}, each with 500 paired episodes and one adapter per method and budget trained on \texttt{libero\_all}.
+Its external rows are explicit fixed-budget selection ports: VLA-sel. uses compressed bootstrap queries and ADP-sel. removes the dense fallback, with the same token quotas as ours.
+The original external-policy adaptations are retained in the supplementary material.
+Context percentages count total tokens: 589, 442 and 391 of the native 784 tokens, rounded to 75\%, 56\% and 50\% in the table.
 LIBERO has only one future latent slice on this backbone, so this comparison tests spatial allocation.
-At 589 and 442 tokens, ours is statistically indistinguishable from native on each suite; at 391 tokens, Goal is significantly below native after correction.
-With actual FP32-folded adapters and CUDA graphs for both the video and action networks, the 589/442/391-token configurations take 43.7/41.0/40.6\,ms, versus 47.2\,ms for native with the same common optimizations.
-These give $1.08\times$, $1.15\times$ and $1.16\times$ speedups; supplementary material gives the numerical checks and deployment breakdown.
+At 75\% and 56\% context, \method is statistically indistinguishable from both native and native + LoRA on each suite.
+At 50\%, Goal is significantly below native; Object and Goal are below native + LoRA in their separate nine-test Holm family ($p_H=0.031$ and $0.0066$).
+At this budget, \method is significantly above VLA-sel. and ADP-sel. on all three suites, and above FastV-style on Spatial and Goal, within the 36-test external-method family.
+CF-sel. and \method are statistically indistinguishable at all nine suite--budget comparisons; at 50\% their mean rates are 97.8\% and 97.3\%.
+With FP32-folded adapters and video/action CUDA graphs, the 589/442/391-token configurations take 43.7/41.0/40.6\,ms, versus 47.2\,ms for native with the same common optimizations.
+These give $1.08\times$, $1.15\times$ and $1.16\times$ speedups; full-context LoRA measures 47.0\,ms in its separate interleaved benchmark.
+External-method inference costs remain pending; CF-sel.'s full-context probe is additional work beyond its retained context.
 
 \subsection{Transfer across Backbones and Benchmarks}
 \label{sec:exp_transfer}
@@ -130,7 +130,7 @@ The deletion references change spatial support and temporal processing together,
 
 \Cref{tab:ablations} examines the learned allocation and decoder adaptation.
 Reversing the router scores lowers Spatial success by 42.4 and 22.0 percentage points at 10\% and 20\%, even after retraining the adapter for the reversed allocation (Holm-corrected $p\leq6\times10^{-21}$).
-Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the separate full-context LoRA reference remains pending.
+Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the full-context LoRA control is reported separately in \cref{tab:main_results}.
 Contiguous temporal positions improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
 Jointly continuing router training yields no detected benefit after correction; supplementary material gives the complete comparisons.
 

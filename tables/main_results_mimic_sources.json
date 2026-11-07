@@ -1,0 +1,4313 @@
+{
+  "checked_date": "2026-11-07",
+  "source": "mimic-video-repro/eval/analysis/results/completed_table_audit_20261107/mimic/mimic_verified_complete_cells.json",
+  "source_sha256": "7950989a1782ead4d9c7dc83ded8c2efb88a907d177c2cb779470da1561c672f",
+  "interim_readout_amendment": "docs/PAPER_COMPLETED_CELL_READOUT_2026-11-07.md",
+  "verified": {
+    "readout_protocol": "docs/PAPER_COMPLETED_CELL_READOUT_2026-11-07.md",
+    "audit_time": 1794062041.4534314,
+    "original_global_campaign_complete": false,
+    "complete_cells": 39,
+    "rows": {
+      "native_lora/goal/r100": {
+        "episodes": 500,
+        "successes": 449,
+        "success_rate_pct": 89.8,
+        "per_task_successes": [
+          50,
+          48,
+          47,
+          39,
+          48,
+          47,
+          40,
+          45,
+          50,
+          35
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111011111111110111111111111111101111111111111101111111101111111111101111111110100111011110111001111110011111111110111011111110111111111111111111111111111111111111111111111111101001111111111111111111111111111111111111110010101111111111111011111111110111011101111101110111111111110110011111111111011111111111111111111101111111111111111111111111111111111111111111111111111111110111101100001000010000111110111111111111111",
+        "budget": {
+          "fixed_context_tokens": 19200,
+          "query_audit_available": false
+        },
+        "training_job": "48476524_2",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476524_goal_native_lora_r100_seed0",
+        "recipe_sha256": "4cb4b533f4dafb04b58918ce8ad1ff25571f24d1492ac47a4175e2a264839742",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/goal_native_lora_r100/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "native_lora/object/r100": {
+        "episodes": 500,
+        "successes": 466,
+        "success_rate_pct": 93.2,
+        "per_task_successes": [
+          46,
+          49,
+          49,
+          36,
+          49,
+          37,
+          50,
+          50,
+          50,
+          50
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "01011111110111011111111111111111111111111111111111111111111101111111111111111111111111111111111111111111111111111111111111111111111101111111111111111110110111111111011011110010110001110111011011111101111111111111111111111111111111111111111011111111111110101111111011111110111011111010111010101011110011111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+        "budget": {
+          "fixed_context_tokens": 19200,
+          "query_audit_available": false
+        },
+        "training_job": "48576966_1",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476524_object_native_lora_r100_seed0",
+        "recipe_sha256": "06b6894216b1ac90b58970da1a4551b6de22dfe7a11f1ab8d398ffd6d332a4d4",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/object_native_lora_r100/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "native_lora/spatial/r100": {
+        "episodes": 500,
+        "successes": 458,
+        "success_rate_pct": 91.6,
+        "per_task_successes": [
+          47,
+          46,
+          50,
+          49,
+          36,
+          39,
+          48,
+          48,
+          49,
+          46
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11011111111110111111111111111111111111111111111011111111111110111111111111010011111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111110111101111111111111111110010100010111111110100101110101101011010111100000011111101111111111111111111111110111111110111111111111111111111111111111111111111011111111110111111111111111111111111111111111111111111111111111111111111111111101111111111111111111110111111111111111111111011111011111101111111111111",
+        "budget": {
+          "fixed_context_tokens": 19200,
+          "query_audit_available": false
+        },
+        "training_job": "48476524_0",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476524_spatial_native_lora_r100_seed0",
+        "recipe_sha256": "5550746fbee942d8b869dff08bf07e94d1c5bf0f261e90dc055101fa70c141a8",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476524/spatial_native_lora_r100/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/goal/r10": {
+        "episodes": 500,
+        "successes": 10,
+        "success_rate_pct": 2.0,
+        "per_task_successes": [
+          0,
+          0,
+          0,
+          1,
+          8,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000010100001100000000000001100100000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000",
+        "budget": {
+          "fixed_context_tokens": 4080,
+          "query_audit_available": false
+        },
+        "training_job": "48476793_9",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_goal_early_attention_r10_seed0",
+        "recipe_sha256": "09c2aa562489bf0d111a9528c5f5677284a1110cb37f8875b6566c7131ba666a",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r10/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/goal/r20": {
+        "episodes": 500,
+        "successes": 58,
+        "success_rate_pct": 11.6,
+        "per_task_successes": [
+          9,
+          20,
+          0,
+          1,
+          25,
+          0,
+          0,
+          1,
+          2,
+          0
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "10000000000110001100000010000000100000000101000000010000100001110100000110100110110000000011001111100000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000100010101011101111100110001001000110110000101111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000100100000000000000000000000000000000000000000000000000000000000000000",
+        "budget": {
+          "fixed_context_tokens": 5760,
+          "query_audit_available": false
+        },
+        "training_job": "48476793_10",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_goal_early_attention_r20_seed0",
+        "recipe_sha256": "eefa1baa707c0690b132cfd3c81c2b1edbde9e7bf41b58baacbf89b777a26408",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r20/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/goal/r30": {
+        "episodes": 500,
+        "successes": 126,
+        "success_rate_pct": 25.2,
+        "per_task_successes": [
+          24,
+          43,
+          2,
+          5,
+          30,
+          1,
+          1,
+          14,
+          2,
+          4
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "01000010000001010101001001011011010101100111110111111011101110111101111111111111101111110111111101110000000000000000000000000000000000000000100001000000000010000000000000010000110000001000000000000000101110001101111110111100011001110111100001100110100000000000000000000000000000000000000000000000000100000001000000000000000000000000000000000000000000000001000010000010001110110001000000000000101110100001001000000000000000000000000000000000000000000010000000000000000000100010000000000001000000000000",
+        "budget": {
+          "fixed_context_tokens": 7440,
+          "query_audit_available": false
+        },
+        "training_job": "48476793_11",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_goal_early_attention_r30_seed0",
+        "recipe_sha256": "a525999d0cd7ae122172cd0922e8a22d7241b6b3c83845974667175a7b293939",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/goal_early_attention_r30/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/object/r10": {
+        "episodes": 500,
+        "successes": 25,
+        "success_rate_pct": 5.0,
+        "per_task_successes": [
+          3,
+          0,
+          0,
+          0,
+          1,
+          1,
+          15,
+          1,
+          4,
+          0
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "00000000000001000000010000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000001000000000000000000000000000000000000000001101001010001010000000100000100110101000010001000000000000000000000000000000000000000000000010000000000000000000001000000000100000001000010000000000000000000000000000000000000000000000000000000000",
+        "budget": {
+          "fixed_context_tokens": 4080,
+          "query_audit_available": false
+        },
+        "training_job": "48476793_6",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_object_early_attention_r10_seed0",
+        "recipe_sha256": "19542bc8a057ff7074116c3f3130fc1fc96ef286afbf30ae00c646b61dd10844",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r10/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/object/r20": {
+        "episodes": 500,
+        "successes": 38,
+        "success_rate_pct": 7.6,
+        "per_task_successes": [
+          6,
+          0,
+          0,
+          0,
+          2,
+          1,
+          15,
+          4,
+          9,
+          1
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "00000000000101000000010000000100001000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000110000000000000000000000000000000000000000000010000000000011101001010001010000100100000000100101000010001000000000000011000000000000000100100000000000000000010000000000100001000110000000000001110000000010000000000000000000000000000000000010000000000000000",
+        "budget": {
+          "fixed_context_tokens": 5760,
+          "query_audit_available": false
+        },
+        "training_job": "48476793_7",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_object_early_attention_r20_seed0",
+        "recipe_sha256": "615c079e1c22df4480132805a3aa9a52f3bf840997945007e9baec85899bea99",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r20/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/object/r30": {
+        "episodes": 500,
+        "successes": 58,
+        "success_rate_pct": 11.6,
+        "per_task_successes": [
+          3,
+          3,
+          5,
+          7,
+          2,
+          14,
+          4,
+          4,
+          3,
+          13
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "00000000000001000000010000000000000000000000000001000010001000000000000000000000000000000010000000000000100000000000000000100001000000000110000000000000000000000001010000000100000000000101000011000000000000000000001000000000000000000000000000000010000000000000001100001000101111100000001001001100001000000000000010001000000000000000000000000000010001000000000000001000000001000000000010000000010000000000010000000100000000000000000000000010000000000001010000010011000001000010010000011100000000100010",
+        "budget": {
+          "fixed_context_tokens": 7440,
+          "query_audit_available": false
+        },
+        "training_job": "48476793_8",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_object_early_attention_r30_seed0",
+        "recipe_sha256": "ef7edb63d8d4254b84db29b17e38669e152f05be9e2e58ab65fc12563b6bfcac",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/object_early_attention_r30/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/spatial/r10": {
+        "episodes": 500,
+        "successes": 11,
+        "success_rate_pct": 2.2,
+        "per_task_successes": [
+          2,
+          2,
+          1,
+          4,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "10000000000010000000000000000000000000000000000000000000000000000010000001000000000000000000000000000000000000000000000001000000000000000000000000000000000100000000000000100000000000000001000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "budget": {
+          "fixed_context_tokens": 4080,
+          "query_audit_available": false
+        },
+        "training_job": "48476793_3",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_spatial_early_attention_r10_seed0",
+        "recipe_sha256": "a731a6126644328a00ce97cd906622bec8bcfdd39ebce02ba3bb64320afb40b8",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r10/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/spatial/r20": {
+        "episodes": 500,
+        "successes": 133,
+        "success_rate_pct": 26.6,
+        "per_task_successes": [
+          29,
+          21,
+          0,
+          23,
+          0,
+          22,
+          0,
+          7,
+          30,
+          1
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11010000101110011001111101101110011001011011101001011011000000100110000001000101110001101011010001110000000000000000000000000000000000000000000000000011100011110001010001111011001110000101010000100100000000000000000000000000000000000000000000000000000101000010111110010010011110110000000001010100011100000000000000000000000000000000000000000000000000000000000000000000000000100000000101100000010010100111011110011011010011101001000110100111111011101000000000000000000000000000000001000000000000000000",
+        "budget": {
+          "fixed_context_tokens": 5760,
+          "query_audit_available": false
+        },
+        "training_job": "48476793_4",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_spatial_early_attention_r20_seed0",
+        "recipe_sha256": "6308c1c26b5cc0d3f218b21ae1a9afd0bde958030efc768477ca1cd47ed499e9",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r20/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "early_attention/spatial/r30": {
+        "episodes": 500,
+        "successes": 215,
+        "success_rate_pct": 43.0,
+        "per_task_successes": [
+          45,
+          31,
+          14,
+          37,
+          2,
+          19,
+          3,
+          20,
+          41,
+          3
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11011110111111111110111111111111111111110111111011101111000111111010100101000111111000101100111011110001000001100001101101010000001001010000000000110011011010110111111111011101101110111111101111000101000000100000000000000000000000010000000000000000001010010010011110010000100000111001010000010101010000000000000000010000000000000000000100010000000000010001100100100000000000010001110101100011011011111101111111111111111111101011101110111101111011001100000000000000000000000000000001000000100010000000",
+        "budget": {
+          "fixed_context_tokens": 7440,
+          "query_audit_available": false
+        },
+        "training_job": "48576967_5",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_spatial_early_attention_r30_seed0",
+        "recipe_sha256": "c8418605afb0deda770916096e0ec293b57330edbc7a1bbb2afff25b63a58943",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_baseline_n500_train48476793/spatial_early_attention_r30/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/goal/r10": {
+        "episodes": 500,
+        "successes": 370,
+        "success_rate_pct": 74.0,
+        "per_task_successes": [
+          40,
+          49,
+          46,
+          38,
+          46,
+          23,
+          17,
+          48,
+          46,
+          17
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "10111101111011111111011101011001101111110111111111111111111111111111111111111111111101111111111111111111101110111101111111111011111111111111111111111111110111111101110001011110110101011101110111111111010111110111111101111111111111111111111111111111110011110101100100000011100100101100000011001101111000010001110000111000010010110010010000100100001010111111011111111111111111111111011111111111111111111111111111111111111011011111110111111111101111111110000011000000000000111010011000100111000100101001",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 16335,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 5468.429752066116,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.09182736455463725,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_6",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_goal_vla_pruner_r10_seed0",
+        "recipe_sha256": "6b1971547c69ab9905e7206711ada2c72088dd215de5cd15616460b2e598df0a",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r10/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/goal/r20": {
+        "episodes": 500,
+        "successes": 429,
+        "success_rate_pct": 85.8,
+        "per_task_successes": [
+          44,
+          50,
+          45,
+          39,
+          48,
+          41,
+          27,
+          49,
+          49,
+          37
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111011111111101111111101101111111111101110111111111111111111111111111111111111111111111111111111111111111101110101111111101111111111101111111110100100101111111011111111110101111111111111101101111111111111111111111111011111111011111111111111110111111110111101111111111111110001111110011111111010010101110111111001011010110110010001001100001110111111111111110111111111111111111111111111111111111111110111111111111111111111111111111111111111111111011111010111010010110111111110111111100110111101",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 13856,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 7214.965357967668,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.10825635103926101,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_7",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_goal_vla_pruner_r20_seed0",
+        "recipe_sha256": "af5cc4cbe68afca6c8117ddee228c435d4aa1e6695519e36b5cdca1c31b3e302",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r20/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/goal/r30": {
+        "episodes": 500,
+        "successes": 452,
+        "success_rate_pct": 90.4,
+        "per_task_successes": [
+          45,
+          48,
+          46,
+          37,
+          48,
+          48,
+          39,
+          49,
+          49,
+          43
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111111111111111111011011101111111111101110111111101111111111111111111111111110111111111111111111111111111101111111111111100111111111101111111110110101100101111001011011001011111111111111111111111111111111111111111110111111011111111111111111111111111111111111111111011111110111111111111111111110010101111111111111011111111110111011101110101101111111111110111111111111111111111111111111111111111111111111101111111111111111111111111111111111111111111111111111001111010111100011111111111111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 12904,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 8807.017978921265,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.11624302541847487,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_8",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_goal_vla_pruner_r30_seed0",
+        "recipe_sha256": "8579126df5c3af825c6c7ddb866fbd3803e5a20978d6c5a2f6953ed401bd5c18",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/goal_vla_pruner_r30/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/object/r10": {
+        "episodes": 500,
+        "successes": 468,
+        "success_rate_pct": 93.6,
+        "per_task_successes": [
+          44,
+          44,
+          48,
+          38,
+          49,
+          50,
+          50,
+          48,
+          49,
+          48
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111110111001111111110111011111111111111101111011111111101111111111111011111111101111101111111011101111111111111111111111111111111111101111111111110111111101101100111111110110001111111111111011100111111111110111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111101011111111111111111111111111111111111111111110111111111111111111111111111111101111111111111111111111101111111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 14699,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 5622.9621062657325,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.10204775835090818,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_3",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_object_vla_pruner_r10_seed0",
+        "recipe_sha256": "c63398dd2fbcbb3ef36bd6faef2e66823b947ac37a6cd1c97b536f7b7685492f",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r10/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/object/r20": {
+        "episodes": 500,
+        "successes": 467,
+        "success_rate_pct": 93.4,
+        "per_task_successes": [
+          45,
+          49,
+          48,
+          36,
+          48,
+          47,
+          49,
+          48,
+          49,
+          48
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "01111111110111101111111111111111110111111111111101111111111111111111111111111111111111111111111111011111111110111111111111111111111101111111111111111110001111101111011111111110100001101111111011111100111111111110111111011111111111111111111111111111111111111110111111111110111011111111111111111111111111111111111111111111111110111111111111111111111111110111111111111011111111111111111111111111111111111111111111111111111111111111110111111111111111111111110111111111111111111111111111111111111111101111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 14520,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 7148.429752066116,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.10330578512396693,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_4",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_object_vla_pruner_r20_seed0",
+        "recipe_sha256": "a73a048d766e278098f18265edce0b60155e4e867ec9a0c6025285b60b9c3d63",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r20/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/object/r30": {
+        "episodes": 500,
+        "successes": 470,
+        "success_rate_pct": 94.0,
+        "per_task_successes": [
+          46,
+          46,
+          47,
+          37,
+          49,
+          49,
+          50,
+          47,
+          50,
+          49
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111100111111111111111111011111111111111101111011111111101111111111111101111111111111111111111011111101111111111110111111111111101111111111111111111010011101111011111110110101001011111111011111101111111111110111111111111111111111111111111111111111111111101111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111100111111111111111111111111111111111011111111111111111111111111111111111111111111111111111111111111111110111111111111111111111111111111111111111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 14415,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 8663.72528616025,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.10405827263267431,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_5",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_object_vla_pruner_r30_seed0",
+        "recipe_sha256": "5ca5eb8108f0a721d2c7d1ef005a89ff5a5a363f1c2d11ad4cf0d1265fd46862",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/object_vla_pruner_r30/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/spatial/r10": {
+        "episodes": 500,
+        "successes": 282,
+        "success_rate_pct": 56.4,
+        "per_task_successes": [
+          36,
+          32,
+          38,
+          39,
+          9,
+          26,
+          30,
+          16,
+          31,
+          25
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11010011110000011111011110111111111111011111101001111111111110010011010110000001111000100011111111111111011010111111110111111110100111111001010111011111010101110111101011111110011111110111111111110011000000101010100000010001000000000100000100001000001111011100010101001110101001110010011000010100110110011010010011010010111001000011011111111111001111000011000010000001100001000101000100100011101001011101111111010000010001001001101111101111110011011100111001001111000100101000000111110111110010100110",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 15726,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 5522.1976344906525,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.095383441434567,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_0",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_spatial_vla_pruner_r10_seed0",
+        "recipe_sha256": "80f1789b6f7ddb0e537347d273a1928521db4e9c7fbe2d483a621054cdac4a40",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r10/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/spatial/r20": {
+        "episodes": 500,
+        "successes": 419,
+        "success_rate_pct": 83.8,
+        "per_task_successes": [
+          46,
+          39,
+          47,
+          47,
+          30,
+          40,
+          45,
+          45,
+          40,
+          40
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11011111111110111111111111111111101111111111111011101111111111001011010111011001110111111101111111111111111011111111011111111111111111111111111111110111011111111111111111111111111111111111111111110101101011110111111110010010100110101110110101101010001111011011011101101111101110111101101111111111110111111111010110111111011111011111111111111111111111011011011110111111111110111111111111111111111111111111111111111011111011011001101110101111111011011110111101111111101111111001110011111110110111110111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 12501,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 7372.6709863210945,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.11999040076793854,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_1",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_spatial_vla_pruner_r20_seed0",
+        "recipe_sha256": "299483d0bf93b157446c910e2f300e8fa517348524b661b28ddaed6f5e5c0ad2",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r20/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "vla_pruner/spatial/r30": {
+        "episodes": 500,
+        "successes": 449,
+        "success_rate_pct": 89.8,
+        "per_task_successes": [
+          48,
+          44,
+          48,
+          49,
+          35,
+          41,
+          46,
+          47,
+          47,
+          44
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11011111111111111111111111111111111111111111111011111111111111101111110111011011111111111111111011101111111111111111011111011111111111111111111111111111111111111111111111111111111111111111111111110111101111111111111111110000101010111110010101101110101101111010011101011111101101111101111111111111111111101111111110111111111111011111111011111111111111011111111010111111111111111111111111111111111111111111111111111111111011111101101111111111111111111111111110111111101101111111111011111111111111010111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 11926,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 8919.121247694115,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 19200,
+          "dense_fraction": 0.12577561630051992,
+          "full_context_probe_fraction": 0.0,
+          "mean_video_passes": 1.0,
+          "mean_action_sampler_passes": 1.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532171_2",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532171_spatial_vla_pruner_r30_seed0",
+        "recipe_sha256": "c16b20861c26b1bb289beccd12daaa5d8e44dde5657aedb4dfe8fc02635763e9",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532171/spatial_vla_pruner_r30/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/goal/r10": {
+        "episodes": 500,
+        "successes": 378,
+        "success_rate_pct": 75.6,
+        "per_task_successes": [
+          41,
+          48,
+          46,
+          34,
+          49,
+          46,
+          17,
+          45,
+          47,
+          5
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "10111111111011111111110000011011101111111111111111111111111111111111111111111111011101111111111111111111111111111111111111111111111111101111110111100101100101101101111111111111100001111011100111100101111111111111111111111111111111111111111111111111010111111111111111111111110111111111101101111111111100010001110001111000000011100000110001000000001110111111111111110111111111101011011111111110111111111111111111111111001110111111111111111111111111111100000000000000000000101000001110000000000000000000",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 15796,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 4080.0,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 4080,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_6",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_goal_cf_selection_r10_seed0",
+        "recipe_sha256": "ab4d692d97fa822124a4ef879eabbc40a5fbe87783e77829908ccfe675fca7ea",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/goal/r20": {
+        "episodes": 500,
+        "successes": 437,
+        "success_rate_pct": 87.4,
+        "per_task_successes": [
+          45,
+          47,
+          49,
+          38,
+          50,
+          46,
+          31,
+          45,
+          49,
+          37
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111001111111111111110101101111111111111111110111111111111111111111111111011110111111111111111111111111111111111101111111111111111111111111111101110101100101111111010011111111101111111111011101111111111111111111111111111111111111111111111111110111111111001101111111111111111111111111111111111110010101111101111000010110111010111101100101001111111111111111110111111110101011011111111111111111111111111111111111111110111111111111111111111111111111111111000101011110110110101010101111101111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 13566,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 5760.0,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 5760,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_7",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_goal_cf_selection_r20_seed0",
+        "recipe_sha256": "dc691fae4a1f249280ec670d1db582163a1beb12cabff09cfc5e20f466f9c392",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/goal/r30": {
+        "episodes": 500,
+        "successes": 445,
+        "success_rate_pct": 89.0,
+        "per_task_successes": [
+          47,
+          50,
+          47,
+          34,
+          48,
+          47,
+          33,
+          47,
+          50,
+          42
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111111111111111111111011111111111111101110111111111111111111111111111111111111111111111111111111111111111111110111111111111111111110111110111101100110110101101011111010001011101111111111011101111111111111110111111111011111111111111111111111110111111111101011111111111111111111111111111111111110010101110101111101011110110010111101100101101111111111111110111111111110111011111111111111111111111111111111111111111111111111111111111111111111111111111111111111101101010111100011101111111111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 13129,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 7440.0,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 7440,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_8",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_goal_cf_selection_r30_seed0",
+        "recipe_sha256": "a42639ece507f9c7f62fd5a1a3e525ca8f5971fc97029da347d2959014e96149",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/object/r10": {
+        "episodes": 500,
+        "successes": 404,
+        "success_rate_pct": 80.8,
+        "per_task_successes": [
+          41,
+          29,
+          48,
+          33,
+          28,
+          46,
+          47,
+          37,
+          50,
+          45
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11101111110111001001111111111111110111111101011111110111011101001010101011111010101111000100011010010111111111111111111111111111111111111101111111111100111111111101101110111110111000110011000111011100011000010111101111011110111010001000000011111100111101111111111111111111111111111101011011111111111101111111101111111111111111111011111111111111111111101111111101111101100111011110110110011101011111101111111111111111111111111111111111111111111111111111111111111101111111110111011111111111111111101101",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 16746,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 4080.0,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 4080,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_3",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_object_cf_selection_r10_seed0",
+        "recipe_sha256": "ec1e2d1e64d35ef10cdd57a91b90fab2d613eee52e0e9f3d206839f6395a1cca",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/object/r20": {
+        "episodes": 500,
+        "successes": 467,
+        "success_rate_pct": 93.4,
+        "per_task_successes": [
+          48,
+          48,
+          50,
+          36,
+          47,
+          48,
+          50,
+          42,
+          50,
+          48
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111111111111111111111011111111111101111111111111111101111111111111111111111111111111111111011111111111111111111111111111111111111111111111111110010111111111011111110110101001101111011011111100110011111111111111111111111111111111111111111011111111111101111111111111111111111111111111111111101111111111111111111111111111111111111111111111111111001111111111110101101111111111111111011111111110101111111111111111111111111111111111111111111111111111111111111111111111111101111111111111110111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 14460,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 5760.0,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 5760,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_4",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_object_cf_selection_r20_seed0",
+        "recipe_sha256": "43209c0df9ade4f9c96b369a413cda1cf7930b67f5d1198845a5daf35147fbb8",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/object/r30": {
+        "episodes": 500,
+        "successes": 467,
+        "success_rate_pct": 93.4,
+        "per_task_successes": [
+          47,
+          50,
+          49,
+          34,
+          46,
+          45,
+          49,
+          48,
+          50,
+          49
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111111011111111111111111100111111111111111111111111111111111111111111111111111111111111111111111111110111111111111111111111111111111111111111110010111111111001111110110100000111111011011111100110011111111111111111111111111111111111011011111111110111101111111110110111111111111111111101111111110111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111110101111111111111111111111111111111111111111111111111111111111111111111111111111111011111111111111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 14404,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 7440.0,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 7440,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_5",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_object_cf_selection_r30_seed0",
+        "recipe_sha256": "b3bb4e9088be6b875dd02a4c6af5008a5029be2d6f981da85ac996f564f91fe5",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/spatial/r10": {
+        "episodes": 500,
+        "successes": 187,
+        "success_rate_pct": 37.4,
+        "per_task_successes": [
+          33,
+          28,
+          13,
+          44,
+          5,
+          16,
+          3,
+          4,
+          29,
+          12
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11011110110110110001110100110101111110110011111001001111010110001111000111000001011000101111110110110001001000000100100001010001110000110000010000001011111111111111001111111111111101101111010111111111000000000000110000010000000000000100000100000000001011000000010001001010100100000100001010000100011100000000000000000000000000000100000000000001000100000000000000000000000000000000000001100100001000001101111110010010010011101100001111101111100011001000001000000010000100001101101001000000100010000010",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 18098,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 4080.0,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 4080,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_0",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_spatial_cf_selection_r10_seed0",
+        "recipe_sha256": "23d8f59b010862a0669a89e5178e4aee2ed9e73b00851b8c21be844ae19bde55",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/spatial/r20": {
+        "episodes": 500,
+        "successes": 390,
+        "success_rate_pct": 78.0,
+        "per_task_successes": [
+          46,
+          42,
+          47,
+          48,
+          26,
+          40,
+          42,
+          15,
+          47,
+          37
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11011111111110111111111111111101111111111111111011011111111111111011110110010111110111111110111111111111011111111111111001111111111111111111111111111111111111110111111111111111110111111111111111111111101011001100111101110000100100111100110110001010101110111011111101100111111011111100111100111111111111111111011010111110111111011011011111111101111111000011100010000000110010001000001000000101011001101111111111111111111111101111101111101111111111111111111110101111100111101011100011011110111111100111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 13199,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 5760.0,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 5760,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_1",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_spatial_cf_selection_r20_seed0",
+        "recipe_sha256": "42949fbf674b34c17fdb55fbbcb6952d8be006636caf90e91a8f53b1029a7c9f",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection/spatial/r30": {
+        "episodes": 500,
+        "successes": 428,
+        "success_rate_pct": 85.6,
+        "per_task_successes": [
+          49,
+          40,
+          46,
+          48,
+          34,
+          34,
+          43,
+          47,
+          47,
+          40
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111110111111111111111111111111111111111111101111111111111011110001010011011111111111111111101111111111111111011111011110111111111111101111111111111110111111111111111111111111111111111111111101101110110111111101110000101010111110110111011010111011010011011100001111101011111000111100111111111110111111011110110110111111011111011111111111111111011111111111101111111111111111111101111111111111111111111111111111111011111111101110111111111111111110111111111111101101111001101011111111011111110101",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 12345,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 7440.0,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 7440,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_2",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_spatial_cf_selection_r30_seed0",
+        "recipe_sha256": "808d10118214113c77bf10ce4086b69b3e11add389875092e936d6d5feff053a",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/lora/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/goal/r10": {
+        "episodes": 500,
+        "successes": 358,
+        "success_rate_pct": 71.6,
+        "per_task_successes": [
+          40,
+          48,
+          41,
+          33,
+          49,
+          43,
+          11,
+          43,
+          42,
+          8
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "10111111111011110111100101110011101111111011111111111101111111111111011111111111111111111111111111111101111101111111111111100111111111110101110111100100110011101101110111111101110110110011101111100001111111101111111111111111111111111111111111111111111111111100111111101111111111111111101101101110111100000001110000010100000010010000110000000100000100111111111110110111111110101011011111111110111111111110110011111111001110111111111111111111010111111100100000000000000000101001001100001000000000001000",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 17176,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 4080.0,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 4080,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_6",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_goal_cf_selection_r10_seed0",
+        "recipe_sha256": "ab4d692d97fa822124a4ef879eabbc40a5fbe87783e77829908ccfe675fca7ea",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r10/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/goal/r20": {
+        "episodes": 500,
+        "successes": 426,
+        "success_rate_pct": 85.2,
+        "per_task_successes": [
+          43,
+          49,
+          47,
+          37,
+          49,
+          45,
+          26,
+          42,
+          50,
+          38
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11110111111011111111110111001111101111111111101111111111111111111111011111111111111111111111111111111110111111111111111111111111111111111111110111101100110111101101111101111110110111111011101111100101111111111111111111111111111111111111101111111111110111111100011111111111111111111111111111111111011110010001110101111101000010110010111001100100001111111111111110110111111110101010011111111110111111111111111111111111111111111111111111111111111111111111111111101100011110111111000110111111001111101111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 14230,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 5760.0,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 5760,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_7",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_goal_cf_selection_r20_seed0",
+        "recipe_sha256": "dc691fae4a1f249280ec670d1db582163a1beb12cabff09cfc5e20f466f9c392",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r20/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/goal/r30": {
+        "episodes": 500,
+        "successes": 450,
+        "success_rate_pct": 90.0,
+        "per_task_successes": [
+          46,
+          49,
+          49,
+          40,
+          50,
+          41,
+          36,
+          47,
+          50,
+          42
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111111111111111111101011101111111111101111111111111111111111111111111111011111111111111111111111111111111111111111111111111111111111111111011101110101100101111111111111001111101111111111111101111111111111111111111111111111111111111111111111110111111100001101101111111111111101111111111011111110110101110101111101011110111010111001111101101111111111111110111111111110111011111111111111111111111111111111111111111111111111111111111111111111111111111111101111001110110110100111111111111111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 13209,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 7440.0,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 7440,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_8",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_goal_cf_selection_r30_seed0",
+        "recipe_sha256": "a42639ece507f9c7f62fd5a1a3e525ca8f5971fc97029da347d2959014e96149",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/goal_cf_selection_r30/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/object/r10": {
+        "episodes": 500,
+        "successes": 341,
+        "success_rate_pct": 68.2,
+        "per_task_successes": [
+          47,
+          10,
+          24,
+          15,
+          40,
+          35,
+          48,
+          37,
+          47,
+          38
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111110111111011111111111111101111111111111111010001000000000101101001010000000001100000000000001001100100110101100011100101001111100000110100110011100111100000000000010100000000001011010000010100010001111111101111011110111011111111111011111111101110010101001100111001111111110001110111111111101111111111111111111111111111111101110111111111111111011111111111111100101001011011111111010101110111101111111111111110011111111111110111111111111111111111111111001101010011110111101110011111111101111101",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 19640,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 4080.0,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 4080,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_3",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_object_cf_selection_r10_seed0",
+        "recipe_sha256": "ec1e2d1e64d35ef10cdd57a91b90fab2d613eee52e0e9f3d206839f6395a1cca",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r10/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/object/r20": {
+        "episodes": 500,
+        "successes": 430,
+        "success_rate_pct": 86.0,
+        "per_task_successes": [
+          49,
+          46,
+          45,
+          18,
+          44,
+          42,
+          49,
+          45,
+          49,
+          43
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111111111111111111111111111111111111101111111111101111111101111111111111101111111111111111011101101111111110111111111110111111111111111111111000010111000110001000110000010000001011001011010100110011111100111111111111111111111111111111011011111111111101111111101011101111111011101011111111111010111111111111111111111111111111111111111111111111101111111111110011101111111111111111011111111111111111111111111111111111111111110111111111111111111110111111110111001111111111111111111101010111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 15794,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 5760.0,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 5760,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_4",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_object_cf_selection_r20_seed0",
+        "recipe_sha256": "43209c0df9ade4f9c96b369a413cda1cf7930b67f5d1198845a5daf35147fbb8",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r20/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/object/r30": {
+        "episodes": 500,
+        "successes": 452,
+        "success_rate_pct": 90.4,
+        "per_task_successes": [
+          49,
+          48,
+          46,
+          27,
+          45,
+          43,
+          50,
+          48,
+          49,
+          47
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111111111111111111111111111111111111101111111111111111111111111111011111111111111111111111011101101011111110111111111111111111111111111111111100110111101111001000010100110000101111011011011100110011111111111111111111111111111111111011011011111111100101111011111011111111101111111011111111111111111111111111111111111111111111111111111111111111111111111111110111111111111111111111111111111111101111111111111111111111111111110111111111111111111111111111110111111111111111111111111111010111111111",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 14868,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 7440.0,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 7440,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_5",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_object_cf_selection_r30_seed0",
+        "recipe_sha256": "b3bb4e9088be6b875dd02a4c6af5008a5029be2d6f981da85ac996f564f91fe5",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/object_cf_selection_r30/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/spatial/r10": {
+        "episodes": 500,
+        "successes": 155,
+        "success_rate_pct": 31.0,
+        "per_task_successes": [
+          41,
+          11,
+          19,
+          41,
+          3,
+          12,
+          0,
+          0,
+          28,
+          0
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11011111111110111111010111111111111100100111111011100001100100010001000000010000000000001101010000000001001110010111100001000011100100000010011000101011110101110111011111111111111101111101110101111011000010001000000000000000000000100000000000000000001000010001010010001000100000100000011000000000011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000110111111101000101001011001001110010101101001011100000000000000000000000000000000000000000000000000",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 18511,
+          "target_compressed_context_tokens": 4080,
+          "mean_final_context_tokens": 4080.0,
+          "min_final_context_tokens": 4080,
+          "max_final_context_tokens": 4080,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_0",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_spatial_cf_selection_r10_seed0",
+        "recipe_sha256": "23d8f59b010862a0669a89e5178e4aee2ed9e73b00851b8c21be844ae19bde55",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r10/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/spatial/r20": {
+        "episodes": 500,
+        "successes": 338,
+        "success_rate_pct": 67.6,
+        "per_task_successes": [
+          46,
+          38,
+          47,
+          47,
+          18,
+          41,
+          35,
+          4,
+          45,
+          17
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11111111111110111111111111111010111111111111111011111011111110101110100111110001111011111111110011111111011111111111101111111111111111111110111111111111111110111111111111111111111110111111111011111111001010101100101100010000000000110100110110001000101011111011011101101111101011111101111101111111111110101010111010110110110011011111011101110111011111100100000100000000000000000000000000000001000000001111111111111111110110101111101111111111111111011100111000001010000100001101000101010000100110100100",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 13938,
+          "target_compressed_context_tokens": 5760,
+          "mean_final_context_tokens": 5760.0,
+          "min_final_context_tokens": 5760,
+          "max_final_context_tokens": 5760,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_1",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_spatial_cf_selection_r20_seed0",
+        "recipe_sha256": "42949fbf674b34c17fdb55fbbcb6952d8be006636caf90e91a8f53b1029a7c9f",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r20/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      },
+      "cf_selection_only/spatial/r30": {
+        "episodes": 500,
+        "successes": 412,
+        "success_rate_pct": 82.4,
+        "per_task_successes": [
+          49,
+          40,
+          47,
+          46,
+          28,
+          36,
+          45,
+          40,
+          49,
+          32
+        ],
+        "missing_episode_ids": [],
+        "extra_episode_ids": [],
+        "complete": true,
+        "outcomes_1_based": "11011111111111111111111111111111111111111111111111111111111111101011100101010011111111101101111111111111111011111111111011011111111111111111111111111111111111110011111111111111110111111111111111110111101011111110111101010000100010111110110100001010101011111011110101001111101011111000101101111111011110101111111111111110111111111111011111111101111111011111100100110011111101011011111111111111111111111111111111111111111111111111111111111111111111011101111110101110010111001000101101010111111111100101",
+        "budget": {
+          "query_audit_available": true,
+          "queries": 12387,
+          "target_compressed_context_tokens": 7440,
+          "mean_final_context_tokens": 7440.0,
+          "min_final_context_tokens": 7440,
+          "max_final_context_tokens": 7440,
+          "dense_fraction": 0.0,
+          "full_context_probe_fraction": 1.0,
+          "mean_video_passes": 2.0,
+          "mean_action_sampler_passes": 2.0,
+          "exclusive_latency_ms": null,
+          "tflops": null,
+          "cost_note": "CF full-context probe and VLA warm-start/ADP dense branches must be counted; query audit wall time is not a benchmark"
+        },
+        "training_job": "48532247_2",
+        "training_dir": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_external_48532247_spatial_cf_selection_r30_seed0",
+        "recipe_sha256": "808d10118214113c77bf10ce4086b69b3e11add389875092e936d6d5feff053a",
+        "shards": [
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard0",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard1",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard2",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard3",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard4",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard5",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard6",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard7",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard8",
+            "episodes": 50
+          },
+          {
+            "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/libero/paper_external_n500_train48532247/spatial_cf_selection_r30/selection_only/shard9",
+            "episodes": 50
+          }
+        ]
+      }
+    },
+    "pending": {
+      "adp": {
+        "adp/spatial/r10": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_0"
+        },
+        "adp/spatial/r20": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_1"
+        },
+        "adp/spatial/r30": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_2"
+        },
+        "adp/object/r10": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_3"
+        },
+        "adp/object/r20": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_4"
+        },
+        "adp/object/r30": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_5"
+        },
+        "adp/goal/r10": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_6"
+        },
+        "adp/goal/r20": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_7"
+        },
+        "adp/goal/r30": {
+          "training_verified": false,
+          "verified_shards": 0,
+          "training_job": "48578361_8"
+        }
+      }
+    },
+    "families": {
+      "native_lora_vs_native3": {
+        "spatial": {
+          "n": 500,
+          "a_success": 458,
+          "b_success": 452,
+          "a_only": 27,
+          "b_only": 21,
+          "delta_pp": 1.2,
+          "ci95_pp": [
+            -1.5138180101104786,
+            3.9138180101104787
+          ],
+          "p_exact_mcnemar": 0.4708790136217118,
+          "p_holm": 1.0,
+          "significant_holm_005": false
+        },
+        "object": {
+          "n": 500,
+          "a_success": 466,
+          "b_success": 470,
+          "a_only": 4,
+          "b_only": 8,
+          "delta_pp": -0.8,
+          "ci95_pp": [
+            -2.1561160540307753,
+            0.556116054030775
+          ],
+          "p_exact_mcnemar": 0.3876953125,
+          "p_holm": 1.0,
+          "significant_holm_005": false
+        },
+        "goal": {
+          "n": 500,
+          "a_success": 449,
+          "b_success": 451,
+          "a_only": 13,
+          "b_only": 15,
+          "delta_pp": -0.4,
+          "ci95_pp": [
+            -2.473972682558765,
+            1.673972682558765
+          ],
+          "p_exact_mcnemar": 0.8505540192127228,
+          "p_holm": 1.0,
+          "significant_holm_005": false
+        }
+      },
+      "ours_vs_native_lora9": {
+        "spatial/r10": {
+          "n": 500,
+          "a_success": 354,
+          "b_success": 458,
+          "a_only": 17,
+          "b_only": 121,
+          "delta_pp": -20.8,
+          "ci95_pp": [
+            -25.028660822529986,
+            -16.571339177470012
+          ],
+          "p_exact_mcnemar": 1.5997210060647713e-20,
+          "p_holm": 1.4397489054582942e-19,
+          "significant_holm_005": true
+        },
+        "spatial/r20": {
+          "n": 500,
+          "a_success": 441,
+          "b_success": 458,
+          "a_only": 22,
+          "b_only": 39,
+          "delta_pp": -3.4000000000000004,
+          "ci95_pp": [
+            -6.447078306837552,
+            -0.3529216931624491
+          ],
+          "p_exact_mcnemar": 0.03961701489849968,
+          "p_holm": 0.2377020893909981,
+          "significant_holm_005": false
+        },
+        "spatial/r30": {
+          "n": 500,
+          "a_success": 460,
+          "b_success": 458,
+          "a_only": 26,
+          "b_only": 24,
+          "delta_pp": 0.4,
+          "ci95_pp": [
+            -2.371636824694029,
+            3.171636824694029
+          ],
+          "p_exact_mcnemar": 0.887724827340783,
+          "p_holm": 1.0,
+          "significant_holm_005": false
+        },
+        "object/r10": {
+          "n": 500,
+          "a_success": 469,
+          "b_success": 466,
+          "a_only": 26,
+          "b_only": 23,
+          "delta_pp": 0.6,
+          "ci95_pp": [
+            -2.1434959537057825,
+            3.3434959537057822
+          ],
+          "p_exact_mcnemar": 0.7754496546815659,
+          "p_holm": 1.0,
+          "significant_holm_005": false
+        },
+        "object/r20": {
+          "n": 500,
+          "a_success": 470,
+          "b_success": 466,
+          "a_only": 21,
+          "b_only": 17,
+          "delta_pp": 0.8,
+          "ci95_pp": [
+            -1.6154326221196895,
+            3.215432622119689
+          ],
+          "p_exact_mcnemar": 0.6271025701571489,
+          "p_holm": 1.0,
+          "significant_holm_005": false
+        },
+        "object/r30": {
+          "n": 500,
+          "a_success": 482,
+          "b_success": 466,
+          "a_only": 25,
+          "b_only": 9,
+          "delta_pp": 3.2,
+          "ci95_pp": [
+            0.9315423671578085,
+            5.468457632842191
+          ],
+          "p_exact_mcnemar": 0.00904118549078703,
+          "p_holm": 0.0632882984355092,
+          "significant_holm_005": false
+        },
+        "goal/r10": {
+          "n": 500,
+          "a_success": 374,
+          "b_success": 449,
+          "a_only": 28,
+          "b_only": 103,
+          "delta_pp": -15.0,
+          "ci95_pp": [
+            -19.2896694511349,
+            -10.710330548865098
+          ],
+          "p_exact_mcnemar": 2.804580306101638e-11,
+          "p_holm": 2.2436642448813104e-10,
+          "significant_holm_005": true
+        },
+        "goal/r20": {
+          "n": 500,
+          "a_success": 447,
+          "b_success": 449,
+          "a_only": 33,
+          "b_only": 35,
+          "delta_pp": -0.4,
+          "ci95_pp": [
+            -3.632324656961303,
+            2.8323246569613025
+          ],
+          "p_exact_mcnemar": 0.9035973456835125,
+          "p_holm": 1.0,
+          "significant_holm_005": false
+        },
+        "goal/r30": {
+          "n": 500,
+          "a_success": 451,
+          "b_success": 449,
+          "a_only": 28,
+          "b_only": 26,
+          "delta_pp": 0.4,
+          "ci95_pp": [
+            -2.480386551836402,
+            3.280386551836402
+          ],
+          "p_exact_mcnemar": 0.8919231511047494,
+          "p_holm": 1.0,
+          "significant_holm_005": false
+        }
+      },
+      "ours_vs_fastv9": {
+        "spatial/r10": {
+          "n": 500,
+          "a_success": 354,
+          "b_success": 11,
+          "a_only": 344,
+          "b_only": 1,
+          "delta_pp": 68.60000000000001,
+          "ci95_pp": [
+            64.49424207630308,
+            72.70575792369692
+          ],
+          "p_exact_mcnemar": 9.655118100187186e-102,
+          "p_holm": 3.8620472400748745e-101,
+          "significant_holm_005": true
+        },
+        "spatial/r20": {
+          "n": 500,
+          "a_success": 441,
+          "b_success": 133,
+          "a_only": 315,
+          "b_only": 7,
+          "delta_pp": 61.6,
+          "ci95_pp": [
+            57.091625059070616,
+            66.10837494092938
+          ],
+          "p_exact_mcnemar": 1.5962917475325213e-83,
+          "p_holm": 3.1925834950650427e-83,
+          "significant_holm_005": true
+        },
+        "spatial/r30": {
+          "n": 500,
+          "a_success": 460,
+          "b_success": 215,
+          "a_only": 252,
+          "b_only": 7,
+          "delta_pp": 49.0,
+          "ci95_pp": [
+            44.37921945987477,
+            53.620780540125224
+          ],
+          "p_exact_mcnemar": 3.1735986139834963e-65,
+          "p_holm": 3.1735986139834963e-65,
+          "significant_holm_005": true
+        },
+        "object/r10": {
+          "n": 500,
+          "a_success": 469,
+          "b_success": 25,
+          "a_only": 445,
+          "b_only": 1,
+          "delta_pp": 88.8,
+          "ci95_pp": [
+            85.98065053744662,
+            91.61934946255337
+          ],
+          "p_exact_mcnemar": 4.9199359919431494e-132,
+          "p_holm": 4.4279423927488345e-131,
+          "significant_holm_005": true
+        },
+        "object/r20": {
+          "n": 500,
+          "a_success": 470,
+          "b_success": 38,
+          "a_only": 433,
+          "b_only": 1,
+          "delta_pp": 86.4,
+          "ci95_pp": [
+            83.34461208223898,
+            89.45538791776102
+          ],
+          "p_exact_mcnemar": 1.9611062982113257e-128,
+          "p_holm": 1.5688850385690606e-127,
+          "significant_holm_005": true
+        },
+        "object/r30": {
+          "n": 500,
+          "a_success": 482,
+          "b_success": 58,
+          "a_only": 427,
+          "b_only": 3,
+          "delta_pp": 84.8,
+          "ci95_pp": [
+            81.50981437119424,
+            88.09018562880576
+          ],
+          "p_exact_mcnemar": 9.558676266486855e-123,
+          "p_holm": 6.691073386540798e-122,
+          "significant_holm_005": true
+        },
+        "goal/r10": {
+          "n": 500,
+          "a_success": 374,
+          "b_success": 10,
+          "a_only": 365,
+          "b_only": 1,
+          "delta_pp": 72.8,
+          "ci95_pp": [
+            68.86029273777861,
+            76.73970726222139
+          ],
+          "p_exact_mcnemar": 4.883347691509348e-108,
+          "p_holm": 2.441673845754674e-107,
+          "significant_holm_005": true
+        },
+        "goal/r20": {
+          "n": 500,
+          "a_success": 447,
+          "b_success": 58,
+          "a_only": 392,
+          "b_only": 3,
+          "delta_pp": 77.8,
+          "ci95_pp": [
+            74.03275966893537,
+            81.56724033106464
+          ],
+          "p_exact_mcnemar": 2.5458669572560794e-112,
+          "p_holm": 1.5275201743536477e-111,
+          "significant_holm_005": true
+        },
+        "goal/r30": {
+          "n": 500,
+          "a_success": 451,
+          "b_success": 126,
+          "a_only": 332,
+          "b_only": 7,
+          "delta_pp": 65.0,
+          "ci95_pp": [
+            60.56935941426074,
+            69.43064058573927
+          ],
+          "p_exact_mcnemar": 1.749644095499712e-88,
+          "p_holm": 5.248932286499136e-88,
+          "significant_holm_005": true
+        }
+      }
+    },
+    "latencies": [
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48476828/goal_native_lora_r100.json",
+        "sha256": "6876c78af97c482ce21b292238d65073d6392f54121e93504f81a898b710814f",
+        "job": "48476828",
+        "name": "goal_native_lora_r100",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 705.8185359928757,
+        "folded_tflops": 97.95700428708,
+        "native_graph_ms": 716.2397999782115,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 19200,
+          "adapted_graph": 19200,
+          "folded_eager": 19200,
+          "folded_graph": 19200
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.00390625,
+            "mean_abs": 0.0007191725890152156,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476524_goal_native_lora_r100_seed0/action_lora_step001500.pt",
+        "lora_sha256": "1600a9fab421044535ed0cb4c3da8a5c63f83edcdeb959c1ed7159578d131de4"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48476828/object_native_lora_r100.json",
+        "sha256": "409171a7739bdd8e65508d4020b8b0ecbad988cd19c6a2d0398cec219220fbb7",
+        "job": "48577662",
+        "name": "object_native_lora_r100",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 703.6991494242102,
+        "folded_tflops": 97.95700428708,
+        "native_graph_ms": 703.8030899129808,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 19200,
+          "adapted_graph": 19200,
+          "folded_eager": 19200,
+          "folded_graph": 19200
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0078125,
+            "mean_abs": 0.0007927688420750201,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476524_object_native_lora_r100_seed0/action_lora_step001500.pt",
+        "lora_sha256": "788cf965a0e2984809a2552ed68620dbb0533b661ba3bc1a96ee5b2b5990608d"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48476828/spatial_native_lora_r100.json",
+        "sha256": "4337ab6d1330c4c8ad60fd210494045235a2559020ec0793756ef2bae7f89cd5",
+        "job": "48577661",
+        "name": "spatial_native_lora_r100",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 704.0353654883802,
+        "folded_tflops": 97.95700428708,
+        "native_graph_ms": 704.2832071892917,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 19200,
+          "adapted_graph": 19200,
+          "folded_eager": 19200,
+          "folded_graph": 19200
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0078125,
+            "mean_abs": 0.0008335590828210115,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476524_spatial_native_lora_r100_seed0/action_lora_step001500.pt",
+        "lora_sha256": "0a21f70e84627c2bcc9fd527f05895a2367ce481ea5fdbadf829bd1f4bf2eeed"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48578362/spatial_early_attention_r10.json",
+        "sha256": "423ec4cb32db3e4ce864898e6b52a53b869f66251cbd9256adf78a31b95e4e40",
+        "job": "48578362",
+        "name": "spatial_early_attention_r10",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 538.2068217732012,
+        "folded_tflops": 37.06376327076,
+        "native_graph_ms": 707.2093558963388,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 4080,
+          "adapted_graph": 4080,
+          "folded_eager": 4080,
+          "folded_graph": 4080
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0078125,
+            "mean_abs": 0.0008810564177110791,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_spatial_early_attention_r10_seed0/action_lora_step001500.pt",
+        "lora_sha256": "4aa7a6ace43c3be7674f811c0b13f5d85e6f67eb31b0bb6db7e1af18f74d742e"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48578363/spatial_early_attention_r20.json",
+        "sha256": "a1efe9ebddb7b1e9201874081c48c456b5deee203b0cb178d8bf3eee037518f3",
+        "job": "48578363",
+        "name": "spatial_early_attention_r20",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 570.2799689024687,
+        "folded_tflops": 43.99745109924,
+        "native_graph_ms": 705.9022588655353,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 5760,
+          "adapted_graph": 5760,
+          "folded_eager": 5760,
+          "folded_graph": 5760
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.01171875,
+            "mean_abs": 0.0009126182412728667,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_spatial_early_attention_r20_seed0/action_lora_step001500.pt",
+        "lora_sha256": "7a628059e67373708ae275d46b60788604a6f161dd3e89076e0dc85a1defce67"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48578364/object_early_attention_r10.json",
+        "sha256": "2e262583d6c4a9548d183f43fe7eb3fabacd49cca990ffdc2121d563136d04ac",
+        "job": "48578364",
+        "name": "object_early_attention_r10",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 536.1052078660578,
+        "folded_tflops": 37.06376327076,
+        "native_graph_ms": 703.3281604526564,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 4080,
+          "adapted_graph": 4080,
+          "folded_eager": 4080,
+          "folded_graph": 4080
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0078125,
+            "mean_abs": 0.0007104699034243822,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_object_early_attention_r10_seed0/action_lora_step001500.pt",
+        "lora_sha256": "382d0142fae540c4161b8a489a459ae965ca793a753b575634eda8f1fcc6f355"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48578365/object_early_attention_r20.json",
+        "sha256": "f14115757a24d4362f31502def83eb840c096bab5485c45ccf725849aff3ec78",
+        "job": "48578365",
+        "name": "object_early_attention_r20",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 570.1831424375996,
+        "folded_tflops": 43.99745109924,
+        "native_graph_ms": 703.7548570660874,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 5760,
+          "adapted_graph": 5760,
+          "folded_eager": 5760,
+          "folded_graph": 5760
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0078125,
+            "mean_abs": 0.0007447465322911739,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_object_early_attention_r20_seed0/action_lora_step001500.pt",
+        "lora_sha256": "625c11388777b271be8cb5a27a03178354a12b085e44d92e06195317d595e67f"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48578366/object_early_attention_r30.json",
+        "sha256": "c60b8a4ab65a6c7f2f31247ef8cbffdf061fed43d516d1163d0d74d5bbcf3fc2",
+        "job": "48578366",
+        "name": "object_early_attention_r30",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 606.0078993905336,
+        "folded_tflops": 50.93113892772,
+        "native_graph_ms": 702.554258517921,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 7440,
+          "adapted_graph": 7440,
+          "folded_eager": 7440,
+          "folded_graph": 7440
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0078125,
+            "mean_abs": 0.0007747539202682674,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_object_early_attention_r30_seed0/action_lora_step001500.pt",
+        "lora_sha256": "8b38e3c36121501352312c71b4a33eddf0c5eab5cfb0edd24c967c0228141900"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48578367/goal_early_attention_r10.json",
+        "sha256": "33914ce59c0a11745af1dbf0ed4aec29d3e24a17e58f12b81dcf6b5465554693",
+        "job": "48578367",
+        "name": "goal_early_attention_r10",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 537.0020431000739,
+        "folded_tflops": 37.06376327076,
+        "native_graph_ms": 705.0472749397159,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 4080,
+          "adapted_graph": 4080,
+          "folded_eager": 4080,
+          "folded_graph": 4080
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.00390625,
+            "mean_abs": 0.0007354061235673726,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_goal_early_attention_r10_seed0/action_lora_step001500.pt",
+        "lora_sha256": "4b64a2213c5c1067daf022bd95270f877f0ea7adec95af40cb2f8dc760e8a924"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48578368/goal_early_attention_r20.json",
+        "sha256": "3bc268580792d0adc61127812fb5bd79b1b0c822832aa6d667649105fc6375f8",
+        "job": "48578368",
+        "name": "goal_early_attention_r20",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 571.3344984687865,
+        "folded_tflops": 43.99745109924,
+        "native_graph_ms": 700.8215188980103,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 5760,
+          "adapted_graph": 5760,
+          "folded_eager": 5760,
+          "folded_graph": 5760
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0048828125,
+            "mean_abs": 0.0006922539323568344,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_goal_early_attention_r20_seed0/action_lora_step001500.pt",
+        "lora_sha256": "3fc2b0565e16cc83284cb1bf7ef1f7af5e5afe5897ae7e7f567050e6bc852811"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48578369/goal_early_attention_r30.json",
+        "sha256": "d6cfb29d5b5435914cf5a6d256fd19170b524728b0bf1e18b5e275ebdf0f81cb",
+        "job": "48578369",
+        "name": "goal_early_attention_r30",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 607.9847437795252,
+        "folded_tflops": 50.93113892772,
+        "native_graph_ms": 706.8862665910274,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 7440,
+          "adapted_graph": 7440,
+          "folded_eager": 7440,
+          "folded_graph": 7440
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0078125,
+            "mean_abs": 0.0007513968157581985,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_goal_early_attention_r30_seed0/action_lora_step001500.pt",
+        "lora_sha256": "0c70eb55da6d83ed8af7db35b2d1405b20926a7ae984ac0e6e408b1d261f00a5"
+      },
+      {
+        "path": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/eval/analysis/results/paper_latency_48611072/spatial_early_attention_r30.json",
+        "sha256": "68ef0b79da4bdcbd6cd618b625b69ae81a979079c1e7ce7e6412e9ab372e137c",
+        "job": "48611072",
+        "name": "spatial_early_attention_r30",
+        "valid_timing": true,
+        "valid_numerical": true,
+        "n": 32,
+        "folded_graph_ms": 606.9690817967057,
+        "folded_tflops": 50.93113892772,
+        "native_graph_ms": 702.0559695083648,
+        "contexts": {
+          "native_eager": 19200,
+          "native_graph": 19200,
+          "native_graph_replica": 19200,
+          "adapted_eager": 7440,
+          "adapted_graph": 7440,
+          "folded_eager": 7440,
+          "folded_graph": 7440
+        },
+        "numerical_checks": {
+          "native_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "adapted_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "folded_graph": {
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "atol": 1e-06,
+            "rtol": 1e-05,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          },
+          "fold": {
+            "max_abs": 0.0078125,
+            "mean_abs": 0.000699504220392555,
+            "atol": 0.01,
+            "rtol": 0.01,
+            "allclose": true,
+            "shape": [
+              1,
+              60,
+              10
+            ]
+          }
+        },
+        "args_lora": "/gpfs/projects/ehpc870/yazhe/mimic-video-repro/model/scripts/video_router/_action_lora_out/paper_baseline_48476793_spatial_early_attention_r30_seed0/action_lora_step001500.pt",
+        "lora_sha256": "30ad6d6e4481d6e081eefde29107fc6b45b2a99a0368efd5d8e783b4b3d0739c"
+      }
+    ],
+    "latency_accounting": "48476828_18|COMPLETED|0:0\n48476828_19|COMPLETED|0:0\n48476828_20|COMPLETED|0:0\n48578362_21|COMPLETED|0:0\n48578363_22|COMPLETED|0:0\n48578364_24|COMPLETED|0:0\n48578365_25|COMPLETED|0:0\n48578366_26|COMPLETED|0:0\n48578367_27|COMPLETED|0:0\n48578368_28|COMPLETED|0:0\n48578369_29|COMPLETED|0:0\n48611072_23|COMPLETED|0:0\n",
+    "ablations": {
+      "relevance_e1_deployed_native_n500_manual": [
+        "adaptive_r20"
+      ],
+      "relevance_e1_deployed_native_n500_47660108": [
+        "adaptive_r10",
+        "adaptive_r20"
+      ],
+      "relevance_e1_invert_lora_n500_47660106": [
+        "adaptive_r10",
+        "adaptive_r20"
+      ]
+    },
+    "incomplete_external_families": "Holm-27 and Holm-36 deferred until ADP complete"
+  },
+  "vla_query_weighted_tokens_all_suites": {
+    "10": 5535.0898203592815,
+    "20": 7239.560633118869,
+    "30": 8788.452032106
+  },
+  "main_table_efficiency": "Spatial checkpoints; actual folded weights + action graph; formal 32-call exclusive-H100 measurements; original native/ours anchor preserved",
+  "no_combined_external_significance": "ADP missing; no completed mimic Holm-27/36 family claimed"
+}

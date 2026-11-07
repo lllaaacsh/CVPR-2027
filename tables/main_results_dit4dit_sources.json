@@ -641,7 +641,7 @@
   "latency_sha256": "105b2a883587a8f4498e315e49afd3782efb95d4ee138c333c79e6f27904beb8",
   "checked_date": "2026-11-07",
   "table_latency_mode": "Actual native-FP32 merged LoRA, cached geometry, current-router video and action CUDA graphs; same common optimizations on native; numerical gates passed, no new closed-loop success-rate evaluation",
-  "table_token_aggregation": "mean of per-episode mean context lengths over all three suites; dense calls included; CF probe is additional and excluded from retained context length",
+  "table_token_aggregation": "Exact action-generating context at every query: 589, 442 or 391 for all displayed fixed-budget ports; no dense fallback. CF paid 784-token probes are additional work, excluded from retained context and pending separate costs.",
   "latency_rows": [
     {
       "arm": "native",
@@ -913,7 +913,14 @@
       "ext_adp_k197",
       "ext_adp_k50"
     ],
-    "pending_fixed_context_rows": {
+    "legacy_records": "Earlier dynamic-policy records retained for appendix/audit; current main-table values use fixed_context_completed.results.",
+    "context_percent_denominators": {
+      "mimic": "16800 future tokens",
+      "dit4dit": "784 total tokens"
+    },
+    "confirmed_protocol_choice": "Per-call fixed-context selection ports, explicitly adapted names; FB suffix removed by Overleaf presentation edit; all 36 complete paired evaluations independently revalidated.",
+    "registration": "mimic docs/DIT4DIT_FIXED_CONTEXT_PREREG_2026-11-07.md",
+    "original_pending_fixed_context_rows": {
       "589": [
         "fastv",
         "vla_pruner",
@@ -933,13 +940,8 @@
         "cf_selection"
       ]
     },
-    "legacy_records": "Retained below for audit only; not success rates for pending fixed-context ports.",
-    "context_percent_denominators": {
-      "mimic": "16800 future tokens",
-      "dit4dit": "784 total tokens"
-    },
-    "confirmed_protocol_choice": "Per-call fixed-context selection ports, explicit FB names; legacy policies retained in supplementary table; new results need their own complete paired evaluations.",
-    "registration": "mimic docs/DIT4DIT_FIXED_CONTEXT_PREREG_2026-11-07.md"
+    "pending_fixed_context_rows": {},
+    "completed_fixed_context_cells": 36
   },
   "previous_latency_48567881": {
     "latency_source": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/latency_table1/formal_48567881/latency.json",
@@ -1173,7 +1175,7 @@
     }
   },
   "native_lora_control": {
-    "status": "pending; no accuracy or efficiency values filled",
+    "status": "complete: training, 1500 paired episodes and formal deployment all passed",
     "protocol": "dit4dit-native-lora-2026-11-07-v1",
     "preregistration": "mimic-video-repro/docs/DIT4DIT_NATIVE_LORA_PREREG_2026-11-07.md",
     "training": "one libero_all adapter; 1500 optimizer steps; accumulation 8; rank 16 alpha 8; validation every 500 steps, 240 batches",
@@ -1188,6 +1190,2598 @@
     "controller_job": 48678717,
     "source_manifest_sha256": "a52c129c71473f14a1d1830c3aa534951238aeaca369626ed04a471e9b76d4c6",
     "bsc_output_root": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107",
-    "reference_note": "Keep original native and its significance family. New tests use Holm-3 (native+LoRA vs native) and Holm-9 (ours vs native+LoRA)."
-  }
+    "reference_note": "Keep original native and its significance family. New tests use Holm-3 (native+LoRA vs native) and Holm-9 (ours vs native+LoRA).",
+    "formal_training_job": 48678829,
+    "evaluation_jobs": [
+      48683431,
+      48683432,
+      48683433
+    ],
+    "formal_benchmark_job": 48688100,
+    "results_vs_native": [
+      {
+        "suite": "libero_spatial",
+        "method": "native_lora",
+        "reference": "native",
+        "n": 500,
+        "successes": 490,
+        "reference_successes": 493,
+        "difference_pp": -0.6,
+        "paired_ci95_pp": [
+          -1.6,
+          0.4
+        ],
+        "discordant": [
+          2,
+          5
+        ],
+        "exact_p": 0.453125,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_spatial/job48683431/episodes_native_lora_libero_spatial.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_base_libero_spatial.csv",
+        "sha256": "6aa26d7d447f532b6c8da29b735f1af452c09ce33a2b4c13db853d5254084ddd",
+        "reference_sha256": "2916dab3b054fd605567cc7f8be88fa458bf178baf70a704ff8f5643de7ae5bc",
+        "holm_p": 0.90625,
+        "holm_family_size": 3
+      },
+      {
+        "suite": "libero_object",
+        "method": "native_lora",
+        "reference": "native",
+        "n": 500,
+        "successes": 500,
+        "reference_successes": 497,
+        "difference_pp": 0.6,
+        "paired_ci95_pp": [
+          0.0,
+          1.4
+        ],
+        "discordant": [
+          3,
+          0
+        ],
+        "exact_p": 0.25,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_object/job48683432/episodes_native_lora_libero_object.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_base_libero_object.csv",
+        "sha256": "fe970d26d4026ff3bb56392620f25b60478320ccc3420ba20b8d8adde234e5fe",
+        "reference_sha256": "877fd811fa814790bbb179dc9b2dbaa358310b0790a105b635727737573debde",
+        "holm_p": 0.75,
+        "holm_family_size": 3
+      },
+      {
+        "suite": "libero_goal",
+        "method": "native_lora",
+        "reference": "native",
+        "n": 500,
+        "successes": 493,
+        "reference_successes": 493,
+        "difference_pp": 0.0,
+        "paired_ci95_pp": [
+          -0.8,
+          0.8
+        ],
+        "discordant": [
+          2,
+          2
+        ],
+        "exact_p": 1.0,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_goal/job48683433/episodes_native_lora_libero_goal.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_base_libero_goal.csv",
+        "sha256": "afad62be512ee7eae9175dc7c9bdbd5dd146831d93ebe79e8dcc6ad88f385536",
+        "reference_sha256": "ad2a641b22a2dad76eb34d91ab4531ff0f7abfdfaa5ee028427b7a509653c59a",
+        "holm_p": 1.0,
+        "holm_family_size": 3
+      }
+    ],
+    "ours_vs_native_lora": [
+      {
+        "suite": "libero_spatial",
+        "method": "ours",
+        "context": 589,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 490,
+        "reference_successes": 490,
+        "difference_pp": 0.0,
+        "paired_ci95_pp": [
+          -1.2,
+          1.2
+        ],
+        "discordant": [
+          4,
+          4
+        ],
+        "exact_p": 1.0,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_f33_libero_spatial.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_spatial/job48683431/episodes_native_lora_libero_spatial.csv",
+        "sha256": "94eb48ffbd2b966bcaa245f322175d87784d0140888cb0635de69e79c0e8b05d",
+        "reference_sha256": "6aa26d7d447f532b6c8da29b735f1af452c09ce33a2b4c13db853d5254084ddd",
+        "holm_p": 1.0,
+        "holm_family_size": 9
+      },
+      {
+        "suite": "libero_spatial",
+        "method": "ours",
+        "context": 442,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 490,
+        "reference_successes": 490,
+        "difference_pp": 0.0,
+        "paired_ci95_pp": [
+          -1.2,
+          1.2
+        ],
+        "discordant": [
+          4,
+          4
+        ],
+        "exact_p": 1.0,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_o82_libero_spatial.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_spatial/job48683431/episodes_native_lora_libero_spatial.csv",
+        "sha256": "b5250e47b77054e5f4e1b82ac23de2ae89ea48cb504d98c4808dd759e2c00baa",
+        "reference_sha256": "6aa26d7d447f532b6c8da29b735f1af452c09ce33a2b4c13db853d5254084ddd",
+        "holm_p": 1.0,
+        "holm_family_size": 9
+      },
+      {
+        "suite": "libero_spatial",
+        "method": "ours",
+        "context": 391,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 490,
+        "reference_successes": 490,
+        "difference_pp": 0.0,
+        "paired_ci95_pp": [
+          -1.6,
+          1.6
+        ],
+        "discordant": [
+          8,
+          8
+        ],
+        "exact_p": 1.0,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_o65_libero_spatial.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_spatial/job48683431/episodes_native_lora_libero_spatial.csv",
+        "sha256": "2d2c1344fea5e841fc34ab38946321753e2bff673cc18b49ced67715a1edcd0b",
+        "reference_sha256": "6aa26d7d447f532b6c8da29b735f1af452c09ce33a2b4c13db853d5254084ddd",
+        "holm_p": 1.0,
+        "holm_family_size": 9
+      },
+      {
+        "suite": "libero_object",
+        "method": "ours",
+        "context": 589,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 500,
+        "reference_successes": 500,
+        "difference_pp": 0.0,
+        "paired_ci95_pp": [
+          0.0,
+          0.0
+        ],
+        "discordant": [
+          0,
+          0
+        ],
+        "exact_p": 1.0,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_f33_libero_object.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_object/job48683432/episodes_native_lora_libero_object.csv",
+        "sha256": "9ddb1689f83f208c83efd7f3b27efcb1f1a5c0577840a909d5e8fec4dd744af1",
+        "reference_sha256": "fe970d26d4026ff3bb56392620f25b60478320ccc3420ba20b8d8adde234e5fe",
+        "holm_p": 1.0,
+        "holm_family_size": 9
+      },
+      {
+        "suite": "libero_object",
+        "method": "ours",
+        "context": 442,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 493,
+        "reference_successes": 500,
+        "difference_pp": -1.4,
+        "paired_ci95_pp": [
+          -2.6,
+          -0.4
+        ],
+        "discordant": [
+          0,
+          7
+        ],
+        "exact_p": 0.015625,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_o82_libero_object.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_object/job48683432/episodes_native_lora_libero_object.csv",
+        "sha256": "df85fc5ee782612a71a82d077fbb133eb97770e384b6c72daf43999f8d1e1944",
+        "reference_sha256": "fe970d26d4026ff3bb56392620f25b60478320ccc3420ba20b8d8adde234e5fe",
+        "holm_p": 0.109375,
+        "holm_family_size": 9
+      },
+      {
+        "suite": "libero_object",
+        "method": "ours",
+        "context": 391,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 491,
+        "reference_successes": 500,
+        "difference_pp": -1.8,
+        "paired_ci95_pp": [
+          -3.0,
+          -0.8
+        ],
+        "discordant": [
+          0,
+          9
+        ],
+        "exact_p": 0.00390625,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_o65_libero_object.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_object/job48683432/episodes_native_lora_libero_object.csv",
+        "sha256": "52a529fef7bd406bebc8fd91ee9fe81777222b71a487c143b8de3fcfa4bad2ec",
+        "reference_sha256": "fe970d26d4026ff3bb56392620f25b60478320ccc3420ba20b8d8adde234e5fe",
+        "holm_p": 0.03125,
+        "holm_family_size": 9
+      },
+      {
+        "suite": "libero_goal",
+        "method": "ours",
+        "context": 589,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 493,
+        "reference_successes": 493,
+        "difference_pp": 0.0,
+        "paired_ci95_pp": [
+          -1.2,
+          1.2
+        ],
+        "discordant": [
+          5,
+          5
+        ],
+        "exact_p": 1.0,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_f33_libero_goal.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_goal/job48683433/episodes_native_lora_libero_goal.csv",
+        "sha256": "345419c5c985fc0029f6fe7763b36e188a57040761bdbb76defec2536a1bc2ee",
+        "reference_sha256": "afad62be512ee7eae9175dc7c9bdbd5dd146831d93ebe79e8dcc6ad88f385536",
+        "holm_p": 1.0,
+        "holm_family_size": 9
+      },
+      {
+        "suite": "libero_goal",
+        "method": "ours",
+        "context": 442,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 491,
+        "reference_successes": 493,
+        "difference_pp": -0.4,
+        "paired_ci95_pp": [
+          -1.8,
+          1.0
+        ],
+        "discordant": [
+          5,
+          7
+        ],
+        "exact_p": 0.7744140625,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_o82_libero_goal.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_goal/job48683433/episodes_native_lora_libero_goal.csv",
+        "sha256": "475daf9df857649d5dd0b9493291992b2a1872488f1670075642578b3d396f44",
+        "reference_sha256": "afad62be512ee7eae9175dc7c9bdbd5dd146831d93ebe79e8dcc6ad88f385536",
+        "holm_p": 1.0,
+        "holm_family_size": 9
+      },
+      {
+        "suite": "libero_goal",
+        "method": "ours",
+        "context": 391,
+        "reference": "native_lora",
+        "n": 500,
+        "successes": 478,
+        "reference_successes": 493,
+        "difference_pp": -3.0,
+        "paired_ci95_pp": [
+          -4.8,
+          -1.4
+        ],
+        "discordant": [
+          2,
+          17
+        ],
+        "exact_p": 0.000728607177734375,
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/contig_libero_n500/episodes_contig_o65_libero_goal.csv",
+        "reference_path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_goal/job48683433/episodes_native_lora_libero_goal.csv",
+        "sha256": "cd050ebb279ce37207e4d582c588376a81e2f469112ede420042027fa36367b9",
+        "reference_sha256": "afad62be512ee7eae9175dc7c9bdbd5dd146831d93ebe79e8dcc6ad88f385536",
+        "holm_p": 0.006557464599609375,
+        "holm_family_size": 9
+      }
+    ],
+    "deployment": {
+      "protocol": "dit4dit-native-lora-2026-11-07-v1",
+      "phase": "formal",
+      "job": "48688100",
+      "host": "as05r3b10",
+      "gpu": "NVIDIA H100",
+      "torch": "2.7.0+cu126",
+      "tf32": false,
+      "adapter_tensors": 64,
+      "base_sha256": "10cdc70029d84519942157ff741fe570a78f161be3fda6ff1e87286b4c7faa29",
+      "lora_sha256": "c4ea7aa5c74f4932f60e1f841e22d14b870d138c5bee2232017699bf5075af34",
+      "folded_artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/benchmark_formal_48688100/native_lora_folded_fp32_projections.pt",
+      "folded_sha256": "42d9d8f9921f85c91384733ed0c915dd44cd95d0db7716915bc18d34c934c31e",
+      "fold_records": [
+        {
+          "name": "transformer_blocks.0.attn1.to_q",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.023563960567116737
+        },
+        {
+          "name": "transformer_blocks.0.attn1.to_k",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.023917648941278458
+        },
+        {
+          "name": "transformer_blocks.0.attn1.to_v",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.015119949355721474
+        },
+        {
+          "name": "transformer_blocks.0.attn1.to_out.0",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02331390418112278
+        },
+        {
+          "name": "transformer_blocks.2.attn1.to_q",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.017379155382514
+        },
+        {
+          "name": "transformer_blocks.2.attn1.to_k",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.022187452763319016
+        },
+        {
+          "name": "transformer_blocks.2.attn1.to_v",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.013762399554252625
+        },
+        {
+          "name": "transformer_blocks.2.attn1.to_out.0",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.024613389745354652
+        },
+        {
+          "name": "transformer_blocks.4.attn1.to_q",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.023565463721752167
+        },
+        {
+          "name": "transformer_blocks.4.attn1.to_k",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02488100714981556
+        },
+        {
+          "name": "transformer_blocks.4.attn1.to_v",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.018704267218708992
+        },
+        {
+          "name": "transformer_blocks.4.attn1.to_out.0",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.024651622399687767
+        },
+        {
+          "name": "transformer_blocks.6.attn1.to_q",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02489541657269001
+        },
+        {
+          "name": "transformer_blocks.6.attn1.to_k",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.025608602911233902
+        },
+        {
+          "name": "transformer_blocks.6.attn1.to_v",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.01935688592493534
+        },
+        {
+          "name": "transformer_blocks.6.attn1.to_out.0",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.025020111352205276
+        },
+        {
+          "name": "transformer_blocks.8.attn1.to_q",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02588268555700779
+        },
+        {
+          "name": "transformer_blocks.8.attn1.to_k",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.025657324120402336
+        },
+        {
+          "name": "transformer_blocks.8.attn1.to_v",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02059049718081951
+        },
+        {
+          "name": "transformer_blocks.8.attn1.to_out.0",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.026829345151782036
+        },
+        {
+          "name": "transformer_blocks.10.attn1.to_q",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.026831569150090218
+        },
+        {
+          "name": "transformer_blocks.10.attn1.to_k",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02577941305935383
+        },
+        {
+          "name": "transformer_blocks.10.attn1.to_v",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.017782805487513542
+        },
+        {
+          "name": "transformer_blocks.10.attn1.to_out.0",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02509032003581524
+        },
+        {
+          "name": "transformer_blocks.12.attn1.to_q",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.027248751372098923
+        },
+        {
+          "name": "transformer_blocks.12.attn1.to_k",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.025883132591843605
+        },
+        {
+          "name": "transformer_blocks.12.attn1.to_v",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.018424328416585922
+        },
+        {
+          "name": "transformer_blocks.12.attn1.to_out.0",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02455524541437626
+        },
+        {
+          "name": "transformer_blocks.14.attn1.to_q",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.026393665000796318
+        },
+        {
+          "name": "transformer_blocks.14.attn1.to_k",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.02516970969736576
+        },
+        {
+          "name": "transformer_blocks.14.attn1.to_v",
+          "shape": [
+            768,
+            2048
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.017803654074668884
+        },
+        {
+          "name": "transformer_blocks.14.attn1.to_out.0",
+          "shape": [
+            768,
+            768
+          ],
+          "dtype": "torch.float32",
+          "delta_norm": 0.021090975031256676
+        }
+      ],
+      "checks": [
+        {
+          "suite": "libero_spatial",
+          "seed": 0,
+          "pairs": [
+            {
+              "src": "native_eager",
+              "dst": "native_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_live_eager",
+              "dst": "native_lora_folded_eager",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 2.384185791015625e-07,
+                "mean_abs": 5.5442797020077705e-08,
+                "atol": 0.01,
+                "rtol": 0.01
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_folded_eager",
+              "dst": "native_lora_folded_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "suite": "libero_spatial",
+          "seed": 17,
+          "pairs": [
+            {
+              "src": "native_eager",
+              "dst": "native_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_live_eager",
+              "dst": "native_lora_folded_eager",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 2.384185791015625e-07,
+                "mean_abs": 5.683978088200092e-08,
+                "atol": 0.01,
+                "rtol": 0.01
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_folded_eager",
+              "dst": "native_lora_folded_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "suite": "libero_object",
+          "seed": 0,
+          "pairs": [
+            {
+              "src": "native_eager",
+              "dst": "native_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_live_eager",
+              "dst": "native_lora_folded_eager",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 1.7881393432617188e-07,
+                "mean_abs": 4.1443854570388794e-08,
+                "atol": 0.01,
+                "rtol": 0.01
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_folded_eager",
+              "dst": "native_lora_folded_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "suite": "libero_object",
+          "seed": 17,
+          "pairs": [
+            {
+              "src": "native_eager",
+              "dst": "native_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_live_eager",
+              "dst": "native_lora_folded_eager",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 1.7881393432617188e-07,
+                "mean_abs": 4.202593117952347e-08,
+                "atol": 0.01,
+                "rtol": 0.01
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_folded_eager",
+              "dst": "native_lora_folded_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "suite": "libero_goal",
+          "seed": 0,
+          "pairs": [
+            {
+              "src": "native_eager",
+              "dst": "native_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_live_eager",
+              "dst": "native_lora_folded_eager",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 2.086162567138672e-07,
+                "mean_abs": 6.50179572403431e-08,
+                "atol": 0.01,
+                "rtol": 0.01
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_folded_eager",
+              "dst": "native_lora_folded_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        {
+          "suite": "libero_goal",
+          "seed": 17,
+          "pairs": [
+            {
+              "src": "native_eager",
+              "dst": "native_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_live_eager",
+              "dst": "native_lora_folded_eager",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 2.980232238769531e-07,
+                "mean_abs": 6.801565177738667e-08,
+                "atol": 0.01,
+                "rtol": 0.01
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            },
+            {
+              "src": "native_lora_folded_eager",
+              "dst": "native_lora_folded_full_graph",
+              "context": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 0,
+                "rtol": 0
+              },
+              "action": {
+                "allclose": true,
+                "max_abs": 0.0,
+                "mean_abs": 0.0,
+                "atol": 1e-06,
+                "rtol": 1e-05
+              },
+              "gripper_mismatches": 0,
+              "passed": true
+            }
+          ],
+          "passed": true
+        }
+      ],
+      "timing_valid": true,
+      "telemetry": [
+        {
+          "time": 1794043799.0352795,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 149.62, 43, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.20, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.25, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.68, 40, 5"
+        },
+        {
+          "round": 0,
+          "order": [
+            "native_eager",
+            "native_full_graph",
+            "native_lora_live_eager",
+            "native_lora_folded_eager",
+            "native_lora_folded_full_graph"
+          ],
+          "time": 1794043802.9506092,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 254.70, 46, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.21, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.18, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.65, 40, 5"
+        },
+        {
+          "round": 1,
+          "order": [
+            "native_full_graph",
+            "native_lora_live_eager",
+            "native_lora_folded_eager",
+            "native_lora_folded_full_graph",
+            "native_eager"
+          ],
+          "time": 1794043804.4764667,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 242.53, 45, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.25, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.25, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.69, 40, 5"
+        },
+        {
+          "round": 2,
+          "order": [
+            "native_lora_live_eager",
+            "native_lora_folded_eager",
+            "native_lora_folded_full_graph",
+            "native_eager",
+            "native_full_graph"
+          ],
+          "time": 1794043805.94776,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 254.90, 46, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.18, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.24, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.63, 40, 5"
+        },
+        {
+          "round": 3,
+          "order": [
+            "native_lora_folded_eager",
+            "native_lora_folded_full_graph",
+            "native_eager",
+            "native_full_graph",
+            "native_lora_live_eager"
+          ],
+          "time": 1794043807.408605,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 240.37, 45, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.18, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.30, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.63, 40, 5"
+        },
+        {
+          "round": 4,
+          "order": [
+            "native_lora_folded_full_graph",
+            "native_eager",
+            "native_full_graph",
+            "native_lora_live_eager",
+            "native_lora_folded_eager"
+          ],
+          "time": 1794043808.880873,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 254.75, 46, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.25, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.22, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.66, 40, 5"
+        },
+        {
+          "round": 5,
+          "order": [
+            "native_eager",
+            "native_full_graph",
+            "native_lora_live_eager",
+            "native_lora_folded_eager",
+            "native_lora_folded_full_graph"
+          ],
+          "time": 1794043810.3449848,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 247.19, 46, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.23, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.20, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.63, 40, 5"
+        },
+        {
+          "round": 6,
+          "order": [
+            "native_full_graph",
+            "native_lora_live_eager",
+            "native_lora_folded_eager",
+            "native_lora_folded_full_graph",
+            "native_eager"
+          ],
+          "time": 1794043811.8100142,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 244.49, 46, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.24, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.26, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.60, 40, 5"
+        },
+        {
+          "round": 7,
+          "order": [
+            "native_lora_live_eager",
+            "native_lora_folded_eager",
+            "native_lora_folded_full_graph",
+            "native_eager",
+            "native_full_graph"
+          ],
+          "time": 1794043813.2756808,
+          "compute_pids": [
+            2379607
+          ],
+          "exclusive_valid": true,
+          "gpu_csv": "GPU-857c66e1-d17c-f005-f1a3-58169875ec82, NVIDIA H100, 1980, 1593, 263.23, 46, 7917\nGPU-206d90f2-4571-2c6c-0c7e-44bc415b76f7, NVIDIA H100, 345, 1593, 64.12, 40, 5\nGPU-dc65dbeb-f405-3a1c-6c8b-9d33ff913091, NVIDIA H100, 345, 1593, 65.25, 41, 5\nGPU-6cb5a7d9-387e-0468-ca85-ee2f2a839df0, NVIDIA H100, 345, 1593, 67.60, 40, 5"
+        }
+      ],
+      "results": {
+        "native_eager": {
+          "tokens": 784,
+          "tflops": {
+            "vae": 0.671806062592,
+            "backbone": 2.062323023872,
+            "head": 0.166927204352,
+            "total": 2.901056290816,
+            "excl_vae": 2.229250228224,
+            "graph_counted_via_identical_eager_function": true
+          },
+          "median_ms": 58.719879016280174,
+          "iqr_ms": [
+            58.572336682118475,
+            58.9083693921566
+          ],
+          "raw_ms": [
+            58.453246019780636,
+            58.55127610266209,
+            58.610201347619295,
+            58.628026861697435,
+            59.10437926650047,
+            59.1541500762105,
+            59.00655686855316,
+            58.82232682779431,
+            59.45443268865347,
+            59.127185959368944,
+            58.902660850435495,
+            64.29585022851825,
+            58.44110902398825,
+            58.469907846301794,
+            58.37105493992567,
+            58.429572731256485,
+            58.72080381959677,
+            58.91706142574549,
+            58.807187248021364,
+            58.90547204762697,
+            58.71895421296358,
+            58.44680918380618,
+            58.579356875270605,
+            58.50851722061634,
+            58.797153644263744,
+            58.74868109822273,
+            58.84771514683962,
+            58.67696786299348,
+            59.0171511285007,
+            58.63255215808749,
+            58.67086909711361,
+            58.65938030183315
+          ]
+        },
+        "native_full_graph": {
+          "tokens": 784,
+          "tflops": {
+            "vae": 0.671806062592,
+            "backbone": 2.062323023872,
+            "head": 0.166927204352,
+            "total": 2.901056290816,
+            "excl_vae": 2.229250228224,
+            "graph_counted_via_identical_eager_function": true
+          },
+          "median_ms": 47.07175027579069,
+          "iqr_ms": [
+            46.96951829828322,
+            47.23278642632067
+          ],
+          "raw_ms": [
+            46.94397607818246,
+            46.91648576408625,
+            47.17445885762572,
+            47.1828761510551,
+            47.74739593267441,
+            47.40133183076978,
+            47.32838831841946,
+            47.404227778315544,
+            47.00253810733557,
+            46.87535110861063,
+            47.150569036602974,
+            47.22795635461807,
+            46.97299702093005,
+            46.89878365024924,
+            46.90107190981507,
+            46.870688907802105,
+            47.24727664142847,
+            47.220014967024326,
+            47.054576221853495,
+            47.110278625041246,
+            46.989585272967815,
+            46.973058953881264,
+            46.90405586734414,
+            46.95908213034272,
+            47.56931308656931,
+            47.08892432972789,
+            46.97550693526864,
+            47.13742807507515,
+            46.98468279093504,
+            46.98894405737519,
+            47.292602714151144,
+            47.32005903497338
+          ]
+        },
+        "native_lora_live_eager": {
+          "tokens": 784,
+          "tflops": {
+            "vae": 0.671806062592,
+            "backbone": 2.062323023872,
+            "head": 0.171476975616,
+            "total": 2.90560606208,
+            "excl_vae": 2.233799999488,
+            "graph_counted_via_identical_eager_function": true
+          },
+          "median_ms": 65.51503483206034,
+          "iqr_ms": [
+            65.33098826184869,
+            65.69852179381996
+          ],
+          "raw_ms": [
+            65.3488077223301,
+            65.57729095220566,
+            65.507838036865,
+            65.33678295090795,
+            66.94595236331224,
+            66.01685984060168,
+            66.02816330268979,
+            65.94538176432252,
+            65.76499296352267,
+            65.30892523005605,
+            65.31360419467092,
+            65.51936967298388,
+            65.42326975613832,
+            65.11374795809388,
+            65.02269068732858,
+            65.3471420519054,
+            65.74901379644871,
+            65.58441696688533,
+            65.67982211709023,
+            65.52492314949632,
+            65.7358830794692,
+            65.67169213667512,
+            65.57943020015955,
+            65.68606803193688,
+            65.43917488306761,
+            65.16826199367642,
+            65.51069999113679,
+            65.39079640060663,
+            65.85897738114,
+            65.20431768149137,
+            65.21955132484436,
+            65.2611181139946
+          ]
+        },
+        "native_lora_folded_eager": {
+          "tokens": 784,
+          "tflops": {
+            "vae": 0.671806062592,
+            "backbone": 2.062323023872,
+            "head": 0.166927204352,
+            "total": 2.901056290816,
+            "excl_vae": 2.229250228224,
+            "graph_counted_via_identical_eager_function": true
+          },
+          "median_ms": 58.837529039010406,
+          "iqr_ms": [
+            58.64460417069495,
+            58.94037883263081
+          ],
+          "raw_ms": [
+            58.65462310612202,
+            58.71185986325145,
+            58.622602839022875,
+            58.76158084720373,
+            59.12721203640103,
+            61.18672015145421,
+            58.89261979609728,
+            59.10341069102287,
+            58.63713379949331,
+            58.71270503848791,
+            58.63706907257438,
+            58.57207113876939,
+            59.383802115917206,
+            58.647094294428825,
+            58.40070312842727,
+            58.46130708232522,
+            58.97503485903144,
+            58.879573829472065,
+            58.85084206238389,
+            58.94299503415823,
+            58.82421601563692,
+            58.90806205570698,
+            58.96116001531482,
+            58.74377675354481,
+            58.900811709463596,
+            58.788809925317764,
+            58.89058532193303,
+            58.97256825119257,
+            58.631890919059515,
+            58.61344467848539,
+            58.90106689184904,
+            58.93950676545501
+          ]
+        },
+        "native_lora_folded_full_graph": {
+          "tokens": 784,
+          "tflops": {
+            "vae": 0.671806062592,
+            "backbone": 2.062323023872,
+            "head": 0.166927204352,
+            "total": 2.901056290816,
+            "excl_vae": 2.229250228224,
+            "graph_counted_via_identical_eager_function": true
+          },
+          "median_ms": 47.0244565512985,
+          "iqr_ms": [
+            46.96079553104937,
+            47.18286346178502
+          ],
+          "raw_ms": [
+            46.950072050094604,
+            46.935344114899635,
+            46.9179074279964,
+            46.953695360571146,
+            47.01624205335975,
+            47.17399924993515,
+            47.20945609733462,
+            47.10723413154483,
+            47.03719727694988,
+            46.96418810635805,
+            46.93326773121953,
+            47.291748225688934,
+            47.01118404045701,
+            46.92479828372598,
+            47.03306220471859,
+            47.272474970668554,
+            47.35472705215216,
+            47.06039605662227,
+            46.96316225454211,
+            46.93253431469202,
+            47.043921891599894,
+            47.000544145703316,
+            47.00599890202284,
+            46.98882019147277,
+            47.07418801262975,
+            47.03267104923725,
+            47.32338711619377,
+            47.26177826523781,
+            46.97990603744984,
+            46.934273559600115,
+            47.252769116312265,
+            47.28931887075305
+          ]
+        }
+      },
+      "closed_loop_equivalence": "not established by numerical/timing checks"
+    },
+    "full_results_local_source": "/data/home/qp252151/workspace/mimic-video-repro/eval/analysis/results/completed_table_audit_20261107/dit4dit/native_lora_final.json"
+  },
+  "fixed_context_completed": {
+    "status": "36/36 cells independently revalidated",
+    "source_root": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107",
+    "protocol": "docs/DIT4DIT_FIXED_CONTEXT_PREREG_2026-11-07.md",
+    "audit": {
+      "audit_time": 1794062153.7546663,
+      "all_checks_passed": true,
+      "external_cells": 36,
+      "native_lora_cells": 3,
+      "source_guards": "both frozen manifests passed",
+      "records": [
+        {
+          "key": "adp_n391_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n391/libero_goal/job48679000/episodes_fixed_adp_n391_libero_goal.csv",
+          "sha256": "75c4d5e5a44c0ab382bcd6f072bc58b4caf659b4b56bd9976c3338d76f7b3868",
+          "successes": 203,
+          "episodes": 500,
+          "verified_queries": 14848
+        },
+        {
+          "key": "adp_n391_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n391/libero_object/job48678999/episodes_fixed_adp_n391_libero_object.csv",
+          "sha256": "943adc40937f3e1068fc75ff99315af23a533715aa50b556c50342d02555e098",
+          "successes": 311,
+          "episodes": 500,
+          "verified_queries": 13011
+        },
+        {
+          "key": "adp_n391_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n391/libero_spatial/job48678998/episodes_fixed_adp_n391_libero_spatial.csv",
+          "sha256": "ef6714ca50c8006d8fe916a8dd35ff15daa7b78e9e603783a8d4a4fe7cb52240",
+          "successes": 352,
+          "episodes": 500,
+          "verified_queries": 9056
+        },
+        {
+          "key": "adp_n442_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n442/libero_goal/job48678991/episodes_fixed_adp_n442_libero_goal.csv",
+          "sha256": "c51ef19dd8f77964a7c85f05cc68bcfa12a21adabcc34a79ae0c2d7ddea8bc92",
+          "successes": 417,
+          "episodes": 500,
+          "verified_queries": 9623
+        },
+        {
+          "key": "adp_n442_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n442/libero_object/job48678990/episodes_fixed_adp_n442_libero_object.csv",
+          "sha256": "8f7c7732c455457a0a295ba39b63527ffba6aebd50300560b91df1ca73e2adbc",
+          "successes": 467,
+          "episodes": 500,
+          "verified_queries": 9795
+        },
+        {
+          "key": "adp_n442_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n442/libero_spatial/job48678989/episodes_fixed_adp_n442_libero_spatial.csv",
+          "sha256": "a20eef8305a81ebed199ecb3cd990872a0220b80709d4c62d59984b7860a44dd",
+          "successes": 473,
+          "episodes": 500,
+          "verified_queries": 7133
+        },
+        {
+          "key": "adp_n589_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n589/libero_goal/job48678530/episodes_fixed_adp_n589_libero_goal.csv",
+          "sha256": "d62b2e1104b34753a005443821634cbed111077f9f073740a47634ec322f54a9",
+          "successes": 490,
+          "episodes": 500,
+          "verified_queries": 7322
+        },
+        {
+          "key": "adp_n589_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n589/libero_object/job48678529/episodes_fixed_adp_n589_libero_object.csv",
+          "sha256": "8a19973b1945456fde6934926bf62784470faf6839c8d3b069e260df8e90861e",
+          "successes": 493,
+          "episodes": 500,
+          "verified_queries": 8559
+        },
+        {
+          "key": "adp_n589_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n589/libero_spatial/job48678528/episodes_fixed_adp_n589_libero_spatial.csv",
+          "sha256": "3d876eadd86e1c17b6d76cbe13d53549760b757d4ca45f54e5985c926beace69",
+          "successes": 488,
+          "episodes": 500,
+          "verified_queries": 6819
+        },
+        {
+          "key": "cf_selection_n391_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n391/libero_goal/job48679538/episodes_fixed_cf_selection_n391_libero_goal.csv",
+          "sha256": "a56ad847a528ded6de004cd6567ce613b9f6c5a5aef6837adaae3e760f68746c",
+          "successes": 482,
+          "episodes": 500,
+          "verified_queries": 7463
+        },
+        {
+          "key": "cf_selection_n391_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n391/libero_object/job48679537/episodes_fixed_cf_selection_n391_libero_object.csv",
+          "sha256": "0a1990bfe532584eca9737bb970e88acdc607b3d74bb29232247832427992fff",
+          "successes": 494,
+          "episodes": 500,
+          "verified_queries": 8533
+        },
+        {
+          "key": "cf_selection_n391_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n391/libero_spatial/job48685258/episodes_fixed_cf_selection_n391_libero_spatial.csv",
+          "sha256": "ce2bc7bbe6097b47cb5d245396aef2aaa326b9c7ff8cd83a3004811ac99bdb0a",
+          "successes": 491,
+          "episodes": 500,
+          "verified_queries": 6787
+        },
+        {
+          "key": "cf_selection_n442_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n442/libero_goal/job48679535/episodes_fixed_cf_selection_n442_libero_goal.csv",
+          "sha256": "8c4878cdd4057606ba22367653e2b4f265bce58ce807134e1f147f36b1ddd1a2",
+          "successes": 489,
+          "episodes": 500,
+          "verified_queries": 7209
+        },
+        {
+          "key": "cf_selection_n442_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n442/libero_object/job48679534/episodes_fixed_cf_selection_n442_libero_object.csv",
+          "sha256": "960fcb6892e5e46d60a33915de5ee9f5b51949738a27347c21fb8c54fff7963f",
+          "successes": 497,
+          "episodes": 500,
+          "verified_queries": 8407
+        },
+        {
+          "key": "cf_selection_n442_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n442/libero_spatial/job48679533/episodes_fixed_cf_selection_n442_libero_spatial.csv",
+          "sha256": "3c1d822d31c47a7422c3582c22d67eca0ceb177fc2ac16cd06b4caafa3dbae21",
+          "successes": 492,
+          "episodes": 500,
+          "verified_queries": 6746
+        },
+        {
+          "key": "cf_selection_n589_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n589/libero_goal/job48685257/episodes_fixed_cf_selection_n589_libero_goal.csv",
+          "sha256": "82cea76a46e5c5824d54f961b1d67412f066b76a8da2409849519cb601cc14f8",
+          "successes": 490,
+          "episodes": 500,
+          "verified_queries": 7171
+        },
+        {
+          "key": "cf_selection_n589_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n589/libero_object/job48679531/episodes_fixed_cf_selection_n589_libero_object.csv",
+          "sha256": "203e927b0e533ed91753e14f70b3178004eb2da85cf4b6f052d8e3265e9a23f1",
+          "successes": 499,
+          "episodes": 500,
+          "verified_queries": 8263
+        },
+        {
+          "key": "cf_selection_n589_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n589/libero_spatial/job48679530/episodes_fixed_cf_selection_n589_libero_spatial.csv",
+          "sha256": "ed3e14d28cf04971e8664fc2c902593c09bf377bd0070ef2c94aad4d2e6c653a",
+          "successes": 496,
+          "episodes": 500,
+          "verified_queries": 6647
+        },
+        {
+          "key": "fastv_n391_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n391/libero_goal/job48678527/episodes_fixed_fastv_n391_libero_goal.csv",
+          "sha256": "c0e00d2ab8b288c251d3cf0922200b000a5087b3425fbbef686db61168b6da4c",
+          "successes": 397,
+          "episodes": 500,
+          "verified_queries": 9859
+        },
+        {
+          "key": "fastv_n391_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n391/libero_object/job48678526/episodes_fixed_fastv_n391_libero_object.csv",
+          "sha256": "c27335449be537a88de23cdb02576f0c8fe5abf7d2f29ecdb0d91b4394f11b71",
+          "successes": 480,
+          "episodes": 500,
+          "verified_queries": 9319
+        },
+        {
+          "key": "fastv_n391_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n391/libero_spatial/job48678525/episodes_fixed_fastv_n391_libero_spatial.csv",
+          "sha256": "c220c2ee60f8e3ddb6c9417ea7bf5461fb23d9f0c0584de4ef39cc16025b9a73",
+          "successes": 463,
+          "episodes": 500,
+          "verified_queries": 7274
+        },
+        {
+          "key": "fastv_n442_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n442/libero_goal/job48681297/episodes_fixed_fastv_n442_libero_goal.csv",
+          "sha256": "e3b262f924db4ca9f6959567e9e882cea4e2189a348b386ccd2be0a363e94dce",
+          "successes": 477,
+          "episodes": 500,
+          "verified_queries": 7877
+        },
+        {
+          "key": "fastv_n442_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n442/libero_object/job48678504/episodes_fixed_fastv_n442_libero_object.csv",
+          "sha256": "fee0e9eeff83066c64aa96654642ca84758e3317b2a7ebc095d3e4cf673696d7",
+          "successes": 492,
+          "episodes": 500,
+          "verified_queries": 8759
+        },
+        {
+          "key": "fastv_n442_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n442/libero_spatial/job48678503/episodes_fixed_fastv_n442_libero_spatial.csv",
+          "sha256": "c5b8848fbc0ee900cba8320c464d8de8c64d003cdb9c5ef8b810a9eae06524c9",
+          "successes": 478,
+          "episodes": 500,
+          "verified_queries": 6975
+        },
+        {
+          "key": "fastv_n589_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n589/libero_goal/job48677622/episodes_fixed_fastv_n589_libero_goal.csv",
+          "sha256": "7c75af20ebf97c14195ecadf14e65c487ed02bcd348f598834b8abcbbf07aaf0",
+          "successes": 497,
+          "episodes": 500,
+          "verified_queries": 7069
+        },
+        {
+          "key": "fastv_n589_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n589/libero_object/job48677621/episodes_fixed_fastv_n589_libero_object.csv",
+          "sha256": "776da28cd368e014f8db84ad6d0a20885a1baa4faa606915a12716f2c47ed6f8",
+          "successes": 498,
+          "episodes": 500,
+          "verified_queries": 8432
+        },
+        {
+          "key": "fastv_n589_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n589/libero_spatial/job48677620/episodes_fixed_fastv_n589_libero_spatial.csv",
+          "sha256": "89ba1c72a01676d167419711c0f3ed593d21248e12fd75cfd9687f45b3845aff",
+          "successes": 489,
+          "episodes": 500,
+          "verified_queries": 6758
+        },
+        {
+          "key": "vla_pruner_n391_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n391/libero_goal/job48678808/episodes_fixed_vla_pruner_n391_libero_goal.csv",
+          "sha256": "3df36bb092f3a3b6851c10bd4b1bd58213927ca194567242a8c5b8a3559ccf22",
+          "successes": 415,
+          "episodes": 500,
+          "verified_queries": 9542
+        },
+        {
+          "key": "vla_pruner_n391_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n391/libero_object/job48678807/episodes_fixed_vla_pruner_n391_libero_object.csv",
+          "sha256": "3efe17b75ba0549f3a701e0ec94cd0816359859edd1cc23284df704a08cb4433",
+          "successes": 454,
+          "episodes": 500,
+          "verified_queries": 9750
+        },
+        {
+          "key": "vla_pruner_n391_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n391/libero_spatial/job48678806/episodes_fixed_vla_pruner_n391_libero_spatial.csv",
+          "sha256": "8e544cbd4ec17861d44af750f834603c148d0149e1b528891884f1aec83b13be",
+          "successes": 439,
+          "episodes": 500,
+          "verified_queries": 7494
+        },
+        {
+          "key": "vla_pruner_n442_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n442/libero_goal/job48678836/episodes_fixed_vla_pruner_n442_libero_goal.csv",
+          "sha256": "9da1123343f2dbae03552e845f97bddb8e6ce4756a661a632ae37210222a026a",
+          "successes": 480,
+          "episodes": 500,
+          "verified_queries": 7884
+        },
+        {
+          "key": "vla_pruner_n442_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n442/libero_object/job48678835/episodes_fixed_vla_pruner_n442_libero_object.csv",
+          "sha256": "f232951eb673a03d7fa3a9c0dea68e7eaaed1aa0a9d7179034b71025e6958734",
+          "successes": 496,
+          "episodes": 500,
+          "verified_queries": 8690
+        },
+        {
+          "key": "vla_pruner_n442_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n442/libero_spatial/job48678834/episodes_fixed_vla_pruner_n442_libero_spatial.csv",
+          "sha256": "25112e5484632b646ddf2d171f1f504658908a31043beeab1f218099ddcf9f05",
+          "successes": 479,
+          "episodes": 500,
+          "verified_queries": 6971
+        },
+        {
+          "key": "vla_pruner_n589_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n589/libero_goal/job48678816/episodes_fixed_vla_pruner_n589_libero_goal.csv",
+          "sha256": "b9c1b39417c77c8e29fd18157c505b00a291d91fc5ca94bc8b2a8ee1382d94bd",
+          "successes": 491,
+          "episodes": 500,
+          "verified_queries": 7193
+        },
+        {
+          "key": "vla_pruner_n589_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n589/libero_object/job48678815/episodes_fixed_vla_pruner_n589_libero_object.csv",
+          "sha256": "b13b700b389f10ce031fcc88655ff153b0ef86e29724c4ca67e665bad953cd80",
+          "successes": 499,
+          "episodes": 500,
+          "verified_queries": 8404
+        },
+        {
+          "key": "vla_pruner_n589_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n589/libero_spatial/job48682783/episodes_fixed_vla_pruner_n589_libero_spatial.csv",
+          "sha256": "cc721b2d5cf773bce4a6f3c820f72233e0e89a3119e65fab673af3d5a5181ad1",
+          "successes": 491,
+          "episodes": 500,
+          "verified_queries": 6792
+        },
+        {
+          "key": "native_lora_libero_spatial",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_spatial/job48683431/episodes_native_lora_libero_spatial.csv",
+          "sha256": "6aa26d7d447f532b6c8da29b735f1af452c09ce33a2b4c13db853d5254084ddd",
+          "episodes": 500,
+          "verified_queries": 6708,
+          "successes": 490
+        },
+        {
+          "key": "native_lora_libero_object",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_object/job48683432/episodes_native_lora_libero_object.csv",
+          "sha256": "fe970d26d4026ff3bb56392620f25b60478320ccc3420ba20b8d8adde234e5fe",
+          "episodes": 500,
+          "verified_queries": 8315,
+          "successes": 500
+        },
+        {
+          "key": "native_lora_libero_goal",
+          "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/libero_goal/job48683433/episodes_native_lora_libero_goal.csv",
+          "sha256": "afad62be512ee7eae9175dc7c9bdbd5dd146831d93ebe79e8dcc6ad88f385536",
+          "episodes": 500,
+          "verified_queries": 7030,
+          "successes": 493
+        }
+      ],
+      "accounting": "48676538|COMPLETED|0:0\n48676540|COMPLETED|0:0\n48676542|COMPLETED|0:0\n48676587|COMPLETED|0:0\n48676588|COMPLETED|0:0\n48676589|COMPLETED|0:0\n48676590|COMPLETED|0:0\n48676591|COMPLETED|0:0\n48676592|COMPLETED|0:0\n48676593|COMPLETED|0:0\n48676594|COMPLETED|0:0\n48676595|COMPLETED|0:0\n48677620|COMPLETED|0:0\n48677621|COMPLETED|0:0\n48677622|COMPLETED|0:0\n48678503|COMPLETED|0:0\n48678504|COMPLETED|0:0\n48678505|FAILED|6:0\n48678525|COMPLETED|0:0\n48678526|COMPLETED|0:0\n48678527|COMPLETED|0:0\n48678528|COMPLETED|0:0\n48678529|COMPLETED|0:0\n48678530|COMPLETED|0:0\n48678716|COMPLETED|0:0\n48678806|COMPLETED|0:0\n48678807|COMPLETED|0:0\n48678808|COMPLETED|0:0\n48678814|FAILED|6:0\n48678815|COMPLETED|0:0\n48678816|COMPLETED|0:0\n48678829|COMPLETED|0:0\n48678834|COMPLETED|0:0\n48678835|COMPLETED|0:0\n48678836|COMPLETED|0:0\n48678989|COMPLETED|0:0\n48678990|COMPLETED|0:0\n48678991|COMPLETED|0:0\n48678998|COMPLETED|0:0\n48678999|COMPLETED|0:0\n48679000|COMPLETED|0:0\n48679530|COMPLETED|0:0\n48679531|COMPLETED|0:0\n48679532|FAILED|6:0\n48679533|COMPLETED|0:0\n48679534|COMPLETED|0:0\n48679535|COMPLETED|0:0\n48679536|FAILED|6:0\n48679537|COMPLETED|0:0\n48679538|COMPLETED|0:0\n48681297|COMPLETED|0:0\n48682783|COMPLETED|0:0\n48683431|COMPLETED|0:0\n48683432|COMPLETED|0:0\n48683433|COMPLETED|0:0\n48683434|COMPLETED|0:0\n48685257|COMPLETED|0:0\n48685258|COMPLETED|0:0\n48688100|COMPLETED|0:0\n",
+      "selected_job_ids": [
+        "48676538",
+        "48676540",
+        "48676542",
+        "48676587",
+        "48676588",
+        "48676589",
+        "48676590",
+        "48676591",
+        "48676592",
+        "48676593",
+        "48676594",
+        "48676595",
+        "48677620",
+        "48677621",
+        "48677622",
+        "48678503",
+        "48678504",
+        "48678525",
+        "48678526",
+        "48678527",
+        "48678528",
+        "48678529",
+        "48678530",
+        "48678716",
+        "48678806",
+        "48678807",
+        "48678808",
+        "48678815",
+        "48678816",
+        "48678829",
+        "48678834",
+        "48678835",
+        "48678836",
+        "48678989",
+        "48678990",
+        "48678991",
+        "48678998",
+        "48678999",
+        "48679000",
+        "48679530",
+        "48679531",
+        "48679533",
+        "48679534",
+        "48679535",
+        "48679537",
+        "48679538",
+        "48681297",
+        "48682783",
+        "48683431",
+        "48683432",
+        "48683433",
+        "48683434",
+        "48685257",
+        "48685258",
+        "48688100"
+      ],
+      "previous_failed_attempts": {
+        "48678505": [
+          "FAILED",
+          "6:0"
+        ],
+        "48678814": [
+          "FAILED",
+          "6:0"
+        ],
+        "48679532": [
+          "FAILED",
+          "6:0"
+        ],
+        "48679536": [
+          "FAILED",
+          "6:0"
+        ]
+      },
+      "native_benchmark": {
+        "path": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107/benchmark_formal_48688100/benchmark.json",
+        "sha256": "967eb5a81478e7284061669bfe985330c38dc408b15a9a506848902ef764ca30",
+        "median_ms": 47.0244565512985,
+        "tflops_ex_vae": 2.229250228224
+      }
+    },
+    "results": {
+      "complete_cells": 36,
+      "family": "four ports x three budgets x three suites",
+      "bootstrap_draws": 10000,
+      "bootstrap_seed": 0,
+      "records": [
+        {
+          "method": "adp",
+          "context": 391,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 203,
+          "ours_successes": 478,
+          "native_successes": 493,
+          "external_minus_ours_pp": -55.0,
+          "paired_bootstrap_ci95_pp": [
+            -59.6,
+            -50.4
+          ],
+          "discordant_external_ours": [
+            7,
+            282
+          ],
+          "exact_p": 6.401113439490909e-74,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n391/libero_goal/job48679000/episodes_fixed_adp_n391_libero_goal.csv",
+          "holm_p_family36": 2.3044008382167274e-72
+        },
+        {
+          "method": "adp",
+          "context": 391,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 311,
+          "ours_successes": 491,
+          "native_successes": 497,
+          "external_minus_ours_pp": -36.0,
+          "paired_bootstrap_ci95_pp": [
+            -40.4,
+            -31.6
+          ],
+          "discordant_external_ours": [
+            6,
+            186
+          ],
+          "exact_p": 2.1162654241705835e-47,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n391/libero_object/job48678999/episodes_fixed_adp_n391_libero_object.csv",
+          "holm_p_family36": 7.406928984597042e-46
+        },
+        {
+          "method": "adp",
+          "context": 391,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 352,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": -27.6,
+          "paired_bootstrap_ci95_pp": [
+            -31.6,
+            -23.6
+          ],
+          "discordant_external_ours": [
+            5,
+            143
+          ],
+          "exact_p": 3.2085276013428707e-36,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n391/libero_spatial/job48678998/episodes_fixed_adp_n391_libero_spatial.csv",
+          "holm_p_family36": 1.090899384456576e-34
+        },
+        {
+          "method": "adp",
+          "context": 442,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 417,
+          "ours_successes": 491,
+          "native_successes": 493,
+          "external_minus_ours_pp": -14.8,
+          "paired_bootstrap_ci95_pp": [
+            -18.0,
+            -11.6
+          ],
+          "discordant_external_ours": [
+            3,
+            77
+          ],
+          "exact_p": 1.4128410298528223e-19,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n442/libero_goal/job48678991/episodes_fixed_adp_n442_libero_goal.csv",
+          "holm_p_family36": 4.662375398514314e-18
+        },
+        {
+          "method": "adp",
+          "context": 442,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 467,
+          "ours_successes": 493,
+          "native_successes": 497,
+          "external_minus_ours_pp": -5.2,
+          "paired_bootstrap_ci95_pp": [
+            -7.6,
+            -2.8
+          ],
+          "discordant_external_ours": [
+            7,
+            33
+          ],
+          "exact_p": 4.2277022657799534e-05,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n442/libero_object/job48678990/episodes_fixed_adp_n442_libero_object.csv",
+          "holm_p_family36": 0.0011741564221665612
+        },
+        {
+          "method": "adp",
+          "context": 442,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 473,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": -3.4,
+          "paired_bootstrap_ci95_pp": [
+            -5.4,
+            -1.6
+          ],
+          "discordant_external_ours": [
+            4,
+            21
+          ],
+          "exact_p": 0.0009105205535888672,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n442/libero_spatial/job48678989/episodes_fixed_adp_n442_libero_spatial.csv",
+          "holm_p_family36": 0.023673534393310547
+        },
+        {
+          "method": "adp",
+          "context": 589,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 490,
+          "ours_successes": 493,
+          "native_successes": 493,
+          "external_minus_ours_pp": -0.6,
+          "paired_bootstrap_ci95_pp": [
+            -2.2,
+            1.0
+          ],
+          "discordant_external_ours": [
+            6,
+            9
+          ],
+          "exact_p": 0.60723876953125,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n589/libero_goal/job48678530/episodes_fixed_adp_n589_libero_goal.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "adp",
+          "context": 589,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 493,
+          "ours_successes": 500,
+          "native_successes": 497,
+          "external_minus_ours_pp": -1.4,
+          "paired_bootstrap_ci95_pp": [
+            -2.6,
+            -0.4
+          ],
+          "discordant_external_ours": [
+            0,
+            7
+          ],
+          "exact_p": 0.015625,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n589/libero_object/job48678529/episodes_fixed_adp_n589_libero_object.csv",
+          "holm_p_family36": 0.359375
+        },
+        {
+          "method": "adp",
+          "context": 589,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 488,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": -0.4,
+          "paired_bootstrap_ci95_pp": [
+            -1.8,
+            1.0
+          ],
+          "discordant_external_ours": [
+            5,
+            7
+          ],
+          "exact_p": 0.7744140625,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/adp_n589/libero_spatial/job48678528/episodes_fixed_adp_n589_libero_spatial.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 391,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 482,
+          "ours_successes": 478,
+          "native_successes": 493,
+          "external_minus_ours_pp": 0.8,
+          "paired_bootstrap_ci95_pp": [
+            -1.4,
+            3.0
+          ],
+          "discordant_external_ours": [
+            18,
+            14
+          ],
+          "exact_p": 0.5966148958541453,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n391/libero_goal/job48679538/episodes_fixed_cf_selection_n391_libero_goal.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 391,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 494,
+          "ours_successes": 491,
+          "native_successes": 497,
+          "external_minus_ours_pp": 0.6,
+          "paired_bootstrap_ci95_pp": [
+            -0.8,
+            2.0
+          ],
+          "discordant_external_ours": [
+            8,
+            5
+          ],
+          "exact_p": 0.5810546875,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n391/libero_object/job48679537/episodes_fixed_cf_selection_n391_libero_object.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 391,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 491,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": 0.2,
+          "paired_bootstrap_ci95_pp": [
+            -1.6,
+            2.0
+          ],
+          "discordant_external_ours": [
+            10,
+            9
+          ],
+          "exact_p": 1.0,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n391/libero_spatial/job48685258/episodes_fixed_cf_selection_n391_libero_spatial.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 442,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 489,
+          "ours_successes": 491,
+          "native_successes": 493,
+          "external_minus_ours_pp": -0.4,
+          "paired_bootstrap_ci95_pp": [
+            -2.0,
+            1.0
+          ],
+          "discordant_external_ours": [
+            6,
+            8
+          ],
+          "exact_p": 0.79052734375,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n442/libero_goal/job48679535/episodes_fixed_cf_selection_n442_libero_goal.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 442,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 497,
+          "ours_successes": 493,
+          "native_successes": 497,
+          "external_minus_ours_pp": 0.8,
+          "paired_bootstrap_ci95_pp": [
+            -0.2,
+            2.0
+          ],
+          "discordant_external_ours": [
+            6,
+            2
+          ],
+          "exact_p": 0.2890625,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n442/libero_object/job48679534/episodes_fixed_cf_selection_n442_libero_object.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 442,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 492,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": 0.4,
+          "paired_bootstrap_ci95_pp": [
+            -0.8,
+            1.6
+          ],
+          "discordant_external_ours": [
+            6,
+            4
+          ],
+          "exact_p": 0.75390625,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n442/libero_spatial/job48679533/episodes_fixed_cf_selection_n442_libero_spatial.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 589,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 490,
+          "ours_successes": 493,
+          "native_successes": 493,
+          "external_minus_ours_pp": -0.6,
+          "paired_bootstrap_ci95_pp": [
+            -2.2,
+            1.0
+          ],
+          "discordant_external_ours": [
+            6,
+            9
+          ],
+          "exact_p": 0.60723876953125,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n589/libero_goal/job48685257/episodes_fixed_cf_selection_n589_libero_goal.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 589,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 499,
+          "ours_successes": 500,
+          "native_successes": 497,
+          "external_minus_ours_pp": -0.2,
+          "paired_bootstrap_ci95_pp": [
+            -0.6,
+            0.0
+          ],
+          "discordant_external_ours": [
+            0,
+            1
+          ],
+          "exact_p": 1.0,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n589/libero_object/job48679531/episodes_fixed_cf_selection_n589_libero_object.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "cf_selection",
+          "context": 589,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 496,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": 1.2,
+          "paired_bootstrap_ci95_pp": [
+            0.2,
+            2.4
+          ],
+          "discordant_external_ours": [
+            7,
+            1
+          ],
+          "exact_p": 0.0703125,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/cf_selection_n589/libero_spatial/job48679530/episodes_fixed_cf_selection_n589_libero_spatial.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "fastv",
+          "context": 391,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 397,
+          "ours_successes": 478,
+          "native_successes": 493,
+          "external_minus_ours_pp": -16.2,
+          "paired_bootstrap_ci95_pp": [
+            -19.8,
+            -12.4
+          ],
+          "discordant_external_ours": [
+            10,
+            91
+          ],
+          "exact_p": 1.6977475366916752e-17,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n391/libero_goal/job48678527/episodes_fixed_fastv_n391_libero_goal.csv",
+          "holm_p_family36": 5.432792117413361e-16
+        },
+        {
+          "method": "fastv",
+          "context": 391,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 480,
+          "ours_successes": 491,
+          "native_successes": 497,
+          "external_minus_ours_pp": -2.2,
+          "paired_bootstrap_ci95_pp": [
+            -4.4,
+            -0.2
+          ],
+          "discordant_external_ours": [
+            9,
+            20
+          ],
+          "exact_p": 0.06142834573984146,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n391/libero_object/job48678526/episodes_fixed_fastv_n391_libero_object.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "fastv",
+          "context": 391,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 463,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": -5.4,
+          "paired_bootstrap_ci95_pp": [
+            -8.0,
+            -2.8
+          ],
+          "discordant_external_ours": [
+            8,
+            35
+          ],
+          "exact_p": 4.1934157934520044e-05,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n391/libero_spatial/job48678525/episodes_fixed_fastv_n391_libero_spatial.csv",
+          "holm_p_family36": 0.0011741564221665612
+        },
+        {
+          "method": "fastv",
+          "context": 442,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 477,
+          "ours_successes": 491,
+          "native_successes": 493,
+          "external_minus_ours_pp": -2.8,
+          "paired_bootstrap_ci95_pp": [
+            -4.8,
+            -1.0
+          ],
+          "discordant_external_ours": [
+            5,
+            19
+          ],
+          "exact_p": 0.006610751152038574,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n442/libero_goal/job48681297/episodes_fixed_fastv_n442_libero_goal.csv",
+          "holm_p_family36": 0.16526877880096436
+        },
+        {
+          "method": "fastv",
+          "context": 442,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 492,
+          "ours_successes": 493,
+          "native_successes": 497,
+          "external_minus_ours_pp": -0.2,
+          "paired_bootstrap_ci95_pp": [
+            -1.8,
+            1.4
+          ],
+          "discordant_external_ours": [
+            7,
+            8
+          ],
+          "exact_p": 1.0,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n442/libero_object/job48678504/episodes_fixed_fastv_n442_libero_object.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "fastv",
+          "context": 442,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 478,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": -2.4,
+          "paired_bootstrap_ci95_pp": [
+            -4.2,
+            -0.8
+          ],
+          "discordant_external_ours": [
+            3,
+            15
+          ],
+          "exact_p": 0.007537841796875,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n442/libero_spatial/job48678503/episodes_fixed_fastv_n442_libero_spatial.csv",
+          "holm_p_family36": 0.180908203125
+        },
+        {
+          "method": "fastv",
+          "context": 589,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 497,
+          "ours_successes": 493,
+          "native_successes": 493,
+          "external_minus_ours_pp": 0.8,
+          "paired_bootstrap_ci95_pp": [
+            -0.2,
+            2.0
+          ],
+          "discordant_external_ours": [
+            6,
+            2
+          ],
+          "exact_p": 0.2890625,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n589/libero_goal/job48677622/episodes_fixed_fastv_n589_libero_goal.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "fastv",
+          "context": 589,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 498,
+          "ours_successes": 500,
+          "native_successes": 497,
+          "external_minus_ours_pp": -0.4,
+          "paired_bootstrap_ci95_pp": [
+            -1.0,
+            0.0
+          ],
+          "discordant_external_ours": [
+            0,
+            2
+          ],
+          "exact_p": 0.5,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n589/libero_object/job48677621/episodes_fixed_fastv_n589_libero_object.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "fastv",
+          "context": 589,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 489,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": -0.2,
+          "paired_bootstrap_ci95_pp": [
+            -1.4,
+            1.0
+          ],
+          "discordant_external_ours": [
+            4,
+            5
+          ],
+          "exact_p": 1.0,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/fastv_n589/libero_spatial/job48677620/episodes_fixed_fastv_n589_libero_spatial.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "vla_pruner",
+          "context": 391,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 415,
+          "ours_successes": 478,
+          "native_successes": 493,
+          "external_minus_ours_pp": -12.6,
+          "paired_bootstrap_ci95_pp": [
+            -16.2,
+            -9.0
+          ],
+          "discordant_external_ours": [
+            17,
+            80
+          ],
+          "exact_p": 6.007962189879816e-11,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n391/libero_goal/job48678808/episodes_fixed_vla_pruner_n391_libero_goal.csv",
+          "holm_p_family36": 1.8624682788627432e-09
+        },
+        {
+          "method": "vla_pruner",
+          "context": 391,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 454,
+          "ours_successes": 491,
+          "native_successes": 497,
+          "external_minus_ours_pp": -7.4,
+          "paired_bootstrap_ci95_pp": [
+            -10.2,
+            -4.6
+          ],
+          "discordant_external_ours": [
+            8,
+            45
+          ],
+          "exact_p": 2.3683513772354559e-07,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n391/libero_object/job48678807/episodes_fixed_vla_pruner_n391_libero_object.csv",
+          "holm_p_family36": 6.868218993982822e-06
+        },
+        {
+          "method": "vla_pruner",
+          "context": 391,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 439,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": -10.2,
+          "paired_bootstrap_ci95_pp": [
+            -13.2,
+            -7.2
+          ],
+          "discordant_external_ours": [
+            8,
+            59
+          ],
+          "exact_p": 1.016748503966658e-10,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n391/libero_spatial/job48678806/episodes_fixed_vla_pruner_n391_libero_spatial.csv",
+          "holm_p_family36": 3.050245511899974e-09
+        },
+        {
+          "method": "vla_pruner",
+          "context": 442,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 480,
+          "ours_successes": 491,
+          "native_successes": 493,
+          "external_minus_ours_pp": -2.2,
+          "paired_bootstrap_ci95_pp": [
+            -4.2,
+            -0.2
+          ],
+          "discordant_external_ours": [
+            8,
+            19
+          ],
+          "exact_p": 0.052238985896110535,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n442/libero_goal/job48678836/episodes_fixed_vla_pruner_n442_libero_goal.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "vla_pruner",
+          "context": 442,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 496,
+          "ours_successes": 493,
+          "native_successes": 497,
+          "external_minus_ours_pp": 0.6,
+          "paired_bootstrap_ci95_pp": [
+            -0.6,
+            1.8
+          ],
+          "discordant_external_ours": [
+            6,
+            3
+          ],
+          "exact_p": 0.5078125,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n442/libero_object/job48678835/episodes_fixed_vla_pruner_n442_libero_object.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "vla_pruner",
+          "context": 442,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 479,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": -2.2,
+          "paired_bootstrap_ci95_pp": [
+            -4.0,
+            -0.6
+          ],
+          "discordant_external_ours": [
+            4,
+            15
+          ],
+          "exact_p": 0.0192108154296875,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n442/libero_spatial/job48678834/episodes_fixed_vla_pruner_n442_libero_spatial.csv",
+          "holm_p_family36": 0.422637939453125
+        },
+        {
+          "method": "vla_pruner",
+          "context": 589,
+          "suite": "libero_goal",
+          "n": 500,
+          "successes": 491,
+          "ours_successes": 493,
+          "native_successes": 493,
+          "external_minus_ours_pp": -0.4,
+          "paired_bootstrap_ci95_pp": [
+            -1.6,
+            0.8
+          ],
+          "discordant_external_ours": [
+            4,
+            6
+          ],
+          "exact_p": 0.75390625,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n589/libero_goal/job48678816/episodes_fixed_vla_pruner_n589_libero_goal.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "vla_pruner",
+          "context": 589,
+          "suite": "libero_object",
+          "n": 500,
+          "successes": 499,
+          "ours_successes": 500,
+          "native_successes": 497,
+          "external_minus_ours_pp": -0.2,
+          "paired_bootstrap_ci95_pp": [
+            -0.6,
+            0.0
+          ],
+          "discordant_external_ours": [
+            0,
+            1
+          ],
+          "exact_p": 1.0,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n589/libero_object/job48678815/episodes_fixed_vla_pruner_n589_libero_object.csv",
+          "holm_p_family36": 1.0
+        },
+        {
+          "method": "vla_pruner",
+          "context": 589,
+          "suite": "libero_spatial",
+          "n": 500,
+          "successes": 491,
+          "ours_successes": 490,
+          "native_successes": 493,
+          "external_minus_ours_pp": 0.2,
+          "paired_bootstrap_ci95_pp": [
+            -1.0,
+            1.4
+          ],
+          "discordant_external_ours": [
+            5,
+            4
+          ],
+          "exact_p": 1.0,
+          "artifact": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/fixed_context_20261107/vla_pruner_n589/libero_spatial/job48682783/episodes_fixed_vla_pruner_n589_libero_spatial.csv",
+          "holm_p_family36": 1.0
+        }
+      ]
+    },
+    "inference_costs": "pending for all four fixed-budget external ports",
+    "bold_rule": "actual greatest successes within a budget group; native rows excluded"
+  },
+  "completed_cell_update_2026_11_07": {
+    "readout_amendment": "docs/PAPER_COMPLETED_CELL_READOUT_2026-11-07.md",
+    "overleaf_conflict_resolved": "preserved heading, rounded percentages and removed FB row suffixes; full-context control is 784, not the conflicting 442 placeholder",
+    "table3_missing": [
+      "Spatial reversed scores + retrained LoRA, 30%",
+      "Spatial without decoder LoRA, 30%"
+    ]
+  },
+  "legacy_table_token_aggregation": "mean of per-episode mean context lengths over all three suites; dense calls included; CF probe is additional and excluded from retained context length"
 }
