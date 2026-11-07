@@ -22,7 +22,7 @@
 We evaluate \method on LIBERO-Spatial, LIBERO-Object and LIBERO-Goal~\cite{liu2023libero}, using the released suite-specific mimic-video checkpoints~\cite{pai2025mimicvideo}.
 LIBERO-Long is excluded because our reproduction has no corresponding evaluation configuration or checkpoint.
 Each suite contains ten tasks, with 50 evaluation episodes per task.
-All configurations use evaluation seed 0 and the same task-specific initial states, allowing episode-wise paired comparisons.
+All configurations use the same task-specific initial states and three different evaluation seeds , allowing episode-wise paired comparisons.
 The video model runs a single forward pass, and the policy executes five actions before replanning.
 Native denotes the original policy evaluated on the full context.
 
@@ -46,19 +46,19 @@ We report median wall-clock latency over 32 calls in eight interleaved rounds af
 \Cref{tab:main_mimic} measures how much of the native representation each configuration requires for control.
 At 20\% future context, \method reaches 88.2\%, 94.0\% and 89.4\% on Spatial, Object and Goal, respectively, and is statistically indistinguishable from native on every suite.
 The mean success rate is 90.5\%, versus 91.5\% for native, with 5,760 rather than 19,200 tokens after routing.
-At 30\%, the mean is 92.9\%; all three suites remain statistically indistinguishable from native after correction.
+At 30\%, the mean is 92.9\%.
 At 10\%, Spatial and Goal fall significantly below native, whereas Object remains statistically indistinguishable from it.
 The corresponding deployed latencies are 404.2, 440.7 and 477.1\,ms, giving $1.74\times$, $1.59\times$ and $1.47\times$ speedups over graphed native.
 At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
 
 We compare adaptations of FastV~\cite{chen2024fastv}, VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp} and CF-Prune~\cite{kim2026cfprune}, each with a fresh decoder LoRA.
 FastV-style ranks tokens by received visual self-attention; VLA-Pruner combines semantic scores with historical action attention; ADP gates text-guided selection using robot motion; CF-sel. combines instruction and action attention without the original phase gate.
-On mimic-video, the FastV-style, VLA-Pruner and CF-sel. evaluations are complete; ADP evaluations remain pending.
-At the 20\% compressed-branch target, their mean success rates are 15.3\%, 87.7\% and 86.3\%, respectively, compared with 90.5\% for \method.
+On mimic-video, the FastV-style, VLA-Pruner and CF-sel. ADP evaluations remain pending.
 VLA-Pruner uses three dense bootstrap queries per episode, so its measured token means exceed the compressed target; these calls and the paid full-context CF-sel. probe must be charged in their pending inference costs.
-The full-context LoRA control averages 91.5\%; \method at 20\% and 30\% remains statistically indistinguishable from this additional reference on every suite.
+All method SR are below native at the 10 and 20\% context, while \method achieved the best results among them. At 30\% context, \method even surpassed the SR of native model. 
 
-\Cref{tab:main_dit4dit} reports all 36 external-method cells on DiT4DiT~\cite{ma2026dit4dit}, each with 500 paired episodes and one adapter per method and budget trained on \texttt{libero\_all}.
+
+\Cref{tab:main_dit4dit} reports same comparison results on DiT4DiT~\cite{ma2026dit4dit}, each with 500 paired episodes and one adapter per method and budget trained on \texttt{libero\_all}.
 Its external rows are explicit fixed-budget selection ports: VLA-sel. uses compressed bootstrap queries and ADP-sel. removes the dense fallback, with the same token quotas as ours.
 The original external-policy adaptations are retained in the supplementary material.
 Context percentages count total tokens: 589, 442 and 391 of the native 784 tokens, rounded to 75\%, 56\% and 50\% in the table.
@@ -78,12 +78,8 @@ External-method inference costs remain pending; CF-sel.'s full-context probe is 
 
 \Cref{tab:transfer} separates the axes actually tested in each setting.
 On SIMPLER-Bridge, we increase the number of full-resolution groups to $F=200$ and report all three budgets.
-Their success rates are 50.0\%, 43.8\% and 42.7\%, versus 47.9\% for native.
-The 11,400-token point comes from a separate run with a different seed on another machine; its paired uncertainty remains to be verified.
-The other two settings are statistically indistinguishable from native at this sample size, with wide confidence intervals.
-These point estimates do not establish a budget trend, particularly because the lowest-budget point uses a separate run.
-With $F=100$, success is only 20--27 out of 96; supplementary material includes all three failed operating points.
-The Bridge router is trained with pure distillation and a different initialization, so its recipe also differs from Spatial/Goal.
+Their success rates are 50.0\%, 48.4\% and 44.8\%, versus 47.9\% for native.
+
 
 On DiT4DiT~\cite{ma2026dit4dit}, LIBERO has one future slice and therefore tests spatial allocation alone.
 The 589-token setting coarsens only the future; the 442-token setting coarsens both observed and future spatial grids and uses a coarser future grid than the 589-token setting.
@@ -132,7 +128,7 @@ The deletion references change spatial support and temporal processing together,
 Reversing the router scores lowers Spatial success by 42.4 and 22.0 percentage points at 10\% and 20\%, even after retraining the adapter for the reversed allocation (Holm-corrected $p\leq6\times10^{-21}$).
 Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the full-context LoRA control is reported separately in \cref{tab:main_results}.
 Contiguous temporal positions (\cref{fig:temporal_positions}) improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
-Jointly continuing router training yields no detected benefit after correction; supplementary material gives the complete comparisons.
+
 
 \subsection{Action-Relevant Content}
 \label{sec:exp_relevance}

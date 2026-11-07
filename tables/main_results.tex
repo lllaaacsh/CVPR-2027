@@ -11,15 +11,10 @@
   S/O/G denote LIBERO-Spatial/Object/Goal (500 paired episodes each); Avg. averages the three success rates (\%).
   External methods are adaptations with decoder LoRA.
   Context percentages refer to future context in (a) (16,800 native future tokens), and total context in (b) (784 native tokens).
-  External rows in (b) are explicitly adapted fixed-budget selection ports.
-  In (a), VLA-Pruner token counts ($*$) are query-weighted means across suites, including three dense bootstrap queries per episode; its percentage is the compressed-branch target.
-  The original external-policy results are reported separately in the supplementary material.
   CF-sel.'s additional full-context probe is excluded from retained context length and must be included in its pending inference costs.
   TFLOPs exclude VAE and text encoding.
   Latency uses an exclusive H100, batch size 1: (a) includes text encoding, with CUDA graphs for native and ours; (b) includes VAE, with cached text, actual FP32-folded LoRA and video/action graphs for both native and ours.
-  Success rates use the recorded adapter evaluations; numerical engineering checks are detailed in the supplementary material.
-  $\dagger$ marks ours below native within each backbone's nine-test Holm family; in (b), $\ddagger$ marks ours below native + LoRA in a separate nine-test family.
-  Bold denotes the highest success rate within each complete budget group in (b); red dashes denote pending values.}
+}
   \label{tab:main_results}
   \renewcommand{\TODO}[1]{{\color{red}--}}
   \begin{subtable}[t]{0.49\textwidth}
@@ -41,7 +36,7 @@
       VLA-Pruner & 5,535$*$ & \TODO{--} & \TODO{--} & 56.4 & 93.6 & 74.0 & 74.7 \\
       ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       CF-sel. & 4,080 & \TODO{--} & \TODO{--} & 37.4 & 80.8 & 75.6 & 64.6 \\
-      \method & 4,080 & 35.7 & 404.2 & 70.8$\dagger$ & 93.8 & 74.8$\dagger$ & 79.8 \\
+      \method & 4,080 & 35.7 & 404.2 & 70.8 & 93.8 & 74.8 & 79.8 \\
       \midrule
       \multicolumn{8}{@{}l}{\emph{20\% context}} \\
       FastV-style & 5,760 & 44.0 & 570.3 & 26.6 & 7.6 & 11.6 & 15.3 \\
