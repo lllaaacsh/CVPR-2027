@@ -1,0 +1,30 @@
+% Source: main_results_dit4dit_sources.json; original 2026-11-05 protocol.
+\begin{table*}[t]
+  \centering
+  \caption{\textbf{Original external-policy adaptations on DiT4DiT.}
+  These results retain the initial observation-preserving selectors, VLA-Pruner's three dense warm-start queries and ADP's trajectory-gated dense fallback.
+  Target is the compressed-branch length; Mean is the per-episode mean context averaged across all three suites, including dense calls.
+  Each completed success rate uses 500 paired episodes.
+  CF-sel.'s additional full-context probe is extra work beyond the retained context; no-LoRA is the training-free selection arm.
+  These are distinct from the pending fixed-context selection ports in the main table.}
+  \label{tab:dit4dit_original_external}
+  \footnotesize
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{lrrrrrr}
+    \toprule
+    Original adaptation & Target & Mean context & Spatial & Object & Goal & Avg. \\
+    \midrule
+    FastV-style & 589 & 589.0 & 98.0 & 100.0 & 98.4 & 98.8 \\
+    VLA-Pruner & 589 & 630.9 & 98.6 & 99.6 & 98.8 & 99.0 \\
+    ADP & 589 & 703.4 & 98.0 & 99.8 & 97.6 & 98.5 \\
+    CF-sel. + LoRA & 589 & \TODO{--} & 98.8 & \TODO{--} & 98.6 & \TODO{--} \\
+    CF-sel., no LoRA & 589 & 589.0 & 98.4 & 100.0 & 98.4 & 98.9 \\
+    \midrule
+    FastV-style & 442 & 442.0 & 94.4 & 99.4 & 92.4 & 95.4 \\
+    VLA-Pruner & 442 & \TODO{--} & 97.4 & \TODO{--} & 97.8 & \TODO{--} \\
+    ADP & 442 & 638.5 & 98.4 & 99.6 & 98.4 & 98.8 \\
+    CF-sel. + LoRA & 442 & 442.0 & 97.2 & 99.2 & 96.4 & 97.6 \\
+    CF-sel., no LoRA & 442 & 442.0 & 96.2 & 97.8 & 93.6 & 95.9 \\
+    \bottomrule
+  \end{tabular}
+\end{table*}

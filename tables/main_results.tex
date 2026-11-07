@@ -8,7 +8,10 @@
   \caption{\textbf{Accuracy and inference cost on two WAM backbones.}
   S/O/G denote LIBERO-Spatial/Object/Goal (500 paired episodes each); Avg. averages the three success rates (\%).
   External methods are adaptations with decoder LoRA.
-  Tokens average per-episode context lengths, including dense calls; CF-sel.'s additional full-context probe is excluded from this retained length and must be included in its pending inference costs.
+  Context percentages refer to future context in (a) (16,800 native future tokens), and total context in (b) (784 native tokens).
+  FB denotes explicitly adapted fixed-budget selection ports; their new evaluations are pending.
+  The original external-policy results are reported separately in the supplementary material.
+  CF-sel.'s additional full-context probe is excluded from retained context length and must be included in its pending inference costs.
   TFLOPs exclude VAE and text encoding.
   Latency uses an exclusive H100, batch size 1: (a) includes text encoding, with CUDA graphs for native and ours; (b) includes VAE, with cached text, as-evaluated LoRA and no graphs.
   $\dagger$ marks ours below native after Holm correction within each backbone's nine tests; red dashes denote pending values.}
@@ -16,7 +19,7 @@
   \renewcommand{\TODO}[1]{{\color{red}--}}
   \begin{subtable}[t]{0.49\textwidth}
     \centering
-    \caption{mimic-video: 10/20/30\% future-token budgets.}
+    \caption{mimic-video on LIBERO.}
     \label{tab:main_mimic}
     \footnotesize
     \setlength{\tabcolsep}{1.5pt}
@@ -28,21 +31,21 @@
       Native & 19,200 & 98.0 & 701.7 & 90.4 & 94.0 & 90.2 & 91.5 \\
       Native + LoRA & 19,200 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       \midrule
-      \multicolumn{8}{@{}l}{\emph{10\% future; all 2,400 observation tokens retained}} \\
+      \multicolumn{8}{@{}l}{\emph{10\% context}} \\
       FastV-style & 4,080 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       VLA-Pruner & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       CF-sel. & 4,080 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       \method & 4,080 & 35.7 & 404.2 & 70.8$\dagger$ & 93.8 & 74.8$\dagger$ & 79.8 \\
       \midrule
-      \multicolumn{8}{@{}l}{\emph{20\% future; all 2,400 observation tokens retained}} \\
+      \multicolumn{8}{@{}l}{\emph{20\% context}} \\
       FastV-style & 5,760 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       VLA-Pruner & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       CF-sel. & 5,760 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       \method & 5,760 & 42.7 & 440.7 & 88.2 & 94.0 & 89.4 & 90.5 \\
       \midrule
-      \multicolumn{8}{@{}l}{\emph{30\% future; all 2,400 observation tokens retained}} \\
+      \multicolumn{8}{@{}l}{\emph{30\% context}} \\
       FastV-style & 7,440 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       VLA-Pruner & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
       ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
@@ -59,8 +62,5 @@
     \setlength{\tabcolsep}{1.5pt}
     \renewcommand{\arraystretch}{1.06}
     \input{tables/main_results_dit4dit}
-    \par\smallskip
-    \parbox{\linewidth}{\footnotesize External rows at 391 are infeasible with all 392 observation tokens retained.
-    LIBERO has one future slice, so temporal allocation is inactive.}
   \end{subtable}
 \end{table*}

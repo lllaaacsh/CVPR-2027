@@ -820,5 +820,41 @@
       }
     }
   ],
-  "table_native_test_family": "nine displayed ours-vs-native comparisons (three budgets x three suites); paired two-sided exact McNemar, Holm correction"
+  "table_native_test_family": "nine displayed ours-vs-native comparisons (three budgets x three suites); paired two-sided exact McNemar, Holm correction",
+  "table_revision_2026_11_07": {
+    "context_percent_denominator": 784,
+    "main_table_excludes_legacy_variable_context_results": [
+      "ext_vla_pruner_k197",
+      "ext_vla_pruner_k50",
+      "ext_adp_k197",
+      "ext_adp_k50"
+    ],
+    "pending_fixed_context_rows": {
+      "589": [
+        "fastv",
+        "vla_pruner",
+        "adp",
+        "cf_selection"
+      ],
+      "442": [
+        "fastv",
+        "vla_pruner",
+        "adp",
+        "cf_selection"
+      ],
+      "391": [
+        "fastv",
+        "vla_pruner",
+        "adp",
+        "cf_selection"
+      ]
+    },
+    "legacy_records": "Retained below for audit only; not success rates for pending fixed-context ports.",
+    "context_percent_denominators": {
+      "mimic": "16800 future tokens",
+      "dit4dit": "784 total tokens"
+    },
+    "confirmed_protocol_choice": "Per-call fixed-context selection ports, explicit FB names; legacy policies retained in supplementary table; new results need their own complete paired evaluations.",
+    "registration": "mimic docs/DIT4DIT_FIXED_CONTEXT_PREREG_2026-11-07.md"
+  }
 }

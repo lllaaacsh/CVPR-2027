@@ -35,7 +35,7 @@ For DiT4DiT, the 442-token LIBERO setting pools all future spatial groups and ad
 
 Confidence intervals describe paired episode differences, not variation over independently trained models.
 All adapter configurations use one training seed.
-The nine ours--native comparisons in the main table use a common Holm family; its Object 30\% adjusted $p$-value is 0.250.
+The nine mimic-video ours--native comparisons in the main table use a common Holm family; its Object 30\% adjusted $p$-value is 0.250.
 The deletion reference comparisons are separate from that family and do not change the dagger marks.
 The original Goal/Object ours--deletion analysis uses a post-hoc family of 12 contrasts, as documented with the results.
 
@@ -43,9 +43,34 @@ The timing benchmark uses Spatial checkpoints on an exclusively allocated H100, 
 There are three warmup calls and eight interleaved rounds of four calls per arm; reported values are medians of 32 synchronized wall-clock measurements.
 The graphed native reference is 701.7\,ms; the eager native reference has median 770.4\,ms across the three budget runs.
 The deployed 10\%/20\%/30\% configurations run in 404.2/440.7/477.1\,ms and use 35.7/42.7/49.6 TFLOPs per query.
-Speedups relative to graphed native are reported in the main table; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
+Speedups relative to graphed native are reported in the main text; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
 The folded-adapter configuration is the one used for timing; these measurements are not a separate closed-loop evaluation of graph/fold equivalence.
-\TODO{Numerical equivalence checks for the deployed fold/graph configuration, deletion/external-method timing, and DiT4DiT timing.}
+For DiT4DiT, an exclusively allocated H100 runs ten warmup calls and 50 measured calls per configuration, with batch size one and no CUDA graphs.
+The synchronized wall-clock measurement includes the single-frame VAE and uses cached text; native and compressed configurations share both conventions and stop at the action head's extraction layer.
+Native takes 57.7\,ms; the evaluated 589/442/391-token configurations with unfused LoRA take 66.2/66.6/66.9\,ms.
+Separate stage measurements show backbone time of 21.7\,ms for native versus 24.2--24.5\,ms compressed, and action-head time of 22.1\,ms versus 28.6--28.7\,ms with LoRA.
+These measurements establish overhead at these stages, but do not isolate a kernel-level cause.
+Disabling the LoRA branch gives a 60.2--60.9\,ms compute proxy; a policy with folded trained weights has not been validated, so this proxy is not substituted for the evaluated latency.
+
+The earlier DiT4DiT FLOPs comparison uses a released 4.91-TFLOP pipeline with a padded VAE encode.
+Encoding only the real observed frame reduces this to 2.90 TFLOPs and is shared by native and ours.
+With this common change, the evaluated 589/442/391-token configurations use 2.45/2.10/1.98 TFLOPs including VAE; the main table excludes the common 0.67-TFLOP VAE cost.
+Thus the earlier reductions relative to the released path describe arithmetic, not wall-clock speedup or compression alone.
+\TODO{Numerical equivalence checks for the deployed mimic-video fold/graph configuration and deletion/external-method timing.}
+
+\section{Original External-Policy Adaptations}
+\label{sec:supp_original_external}
+
+\input{tables/dit4dit_original_external}
+
+The original VLA-Pruner and ADP adaptations use more context than their compressed-branch targets because of dense calls (\cref{tab:dit4dit_original_external}).
+They therefore do not constitute fixed-context comparisons.
+The main table instead reserves explicit fixed-budget selection ports (FB), with 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 total context tokens.
+ADP-sel. removes trajectory-gated dense fallback and tests the text-guided selection component.
+VLA-sel. uses three semantic-only compressed bootstrap queries and scatters their action attention to source positions before maintaining its causal history.
+FastV-style and CF-sel. also select observation tokens at the two lower budgets; their selection scores and source positions remain method-specific.
+CF-sel. retains a paid full-context probe, which must be included in its inference cost.
+All fixed-context ports use a fresh matched decoder adapter; their old-policy success rates are not reused.
 
 \section{Additional Transfer and Router-Training Results}
 \label{sec:supp_transfer}

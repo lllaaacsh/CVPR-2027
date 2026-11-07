@@ -26,7 +26,7 @@ All configurations use evaluation seed 0 and the same task-specific initial stat
 The video model runs a single forward pass, and the policy executes five actions before replanning.
 Native denotes the original policy evaluated on the full context.
 
-Budgets retain 10\%, 20\% or 30\% of the 16,800 future tokens after video block 2, while preserving all 2,400 observation tokens.
+For mimic-video, 10\%, 20\% and 30\% context refer to the retained fraction of the 16,800 future tokens after video block 2, with all 2,400 observation tokens retained.
 The resulting context lengths are 4,080, 5,760 and 7,440, versus 19,200 for native.
 The spatial stage keeps 100 of 300 groups at full resolution.
 In increasing priority order, 120, 180 and 300 tubes receive $(1,2,4)$, $(3,5,7)$ or $(5,8,10)$ segments at the respective budgets.
@@ -34,6 +34,7 @@ For each suite and budget, we freeze the router and train the router together wi
 
 We use two-sided exact McNemar tests and report statistically indistinguishable results at the available sample size, rather than infer equivalence.
 The nine ours--native suite--budget comparisons form one Holm-corrected family at $\alpha=0.05$.
+The 36 DiT4DiT fixed-budget external--ours comparisons form a separate Holm family (four selection ports, three budgets and three suites).
 
 Efficiency is measured per policy query with Spatial checkpoints, batch size one, on an exclusively allocated H100, including text encoding.
 We report median wall-clock latency over 32 calls in eight interleaved rounds after warmup.
@@ -45,7 +46,7 @@ We report median wall-clock latency over 32 calls in eight interleaved rounds af
 \input{tables/main_results}
 
 \Cref{tab:main_mimic} measures how much of the native representation each configuration requires for control.
-At 20\% of the future tokens, \method reaches 88.2\%, 94.0\% and 89.4\% on Spatial, Object and Goal, respectively, and is statistically indistinguishable from native on every suite.
+At 20\% future context, \method reaches 88.2\%, 94.0\% and 89.4\% on Spatial, Object and Goal, respectively, and is statistically indistinguishable from native on every suite.
 The mean success rate is 90.5\%, versus 91.5\% for native, with 5,760 rather than 19,200 tokens after routing.
 At 30\%, the mean is 92.9\%; all three suites remain statistically indistinguishable from native after correction.
 At 10\%, Spatial and Goal fall significantly below native, whereas Object remains statistically indistinguishable from it.
@@ -54,13 +55,17 @@ At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
 
 We compare adaptations of FastV~\cite{chen2024fastv}, VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp} and CF-Prune~\cite{kim2026cfprune} at the same early selection point, each with a fresh decoder LoRA.
 FastV-style ranks tokens by received visual self-attention; VLA-Pruner combines semantic scores with historical action attention; ADP gates text-guided selection using robot motion; CF-sel. combines instruction and action attention without the original phase gate.
-VLA-Pruner's dense warm starts and ADP's dense queries increase their actual mean context lengths; CF-sel. additionally requires a full-context probe per query.
+For DiT4DiT, the initial VLA-Pruner and ADP adaptations exceed their nominal context budgets because of dense warm starts and dense queries; their results are retained in the supplementary material.
+The main table reserves fixed-budget selection ports (FB), including compressed VLA bootstrap queries and ADP selection without dense fallback, with the same observed/future token quotas as ours.
+CF-sel. additionally requires a full-context probe per query, whose cost remains to be measured.
 Pending cells and external inference costs remain explicitly marked.
 Native + LoRA uses the full context and the same fresh-adapter training recipe.
 
 \Cref{tab:main_dit4dit} adds the same external methods on DiT4DiT~\cite{ma2026dit4dit}, with 500 paired episodes per suite and one adapter per budget trained jointly across the three suites.
 Its 589-token configuration coarsens future space; 442 and 391 tokens also coarsen observed space.
-The external methods preserve all 392 observation tokens, so the 391-token target is infeasible for them.
+DiT4DiT context percentages count total tokens: 75.1\%, 56.4\% and 49.9\% of native.
+The fixed-budget ports also select observation tokens at the two lower budgets.
+\TODO{Complete the 36 paired suite--budget evaluations of the four explicitly adapted fixed-budget selection ports.}
 LIBERO has only one future latent slice on this backbone, so this comparison tests spatial allocation.
 At 589 and 442 tokens, ours is statistically indistinguishable from native on each suite; at 391 tokens, Goal is significantly below native after correction.
 The measured adapted configurations reduce FLOPs but take 66.2--66.9\,ms per query versus 57.7\,ms for native; they provide no wall-clock speedup in this setting.
