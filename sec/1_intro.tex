@@ -45,6 +45,8 @@ Acting in the scene asks for something narrower: the next actions depend mostly 
 Yet the action decoder receives the full, generation-shaped representation, and the video model computes all of it at full resolution, regardless of which parts the action actually uses.
 Whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has so far received little attention.
 
+\input{figures/teaser}
+
 A natural tool for making such a representation more compact is token reduction, which merges tokens that look alike~\cite{bolya2023tome} or discards tokens that receive little attention.
 These criteria, however, describe the image rather than the task: they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it.
 What is redundant for describing a scene need not be what is irrelevant for acting in it.
