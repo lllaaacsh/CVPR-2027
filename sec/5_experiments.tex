@@ -39,12 +39,12 @@ Efficiency is measured per policy query with Spatial checkpoints, batch size one
 We report median wall-clock latency over 32 calls in eight interleaved rounds after warmup.
 
 
-\subsection{Accuracy and Efficiency on mimic-video}
+\subsection{Accuracy and Efficiency on Two Backbones}
 \label{sec:exp_main}
 
 \input{tables/main_results}
 
-\Cref{tab:main_results} measures how much of the native representation each configuration requires for control.
+\Cref{tab:main_mimic} measures how much of the native representation each configuration requires for control.
 At 20\% of the future tokens, \method reaches 88.2\%, 94.0\% and 89.4\% on Spatial, Object and Goal, respectively, and is statistically indistinguishable from native on every suite.
 The mean success rate is 90.5\%, versus 91.5\% for native, with 5,760 rather than 19,200 tokens after routing.
 At 30\%, the mean is 92.9\%; all three suites remain statistically indistinguishable from native after correction.
@@ -52,11 +52,18 @@ At 10\%, Spatial and Goal fall significantly below native, whereas Object remain
 The corresponding deployed latencies are 404.2, 440.7 and 477.1\,ms, giving $1.74\times$, $1.59\times$ and $1.47\times$ speedups over graphed native.
 At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
 
-The pending external reference is a FastV-style early-attention adaptation~\cite{chen2024fastv} to the video backbone.
-It ranks future tokens by the self-attention they receive in block 2, averaged over all visual queries and heads, and retains the exact top-$k$ tokens with their original features and positions.
-This visual self-attention score is an explicit adaptation, rather than a reproduction of the original vision-language model algorithm.
-\TODO{Complete its nine suite--budget evaluations and the three native + LoRA evaluations before making cross-method or adaptation-attribution claims.
-Native + LoRA uses the full context and the same fresh-adapter training recipe.}
+We compare adaptations of FastV~\cite{chen2024fastv}, VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp} and CF-Prune~\cite{kim2026cfprune} at the same early selection point, each with a fresh decoder LoRA.
+FastV-style ranks tokens by received visual self-attention; VLA-Pruner combines semantic scores with historical action attention; ADP gates text-guided selection using robot motion; CF-sel. combines instruction and action attention without the original phase gate.
+VLA-Pruner's dense warm starts and ADP's dense queries increase their actual mean context lengths; CF-sel. additionally requires a full-context probe per query.
+Pending cells and external inference costs remain explicitly marked.
+Native + LoRA uses the full context and the same fresh-adapter training recipe.
+
+\Cref{tab:main_dit4dit} adds the same external methods on DiT4DiT~\cite{ma2026dit4dit}, with 500 paired episodes per suite and one adapter per budget trained jointly across the three suites.
+Its 589-token configuration coarsens future space; 442 and 391 tokens also coarsen observed space.
+The external methods preserve all 392 observation tokens, so the 391-token target is infeasible for them.
+LIBERO has only one future latent slice on this backbone, so this comparison tests spatial allocation.
+At 589 and 442 tokens, ours is statistically indistinguishable from native on each suite; at 391 tokens, Goal is significantly below native after correction.
+The measured adapted configurations reduce FLOPs but take 66.2--66.9\,ms per query versus 57.7\,ms for native; they provide no wall-clock speedup in this setting.
 
 \subsection{Transfer across Backbones and Benchmarks}
 \label{sec:exp_transfer}
@@ -79,7 +86,7 @@ On RoboCasa-GR1, temporal-only allocation reduces 588 tokens to 539 or 490; both
 Joint future-space and temporal allocation reduces the sequence to 466 tokens, a 20.7\% reduction, and achieves 55.0\% success versus 54.9\% for native over 1,200 paired episodes.
 This joint setting is also statistically indistinguishable from native ($p=1.00$; paired difference $+0.08$ points, 95\% CI [$-2.66$,$+2.83$]), which does not establish equivalence.
 It was selected after inspecting intermediate results and evaluated with one training seed, so it is an exploratory follow-up.
-\TODO{Measure DiT4DiT latency before claiming faster inference.}
+DiT4DiT latency is reported in \cref{tab:main_dit4dit}; lower token counts and FLOPs do not translate into lower wall-clock latency in this setting.
 
 \subsection{Allocation and Adaptation Ablations}
 \label{sec:exp_ablation}

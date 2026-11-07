@@ -1,0 +1,25 @@
+% Complete 500-episode cells only; incomplete cells retain TODO.
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrrr@{}}
+  \toprule
+  Method & Tokens & TFLOPs $\downarrow$ & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & Avg. $\uparrow$ \\
+  \midrule
+  Native & 784 & 2.23 & 57.7 & 98.6 & 99.4 & 98.6 & 98.9 \\
+  \midrule
+  \multicolumn{8}{@{}l}{\emph{589-token target; ours coarsens future space}} \\
+  FastV-style & 589 & \TODO{--} & \TODO{--} & 98.0 & 100.0 & 98.4 & 98.8 \\
+  VLA-Pruner & 630.9 & \TODO{--} & \TODO{--} & 98.6 & 99.6 & 98.8 & 99.0 \\
+  ADP & 703.4 & \TODO{--} & \TODO{--} & 98.0 & 99.8 & 97.6 & 98.5 \\
+  CF-sel. & 589 & \TODO{--} & \TODO{--} & 98.8 & \TODO{--} & 98.6 & \TODO{--} \\
+  \method & 589 & 1.77 & 66.2 & 98.0 & 100.0 & 98.6 & 98.9 \\
+  \midrule
+  \multicolumn{8}{@{}l}{\emph{442-token target; future + observed space}} \\
+  FastV-style & 442 & \TODO{--} & \TODO{--} & 94.4 & 99.4 & 92.4 & 95.4 \\
+  VLA-Pruner & \TODO{--} & \TODO{--} & \TODO{--} & 97.4 & \TODO{--} & 97.8 & \TODO{--} \\
+  ADP & 638.5 & \TODO{--} & \TODO{--} & 98.4 & 99.6 & 98.4 & 98.8 \\
+  CF-sel. & 442 & \TODO{--} & \TODO{--} & 97.2 & 99.2 & 96.4 & 97.6 \\
+  \method & 442 & 1.43 & 66.6 & 98.0 & 98.6 & 98.2 & 98.3 \\
+  \midrule
+  \multicolumn{8}{@{}l}{\emph{391 tokens; future + observed space}} \\
+  \method & 391 & 1.31 & 66.9 & 98.0 & 98.2 & 95.6$\dagger$ & 97.3 \\
+  \bottomrule
+\end{tabular*}

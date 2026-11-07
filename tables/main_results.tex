@@ -1,37 +1,66 @@
-% Sources: mimic docs/CONTIG_SUITE_EXTENSION.md section 6;
-% figures/paper/figure_numbers.json;
-% eval/analysis/results/teaser_latency_48432029/latency_r{10,20,30}.json.
-% Rank/bold formatting is deferred until external-baseline results are complete.
+% mimic sources: docs/CONTIG_SUITE_EXTENSION.md section 6;
+% figures/paper/figure_numbers.json; teaser_latency_48432029/latency_r*.json.
+% DiT4DiT sources: docs/DIT4DIT_TABLE1_PREREG_2026-11-05.md;
+% tables/main_results_dit4dit_sources.json (CSV hashes, counts, token means, latency).
+% Bold formatting is deferred until all external-baseline cells are complete.
 \begin{table*}[t]
   \centering
-  \caption{\textbf{Accuracy and inference cost on mimic-video.}
-  Each success rate uses 500 paired LIBERO episodes; Avg. is the mean of the three suites.
-  Budgets count future tokens; all 2,400 observation tokens remain.
-  Efficiency is measured with Spatial checkpoints on an exclusively allocated H100, batch size 1, including text encoding.
-  Speedup uses the graphed native latency.
-  $\dagger$ marks ours below native after Holm correction over its nine suite--budget tests.
-  FastV-style denotes a visual-attention adaptation; its results and the full-context-adapted results are pending.}
+  \caption{\textbf{Accuracy and inference cost on two WAM backbones.}
+  S/O/G denote LIBERO-Spatial/Object/Goal (500 paired episodes each); Avg. averages the three success rates (\%).
+  External methods are adaptations with decoder LoRA.
+  Tokens average per-episode context lengths, including dense calls; CF-sel.'s additional full-context probe is excluded from this retained length and must be included in its pending inference costs.
+  TFLOPs exclude VAE and text encoding.
+  Latency uses an exclusive H100, batch size 1: (a) includes text encoding, with CUDA graphs for native and ours; (b) includes VAE, with cached text, as-evaluated LoRA and no graphs.
+  $\dagger$ marks ours below native after Holm correction within each backbone's nine tests; red dashes denote pending values.}
   \label{tab:main_results}
-  \footnotesize
-  \setlength{\tabcolsep}{3pt}
-  \begin{tabular}{lrrrrrrrr}
-    \toprule
-    Method & Tokens & TFLOPs $\downarrow$ & ms $\downarrow$ & Speedup & Spatial $\uparrow$ & Object $\uparrow$ & Goal $\uparrow$ & Avg. $\uparrow$ \\
-    \midrule
-    Native & 19,200 & 98.0 & 701.7 & $1.00\times$ & 90.4 & 94.0 & 90.2 & 91.5 \\
-    Native + LoRA & 19,200 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
-    \midrule
-    \multicolumn{9}{l}{\emph{10\% of future tokens}} \\
-    FastV-style + LoRA & 4,080 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
-    \method & 4,080 & 35.7 & 404.2 & $1.74\times$ & 70.8$\dagger$ & 93.8 & 74.8$\dagger$ & 79.8 \\
-    \midrule
-    \multicolumn{9}{l}{\emph{20\% of future tokens}} \\
-    FastV-style + LoRA & 5,760 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
-    \method & 5,760 & 42.7 & 440.7 & $1.59\times$ & 88.2 & 94.0 & 89.4 & 90.5 \\
-    \midrule
-    \multicolumn{9}{l}{\emph{30\% of future tokens}} \\
-    FastV-style + LoRA & 7,440 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
-    \method & 7,440 & 49.6 & 477.1 & $1.47\times$ & 92.0 & 96.4 & 90.2 & 92.9 \\
-    \bottomrule
-  \end{tabular}
+  \renewcommand{\TODO}[1]{{\color{red}--}}
+  \begin{subtable}[t]{0.49\textwidth}
+    \centering
+    \caption{mimic-video: 10/20/30\% future-token budgets.}
+    \label{tab:main_mimic}
+    \footnotesize
+    \setlength{\tabcolsep}{1.5pt}
+    \renewcommand{\arraystretch}{1.06}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrrr@{}}
+      \toprule
+      Method & Tokens & TFLOPs $\downarrow$ & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & Avg. $\uparrow$ \\
+      \midrule
+      Native & 19,200 & 98.0 & 701.7 & 90.4 & 94.0 & 90.2 & 91.5 \\
+      Native + LoRA & 19,200 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      \midrule
+      \multicolumn{8}{@{}l}{\emph{10\% future; all 2,400 observation tokens retained}} \\
+      FastV-style & 4,080 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      VLA-Pruner & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      CF-sel. & 4,080 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      \method & 4,080 & 35.7 & 404.2 & 70.8$\dagger$ & 93.8 & 74.8$\dagger$ & 79.8 \\
+      \midrule
+      \multicolumn{8}{@{}l}{\emph{20\% future; all 2,400 observation tokens retained}} \\
+      FastV-style & 5,760 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      VLA-Pruner & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      CF-sel. & 5,760 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      \method & 5,760 & 42.7 & 440.7 & 88.2 & 94.0 & 89.4 & 90.5 \\
+      \midrule
+      \multicolumn{8}{@{}l}{\emph{30\% future; all 2,400 observation tokens retained}} \\
+      FastV-style & 7,440 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      VLA-Pruner & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      CF-sel. & 7,440 & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
+      \method & 7,440 & 49.6 & 477.1 & 92.0 & 96.4 & 90.2 & 92.9 \\
+      \bottomrule
+    \end{tabular*}
+  \end{subtable}\hfill
+  \begin{subtable}[t]{0.49\textwidth}
+    \centering
+    \caption{DiT4DiT: spatial allocation on LIBERO.}
+    \label{tab:main_dit4dit}
+    \footnotesize
+    \setlength{\tabcolsep}{1.5pt}
+    \renewcommand{\arraystretch}{1.06}
+    \input{tables/main_results_dit4dit}
+    \par\smallskip
+    \parbox{\linewidth}{\footnotesize External rows at 391 are infeasible with all 392 observation tokens retained.
+    LIBERO has one future slice, so temporal allocation is inactive.}
+  \end{subtable}
 \end{table*}
