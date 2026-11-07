@@ -60,6 +60,8 @@ The main table reserves fixed-budget selection ports (FB), including compressed 
 CF-sel. additionally requires a full-context probe per query, whose cost remains to be measured.
 Pending cells and external inference costs remain explicitly marked.
 Native + LoRA uses the full context and the same fresh-adapter training recipe.
+For DiT4DiT, this control uses one adapter trained on \texttt{libero\_all} for 1,500 steps, followed by 500 paired episodes per suite at the full 784-token context.
+\TODO{Complete the DiT4DiT full-context LoRA control and its folded, graphed deployment measurements; assess the compressed configurations against this additional reference.}
 
 \Cref{tab:main_dit4dit} adds the same external methods on DiT4DiT~\cite{ma2026dit4dit}, with 500 paired episodes per suite and one adapter per budget trained jointly across the three suites.
 Its 589-token configuration coarsens future space; 442 and 391 tokens also coarsen observed space.

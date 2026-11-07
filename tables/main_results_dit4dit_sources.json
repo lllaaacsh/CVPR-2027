@@ -1171,5 +1171,23 @@
         "artifact_sha256": "4f4ce0bd225342e063778a92ddede9cb88f340b08440ba67a3afdfeb6c5bc3d9"
       }
     }
+  },
+  "native_lora_control": {
+    "status": "pending; no accuracy or efficiency values filled",
+    "protocol": "dit4dit-native-lora-2026-11-07-v1",
+    "preregistration": "mimic-video-repro/docs/DIT4DIT_NATIVE_LORA_PREREG_2026-11-07.md",
+    "training": "one libero_all adapter; 1500 optimizer steps; accumulation 8; rank 16 alpha 8; validation every 500 steps, 240 batches",
+    "context_tokens": 784,
+    "paired_episodes_per_suite": 500,
+    "suites": [
+      "libero_spatial",
+      "libero_object",
+      "libero_goal"
+    ],
+    "smoke_job": 48678716,
+    "controller_job": 48678717,
+    "source_manifest_sha256": "a52c129c71473f14a1d1830c3aa534951238aeaca369626ed04a471e9b76d4c6",
+    "bsc_output_root": "/gpfs/projects/ehpc870/yazhe/dit4dit/eval/native_lora_20261107",
+    "reference_note": "Keep original native and its significance family. New tests use Holm-3 (native+LoRA vs native) and Holm-9 (ours vs native+LoRA)."
   }
 }
