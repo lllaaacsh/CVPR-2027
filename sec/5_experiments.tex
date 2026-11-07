@@ -90,6 +90,11 @@ This joint setting is also statistically indistinguishable from native ($p=1.00$
 It was selected after inspecting intermediate results and evaluated with one training seed, so it is an exploratory follow-up.
 LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 latency remains to be measured.
 
+\subsection{Real Robot Experiment}
+\label{sec:exp_real_robot}
+
+\TODO{Experimental setup and results to be added.}
+
 \subsection{Allocation and Adaptation Ablations}
 \label{sec:exp_ablation}
 
@@ -129,9 +134,6 @@ Reversing the router scores lowers Spatial success by 42.4 and 22.0 percentage p
 Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the full-context LoRA control is reported separately in \cref{tab:main_results}.
 Contiguous temporal positions (\cref{fig:temporal_positions}) improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
 
-
-\subsection{Action-Relevant Content}
-\label{sec:exp_relevance}
 
 Offline spatial coarsening gives lower action distortion with router scores than with similarity, motion, block-2 self-attention, edge energy or random selection (Holm-corrected $p\leq4.2\times10^{-4}$).
 The respective router-to-criterion distortion ratios are 0.495, 0.478, 0.785, 0.838 and 0.598.
