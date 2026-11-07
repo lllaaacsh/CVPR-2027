@@ -1,3 +1,5 @@
+% Refilled 2026-11-07 from completed_table_audit_20261107; only verified n=500 cells.
+% Companion provenance: main_results_mimic_sources.json / main_results_dit4dit_sources.json.
 % mimic sources: docs/CONTIG_SUITE_EXTENSION.md section 6;
 % figures/paper/figure_numbers.json; teaser_latency_48432029/latency_r*.json.
 % DiT4DiT sources: docs/DIT4DIT_TABLE1_PREREG_2026-11-05.md;
@@ -32,27 +34,27 @@
       Method & Tokens & TFLOPs $\downarrow$ & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & Avg. $\uparrow$ \\
       \midrule
       Native & 19,200 & 98.0 & 701.7 & 90.4 & 94.0 & 90.2 & 91.5 \\
-  Native + LoRA & 19,200 & 98.0 & 704.0 & 91.6 & 93.2 & 89.8 & 91.5 \\
+      Native + LoRA & 19,200 & 98.0 & 704.0 & 91.6 & 93.2 & 89.8 & 91.5 \\
       \midrule
       \multicolumn{8}{@{}l}{\emph{10\% context}} \\
-  FastV-style & 4,080 & 37.1 & 538.2 & 2.2 & 5.0 & 2.0 & 3.1 \\
-  VLA-Pruner & 5,535$*$ & \TODO{--} & \TODO{--} & 56.4 & 93.6 & 74.0 & 74.7 \\
+      FastV-style & 4,080 & 37.1 & 538.2 & 2.2 & 5.0 & 2.0 & 3.1 \\
+      VLA-Pruner & 5,535$*$ & \TODO{--} & \TODO{--} & 56.4 & 93.6 & 74.0 & 74.7 \\
       ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
-  CF-sel. & 4,080 & \TODO{--} & \TODO{--} & 37.4 & 80.8 & 75.6 & 64.6 \\
+      CF-sel. & 4,080 & \TODO{--} & \TODO{--} & 37.4 & 80.8 & 75.6 & 64.6 \\
       \method & 4,080 & 35.7 & 404.2 & 70.8$\dagger$ & 93.8 & 74.8$\dagger$ & 79.8 \\
       \midrule
       \multicolumn{8}{@{}l}{\emph{20\% context}} \\
-  FastV-style & 5,760 & 44.0 & 570.3 & 26.6 & 7.6 & 11.6 & 15.3 \\
-  VLA-Pruner & 7,240$*$ & \TODO{--} & \TODO{--} & 83.8 & 93.4 & 85.8 & 87.7 \\
+      FastV-style & 5,760 & 44.0 & 570.3 & 26.6 & 7.6 & 11.6 & 15.3 \\
+      VLA-Pruner & 7,240$*$ & \TODO{--} & \TODO{--} & 83.8 & 93.4 & 85.8 & 87.7 \\
       ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
-  CF-sel. & 5,760 & \TODO{--} & \TODO{--} & 78.0 & 93.4 & 87.4 & 86.3 \\
+      CF-sel. & 5,760 & \TODO{--} & \TODO{--} & 78.0 & 93.4 & 87.4 & 86.3 \\
       \method & 5,760 & 42.7 & 440.7 & 88.2 & 94.0 & 89.4 & 90.5 \\
       \midrule
       \multicolumn{8}{@{}l}{\emph{30\% context}} \\
-  FastV-style & 7,440 & 50.9 & 607.0 & 43.0 & 11.6 & 25.2 & 26.6 \\
-  VLA-Pruner & 8,788$*$ & \TODO{--} & \TODO{--} & 89.8 & 94.0 & 90.4 & 91.4 \\
+      FastV-style & 7,440 & 50.9 & 607.0 & 43.0 & 11.6 & 25.2 & 26.6 \\
+      VLA-Pruner & 8,788$*$ & \TODO{--} & \TODO{--} & 89.8 & 94.0 & 90.4 & 91.4 \\
       ADP & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} & \TODO{--} \\
-  CF-sel. & 7,440 & \TODO{--} & \TODO{--} & 85.6 & 93.4 & 89.0 & 89.3 \\
+      CF-sel. & 7,440 & \TODO{--} & \TODO{--} & 85.6 & 93.4 & 89.0 & 89.3 \\
       \method & 7,440 & 49.6 & 477.1 & 92.0 & 96.4 & 90.2 & 92.9 \\
       \bottomrule
     \end{tabular*}

@@ -136,7 +136,17 @@ As a result, temporal detail is concentrated on the tubes that matter for the ac
 Every tube keeps at least one token, so no region disappears from the sequence, and averaging rather than dropping frames keeps information from all of them.
 Because the number of tubes at each level is fixed, every sample is represented by the same number of tokens, independent of the scene.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{contiguous_t.pdf}
+  \caption{\textbf{Temporal positions after segment pooling.}
+  The same four segments are assigned representative source-frame positions $(1,4,8,11)$ by source-t, or consecutive positions $(0,1,2,3)$ by contiguous-t.
+  Positions are relative to the future sequence in this illustration; the pooled segment features are the same before position encoding.}
+  \label{fig:temporal_positions}
+\end{figure}
+
 The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers, so the temporal positions stay consecutive as in the original sequence.
+\Cref{fig:temporal_positions} illustrates these indices alongside the source-t alternative for the same pooled segments.
 This differs from the spatial axis (\cref{sec:spatial}) because the two kinds of position carry different information.
 A spatial position says where a token lies in the scene, and it must stay aligned with the observation frames, which remain on the original grid.
 A temporal position only says in which order the future frames come.

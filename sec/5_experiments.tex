@@ -131,7 +131,7 @@ The deletion references change spatial support and temporal processing together,
 \Cref{tab:ablations} examines the learned allocation and decoder adaptation.
 Reversing the router scores lowers Spatial success by 42.4 and 22.0 percentage points at 10\% and 20\%, even after retraining the adapter for the reversed allocation (Holm-corrected $p\leq6\times10^{-21}$).
 Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the full-context LoRA control is reported separately in \cref{tab:main_results}.
-Contiguous temporal positions improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
+Contiguous temporal positions (\cref{fig:temporal_positions}) improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
 Jointly continuing router training yields no detected benefit after correction; supplementary material gives the complete comparisons.
 
 \subsection{Action-Relevant Content}
