@@ -32,15 +32,14 @@ The spatial stage keeps 100 of 300 groups at full resolution.
 In increasing priority order, 120, 180 and 300 tubes receive $(1,2,4)$, $(3,5,7)$ or $(5,8,10)$ segments at the respective budgets.
 For each suite and budget, we freeze the router and train the router together with a fresh rank-16 decoder cross-attention LoRA with \cref{eq:task_loss}.
 
-We use two-sided exact McNemar tests and report statistically indistinguishable results at the available sample size, rather than infer equivalence.
-The nine ours--native suite--budget comparisons form one Holm-corrected family at $\alpha=0.05$.
-The 36 DiT4DiT fixed-budget external--ours comparisons form a separate Holm family (four selection ports, three budgets and three suites).
+
 
 Efficiency is measured per policy query with Spatial checkpoints, batch size one, on an exclusively allocated H100, including text encoding.
 We report median wall-clock latency over 32 calls in eight interleaved rounds after warmup.
 
 
-\subsection{Accuracy and Efficiency on Two Backbones}
+\subsection{
+Main Results}
 \label{sec:exp_main}
 
 \input{tables/main_results}
