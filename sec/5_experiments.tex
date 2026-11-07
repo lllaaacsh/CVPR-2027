@@ -62,7 +62,7 @@ All method SR are below native at the 10 and 20\% context, while \method achieve
 Its external rows are explicit fixed-budget selection ports: VLA-sel. uses compressed bootstrap queries and ADP-sel. removes the dense fallback, with the same token quotas as ours.
 The original external-policy adaptations are retained in the supplementary material.
 Context percentages count total tokens: 589, 442 and 391 of the native 784 tokens, rounded to 75\%, 56\% and 50\% in the table.
-LIBERO has only one future latent slice on this backbone, so this comparison tests spatial allocation.
+
 At 75\% and 56\% context, \method is statistically indistinguishable from both native and native + LoRA on each suite.
 At 50\%, Goal is significantly below native; Object and Goal are below native + LoRA in their separate nine-test Holm family ($p_H=0.031$ and $0.0066$).
 At this budget, \method is significantly above VLA-sel. and ADP-sel. on all three suites, and above FastV-style on Spatial and Goal, within the 36-test external-method family.
@@ -71,7 +71,7 @@ With FP32-folded adapters and video/action CUDA graphs, the 589/442/391-token co
 These give $1.08\times$, $1.15\times$ and $1.16\times$ speedups; full-context LoRA measures 47.0\,ms in its separate interleaved benchmark.
 External-method inference costs remain pending; CF-sel.'s full-context probe is additional work beyond its retained context.
 
-\subsection{Transfer across Backbones and Benchmarks}
+\subsection{Transfer across Benchmarks}
 \label{sec:exp_transfer}
 
 \input{tables/transfer}
