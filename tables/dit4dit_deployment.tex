@@ -1,0 +1,23 @@
+% Formal deployment48677499; exact artifact hash in main_results_dit4dit_sources.json.
+\begin{table*}[t]
+  \centering
+  \caption{\textbf{DiT4DiT deployment optimizations on an exclusive H100.}
+  Latencies are synchronized wall-clock medians in milliseconds over 32 calls (eight interleaved rounds); all rows include VAE and cached-text retrieval.
+  Fold is actual FP32 weight merging; AG and VG denote action and video CUDA graphs.
+  Native receives the same common optimizations and both graphs.
+  TFLOPs exclude the common 0.672-TFLOP VAE; the 367-token row is a diagnostic point outside the main table.}
+  \label{tab:dit4dit_deployment}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lrrrrrrr}
+    \toprule
+    Configuration & Tokens & Base/live eager & Fold eager & Fold + AG & Fold + AG + VG & TFLOPs & Speedup \\
+    \midrule
+    Native & 784 & 59.1 & -- & 54.5 & 47.2 & 2.229 & $1.00\times$ \\
+    \method & 589 & 68.3 & 61.7 & 54.4 & 43.7 & 1.771 & $1.08\times$ \\
+    \method & 442 & 68.7 & 61.9 & 53.9 & 41.0 & 1.426 & $1.15\times$ \\
+    \method & 391 & 68.6 & 62.0 & 53.6 & 40.6 & 1.308 & $1.16\times$ \\
+    \method & 367 & 68.6 & 61.9 & 53.4 & 40.0 & 1.253 & $1.18\times$ \\
+    \bottomrule
+  \end{tabular}
+\end{table*}

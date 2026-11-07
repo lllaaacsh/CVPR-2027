@@ -13,7 +13,8 @@
   The original external-policy results are reported separately in the supplementary material.
   CF-sel.'s additional full-context probe is excluded from retained context length and must be included in its pending inference costs.
   TFLOPs exclude VAE and text encoding.
-  Latency uses an exclusive H100, batch size 1: (a) includes text encoding, with CUDA graphs for native and ours; (b) includes VAE, with cached text, as-evaluated LoRA and no graphs.
+  Latency uses an exclusive H100, batch size 1: (a) includes text encoding, with CUDA graphs for native and ours; (b) includes VAE, with cached text, actual FP32-folded LoRA and video/action graphs for both native and ours.
+  DiT4DiT success rates use the recorded adapter evaluations; its engineering configuration is numerically checked as detailed in the supplementary material.
   $\dagger$ marks ours below native after Holm correction within each backbone's nine tests; red dashes denote pending values.}
   \label{tab:main_results}
   \renewcommand{\TODO}[1]{{\color{red}--}}

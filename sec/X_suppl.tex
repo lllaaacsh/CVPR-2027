@@ -45,17 +45,32 @@ The graphed native reference is 701.7\,ms; the eager native reference has median
 The deployed 10\%/20\%/30\% configurations run in 404.2/440.7/477.1\,ms and use 35.7/42.7/49.6 TFLOPs per query.
 Speedups relative to graphed native are reported in the main text; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
 The folded-adapter configuration is the one used for timing; these measurements are not a separate closed-loop evaluation of graph/fold equivalence.
-For DiT4DiT, an exclusively allocated H100 runs ten warmup calls and 50 measured calls per configuration, with batch size one and no CUDA graphs.
-The synchronized wall-clock measurement includes the single-frame VAE and uses cached text; native and compressed configurations share both conventions and stop at the action head's extraction layer.
-Native takes 57.7\,ms; the evaluated 589/442/391-token configurations with unfused LoRA take 66.2/66.6/66.9\,ms.
-Separate stage measurements show backbone time of 21.7\,ms for native versus 24.2--24.5\,ms compressed, and action-head time of 22.1\,ms versus 28.6--28.7\,ms with LoRA.
-These measurements establish overhead at these stages, but do not isolate a kernel-level cause.
-Disabling the LoRA branch gives a 60.2--60.9\,ms compute proxy; a policy with folded trained weights has not been validated, so this proxy is not substituted for the evaluated latency.
+\input{tables/dit4dit_deployment}
+
+For DiT4DiT, an exclusively allocated H100 runs three warmup calls followed by eight interleaved rounds of four synchronized calls per configuration, at batch size one.
+Timing includes the VAE, cached-text retrieval, image/state preparation, input copies, current router scores and allocation, the video forward, and all four action-flow steps.
+Cold prompt encoding and graph capture are setup costs outside this steady-state measurement.
+The fixed timing input is the first Spatial task at initial state zero after ten settling steps, with both camera views; it is not an average over suites.
+
+The deployed decoder has native FP32 weights.
+We load all 64 trained adapter tensors, add their scaled products to the 32 affected projections, and remove the low-rank branches, preserving FP32 rather than quantizing the head.
+Projected-prompt caching, the single-real-frame VAE encode, exit at extraction block 17, and both video/action graphs also apply to native.
+Caching fixed geometry and using fixed-size gathers makes the existing one-future-slice allocation graph-compatible; router scores and decisions are recomputed for each current input.
+At 442 tokens, live-adapter eager inference takes 68.7\,ms, actual-fold eager 61.9\,ms, fold plus action graph 53.9\,ms, and fold plus both graphs 41.0\,ms (\cref{tab:dit4dit_deployment}).
+Native changes from 59.1\,ms eager to 47.2\,ms with both graphs; the latter is the common reference for reported speedups.
+Its latency interquartile range is [47.04,47.20]\,ms, versus [40.98,41.09]\,ms at 442 tokens; a separately captured native replica measures 47.18\,ms.
+
+Numerical checks use the first task of each of Spatial/Object/Goal with initial state zero and two policy-noise seeds.
+The graph-compatible allocation has identical features, source positions and resulting video context to the original operator at all four tested budgets.
+Graph/eager contexts and actions are bit-identical; actual-fold versus live-adapter actions differ by at most $6.26\times10^{-7}$, with no changed gripper decisions in these queries.
+The accuracy values in the main table remain those of the recorded trained-adapter evaluations; these checks are not a new 500-episode closed-loop evaluation of the engineering configuration.
 
 The earlier DiT4DiT FLOPs comparison uses a released 4.91-TFLOP pipeline with a padded VAE encode.
 Encoding only the real observed frame reduces this to 2.90 TFLOPs and is shared by native and ours.
-With this common change, the evaluated 589/442/391-token configurations use 2.45/2.10/1.98 TFLOPs including VAE; the main table excludes the common 0.67-TFLOP VAE cost.
-Thus the earlier reductions relative to the released path describe arithmetic, not wall-clock speedup or compression alone.
+With this common change, the folded 589/442/391-token configurations use 2.44/2.10/1.98 TFLOPs including VAE; the main table excludes the common 0.67-TFLOP VAE cost.
+The exact eager functions underlying the graphs reproduce the previous FLOPs reference, with maximum relative difference zero across the 20 timed configurations.
+Graph replay changes latency, not arithmetic; folding removes the low-rank branch.
+The earlier reductions relative to the released path therefore describe arithmetic rather than wall-clock speedup or compression alone.
 \TODO{Numerical equivalence checks for the deployed mimic-video fold/graph configuration and deletion/external-method timing.}
 
 \section{Original External-Policy Adaptations}

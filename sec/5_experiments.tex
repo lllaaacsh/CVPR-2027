@@ -68,7 +68,8 @@ The fixed-budget ports also select observation tokens at the two lower budgets.
 \TODO{Complete the 36 paired suite--budget evaluations of the four explicitly adapted fixed-budget selection ports.}
 LIBERO has only one future latent slice on this backbone, so this comparison tests spatial allocation.
 At 589 and 442 tokens, ours is statistically indistinguishable from native on each suite; at 391 tokens, Goal is significantly below native after correction.
-The measured adapted configurations reduce FLOPs but take 66.2--66.9\,ms per query versus 57.7\,ms for native; they provide no wall-clock speedup in this setting.
+With actual FP32-folded adapters and CUDA graphs for both the video and action networks, the 589/442/391-token configurations take 43.7/41.0/40.6\,ms, versus 47.2\,ms for native with the same common optimizations.
+These give $1.08\times$, $1.15\times$ and $1.16\times$ speedups; supplementary material gives the numerical checks and deployment breakdown.
 
 \subsection{Transfer across Backbones and Benchmarks}
 \label{sec:exp_transfer}
@@ -91,7 +92,7 @@ On RoboCasa-GR1, temporal-only allocation reduces 588 tokens to 539 or 490; both
 Joint future-space and temporal allocation reduces the sequence to 466 tokens, a 20.7\% reduction, and achieves 55.0\% success versus 54.9\% for native over 1,200 paired episodes.
 This joint setting is also statistically indistinguishable from native ($p=1.00$; paired difference $+0.08$ points, 95\% CI [$-2.66$,$+2.83$]), which does not establish equivalence.
 It was selected after inspecting intermediate results and evaluated with one training seed, so it is an exploratory follow-up.
-DiT4DiT latency is reported in \cref{tab:main_dit4dit}; lower token counts and FLOPs do not translate into lower wall-clock latency in this setting.
+LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 latency remains to be measured.
 
 \subsection{Allocation and Adaptation Ablations}
 \label{sec:exp_ablation}
