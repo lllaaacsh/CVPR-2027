@@ -1,0 +1,46 @@
+{
+  "base_revision": "2c73c6f",
+  "author_update": "User confirms three-seed values and retained old dense calling policies; corrected CF@391 mean=97.3.",
+  "scope_check": "Experiment prose identical after masking numeric literals, normalizing method names, and reverting one explicitly requested dense-policy explanation.",
+  "suite_scores": "Preserved from author-updated tables. Dagger means strict point-estimate increase versus corresponding Native, without a significance claim.",
+  "pending_statistics": "No new per-seed episode outcomes, paired tests or CIs supplied; pre-existing inferential prose and transfer CIs were not recomputed or independently validated for the new seeds.",
+  "context": "VLA-Pruner/ADP DiT4DiT rows use >target because dense queries exceed the compressed target; actual means for the author new-seed runs were not supplied. Independent old-policy 391 budget profiling remains separate.",
+  "pending_ablation_cells": [
+    "Spatial 30% reversed router scores + retrained LoRA",
+    "Spatial 30% without decoder LoRA"
+  ],
+  "ablation_prereg": "mimic-video-repro/docs/TABLE3_R30_COMPLETION_PREREG_2026-11-07.md",
+  "ablation_smoke_job": 48707024,
+  "ablation_controller_job": 48707025,
+  "ablation_smoke_status": "COMPLETED 0:0, 4m53s; one optimizer step + both one-episode rollout checks and all context audits passed",
+  "ablation_train_job": 48707243,
+  "ablation_no_lora_eval_jobs": [
+    48707244,
+    48707245,
+    48707246,
+    48707247,
+    48707248,
+    48707249,
+    48707250,
+    48707251,
+    48707252,
+    48707253
+  ],
+  "validation": {
+    "body_scope": "character-level normalized numeric/name/one-sentence check passed",
+    "table_scores": "all author-supplied suite scores and averages preserved",
+    "formatting": "all daggers, within-budget bold maxima and group ordering checked",
+    "latex": "pdflatex -> bibtex -> pdflatex x2; stable final recompilation, no overflow or unresolved-reference warnings",
+    "layout": {
+      "pages": 11,
+      "positions": {
+        "table1": 7,
+        "table2": 7,
+        "table3": 7,
+        "conclusion": 8,
+        "references": 9
+      },
+      "warnings": []
+    }
+  }
+}

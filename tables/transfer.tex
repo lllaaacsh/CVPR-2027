@@ -4,26 +4,31 @@
 \begin{table*}[t]
   \centering
   \caption{\textbf{Transfer across backbones and benchmarks.}
-  Axes name the representations actually coarsened; these rows do not all enable the same operator stages.
-  Token reduction is relative to each native sequence.
-  Success rates are percentages; $\Delta$ is ours minus native in percentage points, with unadjusted paired 95\% confidence intervals where available.
-  Bridge uses 96 episodes per setting; DiT4DiT LIBERO uses 1,500 paired episodes across three suites, and RoboCasa-GR1 1,200.
-  RoboCasa-GR1 latency remains unmeasured.}
+  Token reduction is relative to Native; success rates are percentages, and $\Delta$ is ours minus Native in points with paired 95\% CIs.
+  Bridge uses 96 episodes and spatial/temporal allocation; RoboCasa-GR1 uses 1,200 paired episodes, with spatial/temporal allocation at 466 tokens and temporal allocation at 490/539.
+  GR1 latency remains unmeasured; $\dagger$ follows Table~\ref{tab:main_results}.}
   \label{tab:transfer}
   \footnotesize
   \setlength{\tabcolsep}{3pt}
-  \begin{tabular}{llrrrrl}
+  \renewcommand{\arraystretch}{1.06}
+  \begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}Xrrrl@{}}
     \toprule
     Backbone / benchmark & Tokens (native $\to$ ours) & Removed & Native & Ours & $\Delta$ [95\% CI] \\
     \midrule
+    \rowcolor{blue!6}
     mimic / Bridge & 19,200 $\to$ 11,400 & 40.6\% & 47.9 & 44.8 & $-3.1$ [$-14.0$, $+3.6$] \\
-    mimic / Bridge & 19,200 $\to$ 12,300 & 35.9\% & 47.9 & 48.4 & $+0.5$ [$-13.3$, $+4.9$] \\
-    mimic / Bridge & 19,200 $\to$ 13,200 & 31.3\% & 47.9 & 50.0 & $+2.1$ [$-9.5$, $+9.7$] \\
+    \rowcolor{blue!6}
+    mimic / Bridge & 19,200 $\to$ 12,300 & 35.9\% & 47.9 & 48.4$\dagger$ & $+0.5$ [$-13.3$, $+4.9$] \\
+    \rowcolor{blue!6}
+    mimic / Bridge & 19,200 $\to$ 13,200 & 31.3\% & 47.9 & 50.0$\dagger$ & $+2.1$ [$-9.5$, $+9.7$] \\
     \midrule
 
-    DiT4DiT / RoboCasa-GR1 & 588 $\to$ 539 & 8.3\% & 54.9 & 56.8 & $+1.8$ [$-0.6$, $+4.3$] \\
-    DiT4DiT / RoboCasa-GR1 & 588 $\to$ 490 & 16.7\% & 54.9 & 55.4 & $+0.5$ [$-2.3$, $+3.3$] \\
-    DiT4DiT / RoboCasa-GR1  & 588 $\to$ 466 & 20.7\% & 54.9 & 55.0 & $+0.1$ [$-2.7$, $+2.8$] \\
+    \rowcolor{blue!6}
+    DiT4DiT / RoboCasa-GR1 & 588 $\to$ 466 & 20.7\% & 54.9 & 55.0$\dagger$ & $+0.1$ [$-2.7$, $+2.8$] \\
+    \rowcolor{blue!6}
+    DiT4DiT / RoboCasa-GR1 & 588 $\to$ 490 & 16.7\% & 54.9 & 55.4$\dagger$ & $+0.5$ [$-2.3$, $+3.3$] \\
+    \rowcolor{blue!6}
+    DiT4DiT / RoboCasa-GR1 & 588 $\to$ 539 & 8.3\% & 54.9 & 56.8$\dagger$ & $+1.8$ [$-0.6$, $+4.3$] \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table*}

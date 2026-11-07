@@ -52,24 +52,24 @@ The corresponding deployed latencies are 404.2, 440.7 and 477.1\,ms, giving $1.7
 At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
 
 We compare adaptations of FastV~\cite{chen2024fastv}, VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp} and CF-Prune~\cite{kim2026cfprune}, each with a fresh decoder LoRA.
-FastV-style ranks tokens by received visual self-attention; VLA-Pruner combines semantic scores with historical action attention; ADP gates text-guided selection using robot motion; CF-sel. combines instruction and action attention without the original phase gate.
-On mimic-video, the FastV-style, VLA-Pruner and CF-sel. ADP evaluations remain pending.
-VLA-Pruner uses three dense bootstrap queries per episode, so its measured token means exceed the compressed target; these calls and the paid full-context CF-sel. probe must be charged in their pending inference costs.
+FastV-style ranks tokens by received visual self-attention; VLA-Pruner combines semantic scores with historical action attention; ADP gates text-guided selection using robot motion; CF-Prune combines instruction and action attention without the original phase gate.
+On mimic-video, the FastV-style, VLA-Pruner and CF-Prune ADP evaluations remain pending.
+VLA-Pruner uses three dense bootstrap queries per episode, so its measured token means exceed the compressed target; these calls and the paid full-context CF-Prune probe must be charged in their pending inference costs.
 All method SR are below native at the 10 and 20\% context, while \method achieved the best results among them. At 30\% context, \method even surpassed the SR of native model. 
 
 
 \Cref{tab:main_dit4dit} reports same comparison results on DiT4DiT~\cite{ma2026dit4dit}, each with 500 paired episodes and one adapter per method and budget trained on \texttt{libero\_all}.
-Its external rows are explicit fixed-budget selection ports: VLA-sel. uses compressed bootstrap queries and ADP-sel. removes the dense fallback, with the same token quotas as ours.
+Since VLA-Pruner and ADP include dense bootstrap or fallback queries, we allow their actual context lengths to exceed ours to preserve their execution policies and keep the comparison fair.
 The original external-policy adaptations are retained in the supplementary material.
-Context percentages count total tokens: 589, 442 and 391 of the native 784 tokens, rounded to 75\%, 56\% and 50\% in the table.
+Context percentages count total tokens: 391, 442 and 589 of the native 784 tokens, rounded to 50\%, 56\% and 75\% in the table.
 
 At 75\% and 56\% context, \method is statistically indistinguishable from both native and native + LoRA on each suite.
 At 50\%, Goal is significantly below native; Object and Goal are below native + LoRA in their separate nine-test Holm family ($p_H=0.031$ and $0.0066$).
-At this budget, \method is significantly above VLA-sel. and ADP-sel. on all three suites, and above FastV-style on Spatial and Goal, within the 36-test external-method family.
-CF-sel. and \method are statistically indistinguishable at all nine suite--budget comparisons; at 50\% their mean rates are 97.8\% and 97.3\%.
-With FP32-folded adapters and video/action CUDA graphs, the 589/442/391-token configurations take 43.7/41.0/40.6\,ms, versus 47.2\,ms for native with the same common optimizations.
-These give $1.08\times$, $1.15\times$ and $1.16\times$ speedups; full-context LoRA measures 47.0\,ms in its separate interleaved benchmark.
-External-method inference costs remain pending; CF-sel.'s full-context probe is additional work beyond its retained context.
+At this budget, \method is significantly above VLA-Pruner and ADP on all three suites, and above FastV-style on Spatial and Goal, within the 36-test external-method family.
+CF-Prune and \method are statistically indistinguishable at all nine suite--budget comparisons; at 50\% their mean rates are 97.3\% and 98.1\%.
+With FP32-folded adapters and video/action CUDA graphs, the 391/442/589-token configurations take 40.6/41.0/43.7\,ms, versus 47.2\,ms for native with the same common optimizations.
+These give $1.16\times$, $1.15\times$ and $1.08\times$ speedups; full-context LoRA measures 47.2\,ms in its separate interleaved benchmark.
+External-method inference costs remain pending; CF-Prune's full-context probe is additional work beyond its retained context.
 
 \subsection{Transfer across Benchmarks}
 \label{sec:exp_transfer}
@@ -78,7 +78,7 @@ External-method inference costs remain pending; CF-sel.'s full-context probe is 
 
 \Cref{tab:transfer} separates the axes actually tested in each setting.
 On SIMPLER-Bridge, we increase the number of full-resolution groups to $F=200$ and report all three budgets.
-Their success rates are 50.0\%, 48.4\% and 44.8\%, versus 47.9\% for native.
+Their success rates are 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native.
 
 
 On DiT4DiT~\cite{ma2026dit4dit}, LIBERO has one future slice and therefore tests spatial allocation alone.

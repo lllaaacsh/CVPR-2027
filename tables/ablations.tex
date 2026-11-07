@@ -1,21 +1,22 @@
 % Sources: ACTION_RELEVANCE_EXPERIMENTS.md section 7;
 % AGGRESSIVE_CONTIG_EXECUTION.md sections 6.3/6.5.
 % Token/tube deletion is shown only in the internal operator-comparison figure.
-\begin{table}[t]
+\begin{table}[!t]
   \centering
   \caption{\textbf{Allocation and adaptation ablations.}
-  LIBERO-Spatial success rate (\%), 500 paired episodes per cell.
-  Columns are future-token budgets.
-  Reversal replaces $S_g$ by $1-S_g$ in both allocation stages and retrains its own adapter; source-t also uses its own adapter.
-  Dashes denote unmeasured cells.}
+  LIBERO-Spatial success (\%), 500 paired episodes per cell; columns denote future context.
+  Reversal uses $1-S_g$ in both stages and retrains LoRA; source-t uses its own LoRA.
+  Dashes: pending; $\dagger$ follows Table~\ref{tab:main_results}.}
   \label{tab:ablations}
   \small
   \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.06}
   \begin{tabular}{lrrr}
     \toprule
     Variant & 10\% & 20\% & 30\% \\
     \midrule
-    \method & 70.8 & 88.2 & 92.0 \\
+    \rowcolor{blue!6}
+    \method & 70.8 & 88.2 & 92.0$\dagger$ \\
     Reversed scores + retrained LoRA & 28.4 & 66.2 & --- \\
     Without decoder LoRA & 56.6 & 81.0 & --- \\
     Source-t instead of contiguous-t & 55.0 & 79.2 & 87.4 \\
