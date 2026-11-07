@@ -30,16 +30,14 @@ Budgets retain 10\%, 20\% or 30\% of the 16,800 future tokens after video block 
 The resulting context lengths are 4,080, 5,760 and 7,440, versus 19,200 for native.
 The spatial stage keeps 100 of 300 groups at full resolution.
 In increasing priority order, 120, 180 and 300 tubes receive $(1,2,4)$, $(3,5,7)$ or $(5,8,10)$ segments at the respective budgets.
-For each suite and budget, we freeze the router and train a fresh rank-16 decoder cross-attention LoRA for 1,500 steps with \cref{eq:task_loss}, learning rate $4\times10^{-5}$, 100 warmup steps, cosine decay and effective batch size eight.
-The Object router has a distinct initialization and pretraining recipe: fixed segment counts $8/6/4$ and pure distillation, versus $12/10/8$ and a 0.02-weight ground-truth term for Spatial/Goal.
-All budget-specific adapters use the same objective; each configuration uses one training seed.
+For each suite and budget, we freeze the router and train the router together with a fresh rank-16 decoder cross-attention LoRA with \cref{eq:task_loss}.
+
 We use two-sided exact McNemar tests and report statistically indistinguishable results at the available sample size, rather than infer equivalence.
 The nine ours--native suite--budget comparisons form one Holm-corrected family at $\alpha=0.05$.
 
 Efficiency is measured per policy query with Spatial checkpoints, batch size one, on an exclusively allocated H100, including text encoding.
 We report median wall-clock latency over 32 calls in eight interleaved rounds after warmup.
-The deployed timing configuration folds LoRA into the decoder weights and uses CUDA graphs for the action decoder; the native denominator also enables graphs.
-Supplementary material reports the eager reference and confidence intervals.
+
 
 \subsection{Accuracy and Efficiency on mimic-video}
 \label{sec:exp_main}
