@@ -1,0 +1,103 @@
+{
+  "protocol": "table3-spatial-r30-completion-2026-11-07-v1",
+  "verified_on": "2026-11-08",
+  "source_path": "/data/home/qp252151/workspace/mimic-video-repro/eval/analysis/results/table3_r30_20261107/final_results.json",
+  "source_sha256": "80626283a7782294be485f9c5c8b437d712f532ebcf9bea6cad95a813bdf803a",
+  "reference_success_rate_pct": 92.0,
+  "training_steps": 1500,
+  "context_tokens": 7440,
+  "episodes_per_control": 500,
+  "seed_note": "Original single-seed Spatial ablation protocol; separate from author three-seed main-table updates.",
+  "controls": {
+    "invert_lora": {
+      "successes": 416,
+      "episodes": 500,
+      "success_rate_pct": 83.2,
+      "paired_vs_ours": {
+        "n": 500,
+        "a_success": 416,
+        "b_success": 460,
+        "a_only": 25,
+        "b_only": 69,
+        "delta_pp": -8.799999999999999,
+        "ci95_pp": [
+          -12.5214820961547,
+          -5.078517903845297
+        ],
+        "p_exact_mcnemar": 6.339264707376484e-06
+      }
+    },
+    "deployed_native": {
+      "successes": 443,
+      "episodes": 500,
+      "success_rate_pct": 88.6,
+      "paired_vs_ours": {
+        "n": 500,
+        "a_success": 443,
+        "b_success": 460,
+        "a_only": 20,
+        "b_only": 37,
+        "delta_pp": -3.4000000000000004,
+        "ci95_pp": [
+          -6.344491502449956,
+          -0.4555084975500445
+        ],
+        "p_exact_mcnemar": 0.033143967787505446
+      }
+    }
+  },
+  "inversion_extension_holm3": {
+    "10": {
+      "n": 500,
+      "a_success": 354,
+      "b_success": 142,
+      "a_only": 229,
+      "b_only": 17,
+      "delta_pp": 42.4,
+      "ci95_pp": [
+        37.502164317986974,
+        47.29783568201302
+      ],
+      "p_exact_mcnemar": 1.3489702191244336e-48,
+      "p_holm": 4.0469106573733006e-48,
+      "significant_holm_005": true
+    },
+    "20": {
+      "n": 500,
+      "a_success": 441,
+      "b_success": 331,
+      "a_only": 130,
+      "b_only": 20,
+      "delta_pp": 22.0,
+      "ci95_pp": [
+        17.6033045136148,
+        26.3966954863852
+      ],
+      "p_exact_mcnemar": 5.994729558560897e-21,
+      "p_holm": 1.1989459117121795e-20,
+      "significant_holm_005": true
+    },
+    "30": {
+      "n": 500,
+      "a_success": 460,
+      "b_success": 416,
+      "a_only": 69,
+      "b_only": 25,
+      "delta_pp": 8.799999999999999,
+      "ci95_pp": [
+        5.078517903845297,
+        12.5214820961547
+      ],
+      "p_exact_mcnemar": 6.339264707376484e-06,
+      "p_holm": 6.339264707376484e-06,
+      "significant_holm_005": true
+    }
+  },
+  "verified_shards": 20,
+  "checks": [
+    "complete unique episode keys",
+    "final 1500-step adapter recipe and gradient logs",
+    "all per-flow actual decoder contexts7440",
+    "31 source hashes unchanged"
+  ]
+}

@@ -1,13 +1,15 @@
 % Sources: ACTION_RELEVANCE_EXPERIMENTS.md section 7;
 % AGGRESSIVE_CONTIG_EXECUTION.md sections 6.3/6.5.
 % Token/tube deletion is shown only in the internal operator-comparison figure.
+% 30% controls: table3_r30_20261107/final_results.json, independently rechecked 2026-11-08.
+% Inverted + LoRA: 416/500; no decoder LoRA: 443/500; original single-seed ablation protocol.
 % Float-free component: paired with Table 2 in transfer_and_ablations.tex.
 \begingroup
 
   \caption{\textbf{Allocation and adaptation ablations.}
   LIBERO-Spatial success (\%), 500 paired episodes per cell; columns denote future context.
   Reversal uses $1-S_g$ in both stages and retrains LoRA; source-t uses its own LoRA.
-  Dashes: pending; $\dagger$ follows Table~\ref{tab:main_results}.}
+  $\dagger$ follows Table~\ref{tab:main_results}.}
   \label{tab:ablations}
   \footnotesize
   \setlength{\tabcolsep}{3pt}
@@ -18,8 +20,8 @@
     \midrule
     \rowcolor{blue!6}
     \method & 70.8 & 88.2 & 92.0$\dagger$ \\
-    Reversed scores + retrained LoRA & 28.4 & 66.2 & --- \\
-    Without decoder LoRA & 56.6 & 81.0 & --- \\
+    Reversed scores + retrained LoRA & 28.4 & 66.2 & 83.2 \\
+    Without decoder LoRA & 56.6 & 81.0 & 88.6 \\
     Source-t instead of contiguous-t & 55.0 & 79.2 & 87.4 \\
     \bottomrule
   \end{tabularx}
