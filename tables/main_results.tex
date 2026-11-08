@@ -11,10 +11,9 @@
   S/O/G: LIBERO-Spatial/Object/Goal; Avg.: mean success rate (\%).
   Context targets count future tokens in (a), total tokens in (b).
   $*$ gives mean context; $>$ indicates dense calls exceeding the target.
-  $\dagger$: point estimate above Native, without a significance claim; bold: best available per budget; blue: \method.
+  $\dagger$: point estimate above Native; bold: best available per budget; blue: \method.
   External methods use decoder LoRA; CF-Prune's extra dense probe has pending cost.
   TFLOPs exclude VAE/text.
-  Latency: exclusive H100, batch 1, common CUDA graphs; (a) includes text; (b) includes VAE, caches text, and folds LoRA in FP32.
 }
   \label{tab:main_results}
   \renewcommand{\TODO}[1]{{\color{red}--}}
