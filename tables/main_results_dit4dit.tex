@@ -4,8 +4,7 @@
 % Complete 500-episode cells only; incomplete cells retain TODO.
 % VLA-Pruner/ADP: tokens and costs are the original full policies (391 composed from measured branches), but the
 % success rates below are still the fixed-budget ports. Replace them with the full-policy three-seed results before submission.
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}lrrrrrrr@{}}
+\begin{tabular}{K}
   \toprule
   Method & Tokens & TFLOPs $\downarrow$ & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & Avg. $\uparrow$ \\
   \midrule
@@ -20,7 +19,6 @@
   CF-Prune & 391 & 3.22 & 72.3 & 97.5 & \textbf{98.3} & 96.0 & 97.3 \\
   \rowcolor{blue!6}
   \method & 391 & 1.31 & 40.6 & \textbf{98.2} & 98.2 & \textbf{98.0} & \textbf{98.1} \\
-  \midrule
 \rowcolor{black!4}
   \multicolumn{8}{@{}l}{\emph{56\% context}} \\
   FastV-style & 442 & 1.44 & 41.0 & 95.6 & 98.4 & 95.4 & 96.5 \\
@@ -29,7 +27,6 @@
   CF-Prune & 442 & 3.34 & 72.6 & 98.2 & 99.0 & 97.8 & 98.3 \\
   \rowcolor{blue!6}
   \method & 442 & 1.43 & 41.0 & \textbf{98.4} & 98.6 & \textbf{98.2} & \textbf{98.4} \\
-  \midrule
 \rowcolor{black!4}
   \multicolumn{8}{@{}l}{\emph{75\% context}} \\
   FastV-style & 589 & 1.78 & 43.7 & 97.8 & 99.6$\dagger$ & \textbf{99.4}$\dagger$ & 98.9 \\
@@ -39,4 +36,4 @@
   \rowcolor{blue!6}
   \method & 589 & 1.77 & 43.7 & \textbf{99.2}$\dagger$ & \textbf{100.0}$\dagger$ & 98.6 & \textbf{99.3}$\dagger$ \\
   \bottomrule
-\end{tabular}}
+\end{tabular}
