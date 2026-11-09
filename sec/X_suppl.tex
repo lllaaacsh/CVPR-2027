@@ -89,7 +89,7 @@ Every episode starts with three dense queries, so these values exceed the compre
 The two unmeasured Table~\ref{tab:ablations} 30\% controls remain unfilled: reversed allocation with its own adapter, and deployed allocation without LoRA.
 
 
-\section{Original External-Policy Adaptations}
+\section{External-Method Policies and Fixed-Budget Ports}
 \label{sec:supp_original_external}
 
 \input{tables/dit4dit_original_external}
@@ -101,8 +101,16 @@ We also evaluated explicit fixed-budget selection ports, with 392/197, 344/98 an
 ADP-sel. removes trajectory-gated dense fallback and tests the text-guided selection component.
 VLA-sel. uses three semantic-only compressed bootstrap queries and scatters their action attention to source positions before maintaining its causal history.
 FastV-style and CF-sel. also select observation tokens at the two lower budgets; their selection scores and source positions remain method-specific.
-CF-sel. retains a paid full-context probe, which must be included in its inference cost.
-All 36 fixed-context cells use fresh matched decoder adapters and complete 500-episode evaluations; their old-policy success rates are not reused.
+CF-sel. retains a paid full-context probe, which is included in its reported inference cost.
+All 36 DiT4DiT fixed-context cells use fresh matched decoder adapters and complete 500-episode evaluations; their old-policy success rates are not reused.
+The mimic-video ports follow the same idea: ADP-sel. removes the motion gate and dense fallback and reuses the ADP adapters, which were trained on the same compressed branch, and VLA-sel. replaces the three dense warm starts with semantic-only compressed queries and is retrained.
+We added the mimic-video ports after seeing the full-policy results, so that comparison is post hoc.
+
+\input{tables/fixed_budget_ports}
+
+With Holm correction over each backbone's 36 tests (\cref{tab:fixed_budget_ports}), no port is detectably above \method.
+On mimic-video, \method is detectably above FastV-style and ADP-sel. in all nine cells, above VLA-sel. in eight and above CF-sel. in four.
+On DiT4DiT, \method is detectably above ADP-sel. in six cells, above VLA-sel. in three and above FastV-style in two, and no difference from CF-sel. is detectable.
 
 \section{Additional Transfer and Router-Training Results}
 \label{sec:supp_transfer}
