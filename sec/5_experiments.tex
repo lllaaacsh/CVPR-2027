@@ -53,22 +53,23 @@ At the 20\% operating point, the query uses 42.7 rather than 98.0 TFLOPs.
 
 We compare adaptations of FastV~\cite{chen2024fastv}, VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp} and CF-Prune~\cite{kim2026cfprune}, each with a fresh decoder LoRA.
 FastV-style ranks tokens by received visual self-attention; VLA-Pruner combines semantic scores with historical action attention; ADP gates text-guided selection using robot motion; CF-Prune combines instruction and action attention without the original phase gate.
-On mimic-video, the FastV-style, VLA-Pruner and CF-Prune ADP evaluations remain pending.
-VLA-Pruner uses three dense bootstrap queries per episode, so its measured token means exceed the compressed target; these calls and the paid full-context CF-Prune probe must be charged in their pending inference costs.
+VLA-Pruner uses three dense bootstrap queries per episode and ADP falls back to dense queries under its motion gate, so their measured mean contexts exceed the compressed target and they are not equal-token comparisons; these dense calls and the paid full-context CF-Prune probe are charged in the reported inference costs.
+At strictly equal token counts, ADP's selection component without its dense fallback is slightly cheaper than \method (35.6/42.5/49.4 versus 35.7/42.7/49.6 TFLOPs, 396.1/430.9/465.5 versus 404.2/440.7/477.1\,ms) but reaches only 24.9/51.3/62.7\% mean success versus 79.8/90.5/92.9\% (supplementary material).
 All method SR are below native at the 10 and 20\% context, while \method achieved the best results among them. At 30\% context, \method even surpassed the SR of native model. 
 
 
 \Cref{tab:main_dit4dit} reports same comparison results on DiT4DiT~\cite{ma2026dit4dit}, each with 500 paired episodes and one adapter per method and budget trained on \texttt{libero\_all}.
 Since VLA-Pruner and ADP include dense bootstrap or fallback queries, we allow their actual context lengths to exceed ours to preserve their execution policies and keep the comparison fair.
-The original external-policy adaptations are retained in the supplementary material.
+Fixed-budget selection ports of these methods, which remove the dense calls, are reported in the supplementary material.
 Context percentages count total tokens: 391, 442 and 589 of the native 784 tokens, rounded to 50\%, 56\% and 75\% in the table.
 
 
-Across all context budget, \method is above VLA-Pruner and ADP on all three suites, and above FastV-style on Spatial and Goal, within the 36-test external-method family.
+% Fixed-budget-port claim, superseded by the full-policy main table: Across all context budget, \method is above VLA-Pruner and ADP on all three suites, and above FastV-style on Spatial and Goal, within the 36-test external-method family.
+\TODO{Rewrite this comparison after the three-seed DiT4DiT full-policy runs.}
 
 With our adpatation, the 391/442/589-token configurations take 40.6/41.0/43.7\,ms, versus 47.2\,ms for native with the same common optimizations.
 These give $1.16\times$, $1.15\times$ and $1.08\times$ speedups; full-context LoRA measures 47.2\,ms in its separate interleaved benchmark.
-External-method inference costs remain pending; CF-Prune's full-context probe is additional work beyond its retained context.
+External-method costs are expected per-query values over the dense and compressed branches observed in evaluation; CF-Prune's include its full-context probe.
 
 \input{tables/transfer_and_ablations}
 

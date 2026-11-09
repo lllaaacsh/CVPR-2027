@@ -83,7 +83,7 @@ The earlier reductions relative to the released path therefore describe arithmet
 For mimic-video, the formal full-context LoRA and FastV-style measurements pass the registered fold and graph numerical gates, use 32 calls each, and verify the exact trained-adapter hashes.
 Spatial full-context LoRA uses 98.0 TFLOPs and takes 704.0\,ms; FastV-style uses 37.1/44.0/50.9 TFLOPs and takes 538.2/570.3/607.0\,ms at the three budgets.
 These are fixed-input numerical and timing checks, rather than new closed-loop equivalence evaluations.
-VLA-Pruner and CF-sel. efficiency remains unmeasured.
+VLA-Pruner, ADP and CF-Prune costs use the same protocol and gates and are expected per-query values, weighted by the branch shares observed in the 500-episode evaluations.
 For mimic-video VLA-Pruner, the query-weighted mean context lengths are 5,535/7,240/8,788 tokens; the suite-specific means range over [5,468,5,623], [7,148,7,373] and [8,664,8,919], respectively.
 Every episode starts with three dense queries, so these values exceed the compressed-branch targets in the table.
 The two unmeasured Table~\ref{tab:ablations} 30\% controls remain unfilled: reversed allocation with its own adapter, and deployed allocation without LoRA.
@@ -96,7 +96,8 @@ The two unmeasured Table~\ref{tab:ablations} 30\% controls remain unfilled: reve
 
 The original VLA-Pruner and ADP adaptations use more context than their compressed-branch targets because of dense calls (\cref{tab:dit4dit_original_external}).
 They therefore do not constitute fixed-context comparisons.
-The main table instead reports completed explicit fixed-budget selection ports, with 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 total context tokens.
+The 391-token rows of the main table restore these dense calls on a 293/98-token compressed branch, because the observation-preserving port cannot go below 392 tokens; their costs are composed from the measured dense branch and the compressed branch of the same 391-token adapter.
+We also evaluated explicit fixed-budget selection ports, with 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 total context tokens.
 ADP-sel. removes trajectory-gated dense fallback and tests the text-guided selection component.
 VLA-sel. uses three semantic-only compressed bootstrap queries and scatters their action attention to source positions before maintaining its causal history.
 FastV-style and CF-sel. also select observation tokens at the two lower budgets; their selection scores and source positions remain method-specific.

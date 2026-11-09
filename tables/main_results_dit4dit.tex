@@ -2,6 +2,8 @@
 % Historical audit sources below are retained for provenance, not new-seed verification.
 % Companion provenance: main_results_mimic_sources.json / main_results_dit4dit_sources.json.
 % Complete 500-episode cells only; incomplete cells retain TODO.
+% VLA-Pruner/ADP: tokens and costs are the original full policies (391 composed from measured branches), but the
+% success rates below are still the fixed-budget ports. Replace them with the full-policy three-seed results before submission.
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{@{}lrrrrrrr@{}}
   \toprule
@@ -12,28 +14,28 @@
   \midrule
 \rowcolor{black!4}
   \multicolumn{8}{@{}l}{\emph{50\% context}} \\
-  FastV-style & 391 & \TODO{--} & \TODO{--} & 92.6 & 96.0 & 79.4 & 89.3 \\
-  VLA-Pruner & $>391$ & \TODO{--} & \TODO{--} & 87.8 & 90.8 & 83.0 & 87.2 \\
-  ADP & $>391$ & \TODO{--} & \TODO{--} & 70.4 & 62.2 & 40.6 & 57.7 \\
-  CF-Prune & 391 & \TODO{--} & \TODO{--} & 97.5 & \textbf{98.3} & 96.0 & 97.3 \\
+  FastV-style & 391 & 1.32 & 40.3 & 92.6 & 96.0 & 79.4 & 89.3 \\
+  VLA-Pruner & 474.3$*$ & 1.52 & 45.1 & 87.8 & 90.8 & 83.0 & 87.2 \\
+  ADP & 612.4$*$ & 1.82 & 44.1 & 70.4 & 62.2 & 40.6 & 57.7 \\
+  CF-Prune & 391 & 3.22 & 72.3 & 97.5 & \textbf{98.3} & 96.0 & 97.3 \\
   \rowcolor{blue!6}
   \method & 391 & 1.31 & 40.6 & \textbf{98.2} & 98.2 & \textbf{98.0} & \textbf{98.1} \\
   \midrule
 \rowcolor{black!4}
   \multicolumn{8}{@{}l}{\emph{56\% context}} \\
-  FastV-style & 442 & \TODO{--} & \TODO{--} & 95.6 & 98.4 & 95.4 & 96.5 \\
-  VLA-Pruner & $>442$ & \TODO{--} & \TODO{--} & 95.8 & \textbf{99.2} & 96.0 & 97.0 \\
-  ADP & $>442$ & \TODO{--} & \TODO{--} & 94.6 & 93.4 & 83.4 & 90.5 \\
-  CF-Prune & 442 & \TODO{--} & \TODO{--} & 98.2 & 99.0 & 97.8 & 98.3 \\
+  FastV-style & 442 & 1.44 & 41.0 & 95.6 & 98.4 & 95.4 & 96.5 \\
+  VLA-Pruner & 514.1$*$ & 1.62 & 44.4 & 95.8 & \textbf{99.2} & 96.0 & 97.0 \\
+  ADP & 638.5$*$ & 1.89 & 44.5 & 94.6 & 93.4 & 83.4 & 90.5 \\
+  CF-Prune & 442 & 3.34 & 72.6 & 98.2 & 99.0 & 97.8 & 98.3 \\
   \rowcolor{blue!6}
   \method & 442 & 1.43 & 41.0 & \textbf{98.4} & 98.6 & \textbf{98.2} & \textbf{98.4} \\
   \midrule
 \rowcolor{black!4}
   \multicolumn{8}{@{}l}{\emph{75\% context}} \\
-  FastV-style & 589 & \TODO{--} & \TODO{--} & 97.8 & 99.6$\dagger$ & \textbf{99.4}$\dagger$ & 98.9 \\
-  VLA-Pruner & $>589$ & \TODO{--} & \TODO{--} & 98.2 & 99.8$\dagger$ & 98.2 & 98.7 \\
-  ADP & $>589$ & \TODO{--} & \TODO{--} & 97.6 & 98.6 & 98.0 & 98.1 \\
-  CF-Prune & 589 & \TODO{--} & \TODO{--} & 98.0 & 99.8$\dagger$ & 98.0 & 98.6 \\
+  FastV-style & 589 & 1.78 & 43.7 & 97.8 & 99.6$\dagger$ & \textbf{99.4}$\dagger$ & 98.9 \\
+  VLA-Pruner & 630.9$*$ & 1.90 & 47.2 & 98.2 & 99.8$\dagger$ & 98.2 & 98.7 \\
+  ADP & 703.4$*$ & 2.05 & 45.8 & 97.6 & 98.6 & 98.0 & 98.1 \\
+  CF-Prune & 589 & 3.68 & 75.5 & 98.0 & 99.8$\dagger$ & 98.0 & 98.6 \\
   \rowcolor{blue!6}
   \method & 589 & 1.77 & 43.7 & \textbf{99.2}$\dagger$ & \textbf{100.0}$\dagger$ & 98.6 & \textbf{99.3}$\dagger$ \\
   \bottomrule
