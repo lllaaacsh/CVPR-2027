@@ -10,20 +10,74 @@
 %% ---------------------------------------------------------------------------
 \usepackage{multirow}    % \multirow in tables
 \usepackage{tabularx}    % X columns that fill \linewidth
+\usepackage{lipsum}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{makecell}
+\usepackage{array} 
 \usepackage{colortbl}    % \rowcolor / \cellcolor (xcolor is already loaded)
 \usepackage{bm}          % bold math symbols, \bm{x}
-\usepackage{pifont}      % \ding symbols for \cmark / \xmark
-
+\usepackage{pifont}
+\usepackage{amssymb}    
+% \ding symbols for \cmark / \xmark
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage{subcaption}
 % Uncomment if needed:
 % \usepackage{algorithm}
 % \usepackage{algpseudocode}
 % \usepackage{wrapfig}
 % \usepackage{siunitx}   % aligned numeric columns, e.g. S[table-format=2.1]
+\DeclareMathOperator*{\argtopk}{arg\,top-K}
 
+% \newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\orange}[1]{{\color{orange}#1}}
+\newcommand{\blue}[1]{{\color{cyan}#1}}
+\newcommand{\gray}[1]{{\color{gray}#1}}
 %% ---------------------------------------------------------------------------
 %% Paths
 %% ---------------------------------------------------------------------------
+\newcommand{\paragrapht}[1]{\noindent\textbf{#1}} 
 \graphicspath{{figures/}}
+
+% \newcommand{\cmark}{\ding{51}}%
+% \newcommand{\xmark}{\ding{55}}%
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\usepackage{xspace}
+% \usepackage{multirow}
+\usepackage{array}
+\usepackage{layouts}
+\usepackage{algorithm}
+\usepackage{bbding}
+\usepackage{listings}
+\usepackage{pifont}
+\usepackage{wasysym}
+\usepackage{float}
+\usepackage{soul}
+\usepackage{footnote}
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
+\makesavenoteenv{figure}
+\usepackage{pythonhighlight}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{bbm}
+
+\usepackage{hyperref}
+\usepackage[capitalize,noabbrev]{cleveref}
+\usepackage{tikz}
+\usepackage{threeparttable}
+\usetikzlibrary{patterns,patterns.meta}
+
+\newcommand{\ji}[1]{\textcolor{blue}{#1}}
 
 %% ---------------------------------------------------------------------------
 %% Layout tweaks -- enable only near the end, when fighting the page limit

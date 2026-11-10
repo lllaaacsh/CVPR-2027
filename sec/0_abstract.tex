@@ -1,11 +1,20 @@
 \begin{abstract}
-
-World action models (WAMs) build robot policies on pretrained video generation models, so that the action decoder inherits the visual and dynamic knowledge of the video backbone.
-The backbone, however, processes a dense spatio-temporal token grid whose layout is set by video generation, while the action decoder relies on only part of it;
-the rest is redundant for control but is still computed and passed to the decoder.
-Generic token reduction does not resolve this mismatch:
-visual similarity is a poor proxy for action relevance, and deleting tokens degrades the policy sharply when few tokens are kept.
-We propose \method, an action-aware token allocation that lets the action, rather than visual content, decide where and at which resolution the video backbone computes.
-A lightweight router, supervised only by how each token affects the predicted action, scores the future-frame tokens.
-
+    \ji{
+    World action models (WAMs) have emerged as a promising approach to robotic control by jointly modeling future visual dynamics and actions. 
+    However, the dense spatiotemporal representations required for video generation introduce substantial computational overhead, even though not all visual information is equally relevant to action prediction. 
+    In this paper, we propose \method, an efficient WAM framework that allocates computation according to the action relevance of future visual representations. 
+    Our key idea is to preserve fine-grained spatiotemporal information where it matters for action generation, while representing less relevant regions at coarser resolutions. 
+    To this end, we introduce a lightweight action-aware router trained with gradient-based supervision from the action decoder. 
+    The learned relevance guides spatial token merging, preserving the resolution of action-critical regions, while adaptive temporal aggregation jointly considers action relevance and feature dynamics to capture their temporal evolution. 
+    We further employ velocity distillation to adapt the action decoder to compressed representations without updating the video generation backbone.
+    By selectively allocating spatial and temporal resolution, \method reduces the number of future tokens by up to 90\% in the specified configuration.
+    [Quantitative results demonstrating action performance and inference efficiency.]
+    }
+% World action models (WAMs) build robot policies on pretrained video generation models, so that the action decoder inherits the visual and dynamic knowledge of the video backbone.
+% The backbone, however, processes a dense spatio-temporal token grid whose layout is set by video generation, while the action decoder relies on only part of it;
+% the rest is redundant for control but is still computed and passed to the decoder.
+% Generic token reduction does not resolve this mismatch:
+% visual similarity is a poor proxy for action relevance, and deleting tokens degrades the policy sharply when few tokens are kept.
+% We propose \method, an action-aware token allocation that lets the action, rather than visual content, decide where and at which resolution the video backbone computes.
+% A lightweight router, supervised only by how each token affects the predicted action, scores the future-frame tokens.
 \end{abstract}
