@@ -12,8 +12,15 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\theHfigure}{supp.\arabic{figure}}
 
-% Compiled only when main.tex sets \suppltrue.
-% Sections here can be referenced from the main paper (e.g. \cref{sec:supp_impl}) and vice versa.
+% Built in two ways: appended to the paper when main.tex sets \suppltrue, or alone through supp.tex
+% (the separate PDF that CVPR asks for).
+% References to the main paper go through \mainref{<label>}{<fixed text>}: a live cross-reference when the
+% paper is in the same PDF, the fixed text otherwise. If the main tables are renumbered, update the fixed text.
+\ifdefined\supponly
+  \DeclareRobustCommand{\mainref}[2]{#2 of the main paper}
+\else
+  \DeclareRobustCommand{\mainref}[2]{\cref{#1}}
+\fi
 
 % ---- 可能的内容（写完删除）--------------------------------------------------
 % 实现细节与超参数；统计协议（配对方式、McNemar、CI）；逐任务完整结果；
@@ -47,7 +54,7 @@ For DiT4DiT, the 442-token LIBERO setting pools all future spatial groups and ad
 
 Confidence intervals describe paired episode differences, not variation over independently trained models.
 The mimic-video intervals and tests use one adapter and 500 paired episodes per cell.
-\TODO{State the number of seeds and episodes behind the DiT4DiT rows of the main table.}
+The DiT4DiT success rates in the main table are means over three seeds, each evaluated on 500 episodes per suite.
 The nine mimic-video ours--native comparisons in the main table use a common Holm family; its Object 30\% adjusted $p$-value is 0.250.
 The deletion reference comparisons are separate from that family and do not change the dagger marks.
 \input{tables/native_lora_controls}
@@ -120,7 +127,7 @@ Every episode starts with three dense queries, so these values exceed the compre
 % tables/dit4dit_original_external.tex (2026-11-05 single-seed protocol) is no longer included: it reports the same
 % methods as the main table with different numbers, and the main table is authoritative (author decision, 2026-11-10).
 
-VLA-Pruner and ADP use more context than their compressed-branch targets because of dense calls (the rows marked $*$ in \cref{tab:main_results}).
+VLA-Pruner and ADP use more context than their compressed-branch targets because of dense calls (the rows marked $*$ in \mainref{tab:main_results}{Table~1}).
 They therefore do not constitute fixed-context comparisons.
 The 391-token rows of the main table restore these dense calls on a 293/98-token compressed branch, because the observation-preserving port cannot go below 392 tokens; their costs are composed from the measured dense branch and the compressed branch of the same 391-token adapter.
 We also evaluated explicit fixed-budget selection ports, with 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 total context tokens.
@@ -145,7 +152,7 @@ With 100 full-resolution groups, the three Bridge budgets give 20/96, 24/96 and 
 Their paired differences are $-27.1$ [$-38.1$,$-16.1$], $-22.9$ [$-32.7$,$-13.1$] and $-19.8$ [$-29.6$,$-9.9$] percentage points, with exact McNemar $p=1.3\times10^{-5}$, $2.7\times10^{-5}$ and $3.1\times10^{-4}$, respectively.
 These failed points motivate reporting the entire higher-budget $F=200$ sweep rather than only its best point estimate.
 
-With 200 full-resolution groups, the 11,400-, 12,300- and 13,200-token budgets reach 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native (Table~\ref{tab:transfer}).
+With 200 full-resolution groups, the 11,400-, 12,300- and 13,200-token budgets reach 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native (\mainref{tab:transfer}{Table~2}).
 None of the paired intervals in that table excludes zero.
 With 96 episodes the intervals are wide, so these results show no detected loss, not equivalence to native.
 

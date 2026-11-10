@@ -1,0 +1,35 @@
+% Supplementary material as a stand-alone PDF (CVPR asks for it as a separate upload).
+%
+% How to build:
+%   Overleaf : open this file (supp.tex) and click Recompile, then download the PDF.
+%              If Overleaf still shows the full paper, set Menu -> Main document -> supp.tex,
+%              recompile, and set it back to main.tex afterwards.
+%   Locally  : pdflatex supp   (run it three times; no bibtex needed)
+%
+% The content lives in sec/X_suppl.tex, the same file that main.tex appends when it sets \suppltrue.
+% Keep the three items marked KEEP IN SYNC identical to main.tex.
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage[review]{cvpr}      % KEEP IN SYNC with main.tex (review / camera-ready)
+
+\input{preamble}
+
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+\input{macros}
+
+\def\paperID{*****} % KEEP IN SYNC with main.tex
+\def\confName{CVPR}
+\def\confYear{2027}
+
+\title{ARROW: Action-Aware Resolution Routing for World Action Models} % KEEP IN SYNC with main.tex
+
+% Tells sec/X_suppl.tex that the main paper is not part of this PDF, so references to its
+% tables are printed as fixed numbers ("Table 1 of the main paper") instead of cross-references.
+\def\supponly{}
+
+\begin{document}
+\input{sec/X_suppl}
+\end{document}
