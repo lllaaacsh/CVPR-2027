@@ -33,34 +33,31 @@
 %   不说 router 优于 decoder attention——E2 离线中完整上下文的 decoder cross-attention 比 router 好 7%（p=0.0078）。
 % ---------------------------------------------------------------------------
 
-Large video generation models, trained on vast amounts of video, capture how the visual world looks and how it changes over time.
-World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero} bring this knowledge to robot control:
+Large video generation models~\cite{nvidia2025cosmos}, trained on vast amounts of video, capture how the visual world looks and how it changes over time. World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero} bring this knowledge to robot control:
 a pretrained video model predicts how the scene will evolve under an instruction, and the robot's actions are derived from this predicted future,
 typically by an action decoder that reads the internal representation of the video model.
 Such policies inherit visual and physical priors from video pretraining, rather than learning them from robot demonstrations alone.
 
 A video model, however, is built to generate video.
 Its representation of the future covers every region of every frame on a dense, uniform grid, because generation must render the entire scene.
-Acting in the scene asks for something narrower: the next actions depend mostly on the robot, the objects it interacts with, and the space it is about to move through.
-Yet the action decoder receives the full, generation-shaped representation, and the video model computes all of it at full resolution, regardless of which parts the action actually uses.
-Whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has so far received little attention.
+Acting in the scene asks for something narrower: the next actions depend mostly on the robot, the objects it interacts with~\cite{bendikas2025oatvla}, and the space it is about to move through. Yet the action decoder receives the full, generation-shaped representation, and the video model computes all of it at full resolution, regardless of which parts the action actually uses.
+Recent work has asked whether the future must be generated at test time at all~\cite{yuan2026fastwam} or rolled out step by step~\cite{zhang2026rift}, but whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has received far less attention.
 
 \input{figures/teaser}
 
-A natural tool for making such a representation more compact is token reduction, which merges tokens that look alike~\cite{bolya2023tome} or discards tokens that receive little attention.
+A natural tool for making such a representation more compact is token reduction, which merges tokens that look alike~\cite{bolya2023tome} or discards tokens that receive little attention~\cite{chen2024fastv}.
 These criteria, however, describe the image rather than the task: they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it.
-What is redundant for describing a scene need not be what is irrelevant for acting in it.
-Discarding tokens also removes parts of the scene altogether, even though a policy may still need a coarse view of them.
+What is redundant for describing a scene need not be what is irrelevant for acting in it. Cues specific to robots, such as recent end-effector motion~\cite{pei2026adp}, help decide when to reduce tokens but not which tokens the action depends on.
+However, discarding tokens also removes parts of the scene altogether, even though a policy may still need a coarse view of them.
 Relevance to the action therefore cannot simply be read off the visual content.
 
 In a WAM, one component already knows what the action needs: the action decoder.
 The most direct readout of its needs is its attention over the predicted future.
 Attention comes without any training, reflects the action rather than the appearance of the scene, and shows which regions the decoder reads.
 As a basis for deciding where the video model computes, however, it has two limitations.
-First, it arrives too late: the decoder attends to features that the video model produces late in its forward pass,
-so attention exists only after every token of the future has been computed at full resolution, when the computation it could have guided has already been spent.
-Second, attention shows where the decoder looks, which need not coincide with how much its prediction would change if a region were represented more coarsely,
-and it is the latter that decides whether a region can be coarsened.
+First, it arrives too late to guide the pass that produces it: the decoder attends to features that the video model produces late in its forward pass, so attention exists only after every token of the future has been computed at full resolution.
+Methods that select tokens by attention therefore take it from an earlier denoising step~\cite{kim2026cfprune,xie2026sparsewam} or earlier control steps~\cite{liu2025vlapruner}, and still pay for at least one full-resolution pass to obtain it.
+Second, attention shows where the decoder looks, which need not coincide with how much its prediction would change if a region were represented more coarsely~\cite{serrano2019attention}, and it is the latter that decides whether a region can be coarsened.
 What is needed instead is the decoder's judgment, measured by the effect of coarsening on the predicted action and made available early in the video model.
 This suggests reversing the usual direction of information flow:
 through its objective, the action decoder can teach the video model where to compute in detail and where a coarser view suffices.
@@ -84,3 +81,5 @@ In summary, our contributions are as follows.
   \item A spatial resolution allocation that keeps the most relevant regions at full resolution and merges the others instead of removing them, keeping every token at its original position.
   \item A temporal resolution allocation that gives each region a number of time segments set by its relevance, with consecutive temporal positions.
 \end{itemize}
+
+

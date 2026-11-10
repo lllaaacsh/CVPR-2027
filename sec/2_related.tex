@@ -53,19 +53,20 @@ what separates joint from future-conditioned WAMs is whether video and action ar
 \label{sec:related_future}
 
 Among these designs, future-conditioned WAMs separate prediction from control most cleanly.
-The video model is trained for prediction alone, while a comparatively light decoder learns to read it~\cite{hu2025vpp,liao2025ge,pai2025mimicvideo}, typically from intermediate features rather than from pixels.
+The video model is usually trained for prediction first, and a comparatively light decoder then learns to read it~\cite{hu2025vpp,liao2025ge,pai2025mimicvideo}, typically from intermediate features rather than from pixels.
 VPP conditions an implicit inverse dynamics model on the future representation inside a video diffusion model~\cite{hu2025vpp},
 VidMan turns a video diffusion model pretrained on robot videos into an inverse dynamics model through a layer-wise adapter~\cite{wen2024vidman},
 mimic-video cross-attends to an intermediate layer and finds that a single forward pass, without denoising the future frames, already gives strong performance~\cite{pai2025mimicvideo},
 and DiT4DiT conditions an action transformer on the features of a video transformer trained together with it~\cite{ma2026dit4dit}.
 Because the decoder reads the predicted future through a path of its own, this family is where one can ask most directly which parts of that future the action needs, and it is the setting of this work.
-Much of the cost of these policies lies in the video model, and existing work reduces it by shortening the generation process:
+Much of the cost of WAMs lies in the video model, and existing work reduces it by shortening the generation process:
 by running fewer denoising steps, down to a single forward pass~\cite{pai2025mimicvideo},
 by building the future representation in one pass with learned anticipation tokens instead of an iterative rollout~\cite{zhang2026rift},
 or by not predicting the future at test time at all~\cite{yuan2026fastwam}.
 General accelerations of diffusion models, through feature caching~\cite{zhao2025pab,liu2025teacache}, sparse attention~\cite{xi2025sparsevideogen}, token merging~\cite{bolya2023tomesd,li2024vidtome} or region-adaptive sampling~\cite{liu2026ras},
 aim to preserve the generated images or video, a goal that a policy does not share.
-In all of these approaches, each forward pass still computes the full token grid of the future at the resolution of video generation, whichever parts the action decoder relies on.
+None of these approaches uses the action to decide which parts of the future are computed in detail.
+
 
 \subsection{Action-Aware Token Selection}
 \label{sec:related_tokens}
@@ -73,20 +74,24 @@ In all of these approaches, each forward pass still computes the full token grid
 Deciding which parts of a representation matter for control is a long-standing question for predictive models.
 Decision-aware world models learn only what is useful for acting:
 value-equivalent models predict just what is needed to plan with values~\cite{grimm2020valueequivalence,schrittwieser2020muzero},
-and several world models separate reward-relevant or controllable content from distractors~\cite{fu2021tia,wang2022denoisedmdp,pan2022isodream}
-or tokenize only what changes between frames~\cite{micheli2024deltairis}.
+and several world models separate reward-relevant or controllable content from distractors~\cite{fu2021tia,wang2022denoisedmdp,pan2022isodream}.
+Other world models keep their representation compact by tokenizing only what changes between frames~\cite{micheli2024deltairis}.
 Policies that learn from video likewise predict compact, action-relevant quantities instead of full frames, such as the tracks of points or the flow of objects~\cite{wen2024atm,bharadhwaj2024track2act,xu2024im2flow2act}.
 These approaches build relevance into what the model learns to predict, so they require training a new model or representation.
 Token reduction keeps the model and reduces the tokens it processes instead,
-by merging similar tokens~\cite{bolya2023tome,bolya2023tomesd,li2024vidtome,hyun2025sttm}, by dropping tokens that receive little attention~\cite{liang2022evit,chen2024fastv,zhang2025sparsevlm},
+by merging similar tokens~\cite{bolya2023tome,bolya2023tomesd,li2024vidtome,hyun2025sttm}, by dropping or compressing tokens that receive little attention~\cite{chen2024fastv,liang2022evit,zhang2025sparsevlm},
 or with a small selector trained by the task loss~\cite{rao2021dynamicvit,ryoo2021tokenlearner,raposo2024mod}, as RT-1 does for its image tokens with the action loss~\cite{brohan2023rt1}.
+Recent VLA methods select visual tokens by their attention to the instruction~\cite{yang2025efficientvla}, by their change between control steps~\cite{xu2025vlacache},
+by text relevance gated on the recent motion of the end effector~\cite{pei2026adp}, by semantic attention combined with the action-decoding attention of recent control steps~\cite{liu2025vlapruner}, or with a selector learned while the policy is fine-tuned~\cite{jiang2025lightvla}.
+Some training-free methods bring selection to the future tokens of WAMs: they score tokens by action attention~\cite{xie2026sparsewam} or by action and instruction attention~\cite{kim2026cfprune} at the first denoising step and compute only the selected tokens in the remaining steps.
+
 Recent VLA methods select visual tokens by their attention to the instruction~\cite{yang2025efficientvla}, by their change between control steps~\cite{xu2025vlacache},
 by the recent motion of the end effector~\cite{pei2026adp}, by the attention of the action-decoding stage~\cite{liu2025vlapruner}, or with a selector learned while the whole policy is fine-tuned~\cite{jiang2025lightvla}.
 
-These methods share three limitations for our setting.
-Relevance is either built into a newly trained model, or approximated by appearance, attention or motion, or learned by retraining the model whose tokens are selected.
-The tokens that are not selected are discarded, so the corresponding parts of the scene leave the representation.
-And in robot policies the selection acts on the tokens of the current observation, not on the predicted future inside a pretrained video generation model, where WAMs spend much of their computation.
+These methods leave three gaps for our setting.
+Relevance is built into a newly trained model, approximated by appearance, attention or motion, or learned by retraining the model whose tokens are selected.
+Selection methods usually remove the remaining tokens from the computation, so the corresponding parts of the scene no longer reach the action, while merging methods keep the scene but choose what to merge by visual similarity alone.
+In robot policies, selection has mostly acted on the current observation, and the methods that select future tokens need a full-resolution first step and save computation only in later denoising steps, which a video model run for a single forward pass~\cite{pai2025mimicvideo} does not have.
 Our router addresses all three:
 it is trained only through the objective of the action decoder, leaves the pretrained video model unchanged,
-and, inside it, gives the regions of the predicted future that the action relies on least a coarser resolution instead of removing them.
+and, from an early block of the video model, gives the regions of the predicted future that the action relies on least a coarser resolution instead of removing them.
