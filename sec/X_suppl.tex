@@ -46,15 +46,15 @@ For DiT4DiT, the 442-token LIBERO setting pools all future spatial groups and ad
 \input{tables/paired_uncertainty}
 
 Confidence intervals describe paired episode differences, not variation over independently trained models.
-All adapter configurations use one training seed.
+The mimic-video intervals and tests use one adapter and 500 paired episodes per cell.
+\TODO{State the number of seeds and episodes behind the DiT4DiT rows of the main table.}
 The nine mimic-video ours--native comparisons in the main table use a common Holm family; its Object 30\% adjusted $p$-value is 0.250.
 The deletion reference comparisons are separate from that family and do not change the dagger marks.
 \input{tables/native_lora_controls}
 The full-context LoRA controls are statistically indistinguishable from original native on each suite for both backbones (\cref{tab:native_lora_controls}).
-Relative to these adapted references, all 20\%/30\% mimic-video and 75\%/56\% DiT4DiT cells remain statistically indistinguishable; DiT4DiT at 50\% has Object and Goal decreases with Holm-adjusted $p=0.03125$ and $0.00656$ (\cref{tab:ours_native_lora}).
-The DiT4DiT comparisons in \cref{tab:ours_native_lora} use the paired single-seed evaluation, so their success rates can differ from the main table.
-The fixed-budget external-method comparisons form one Holm family of 36 tests per backbone (\cref{tab:fixed_budget_ports}).
-The mimic-video FastV-style comparisons were first analysed as a separate nine-test family.
+Relative to its adapted reference, mimic-video at 20\% and 30\% remains statistically indistinguishable on every suite (\cref{tab:ours_native_lora}).
+For DiT4DiT, the differences from its adapted reference range from $-1.8$ to $+1.2$ points.
+The mimic-video fixed-budget comparisons form one Holm family of 36 tests (\cref{tab:fixed_budget_ports}); its FastV-style comparisons were first analysed as a separate nine-test family.
 
 The original Goal/Object ours--deletion analysis uses a post-hoc family of 12 contrasts, as documented with the results.
 
@@ -117,9 +117,10 @@ Every episode starts with three dense queries, so these values exceed the compre
 \section{External-Method Policies and Fixed-Budget Ports}
 \label{sec:supp_original_external}
 
-\input{tables/dit4dit_original_external}
+% tables/dit4dit_original_external.tex (2026-11-05 single-seed protocol) is no longer included: it reports the same
+% methods as the main table with different numbers, and the main table is authoritative (author decision, 2026-11-10).
 
-The original VLA-Pruner and ADP adaptations use more context than their compressed-branch targets because of dense calls (\cref{tab:dit4dit_original_external}).
+VLA-Pruner and ADP use more context than their compressed-branch targets because of dense calls (the rows marked $*$ in \cref{tab:main_results}).
 They therefore do not constitute fixed-context comparisons.
 The 391-token rows of the main table restore these dense calls on a 293/98-token compressed branch, because the observation-preserving port cannot go below 392 tokens; their costs are composed from the measured dense branch and the compressed branch of the same 391-token adapter.
 We also evaluated explicit fixed-budget selection ports, with 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 total context tokens.
@@ -127,15 +128,15 @@ ADP-sel. removes trajectory-gated dense fallback and tests the text-guided selec
 VLA-sel. uses three semantic-only compressed bootstrap queries and scatters their action attention to source positions before maintaining its causal history.
 FastV-style and CF-sel. also select observation tokens at the two lower budgets; their selection scores and source positions remain method-specific.
 CF-sel. retains a paid full-context probe, which is included in its reported inference cost.
-All 36 DiT4DiT fixed-context cells use fresh matched decoder adapters and complete 500-episode evaluations; their old-policy success rates are not reused.
+All DiT4DiT fixed-context ports use fresh matched decoder adapters.
 The mimic-video ports follow the same idea: ADP-sel. removes the motion gate and dense fallback and reuses the ADP adapters, which were trained on the same compressed branch, and VLA-sel. replaces the three dense warm starts with semantic-only compressed queries and is retrained.
 We added the mimic-video ports after seeing the full-policy results, so that comparison is post hoc.
 
 \input{tables/fixed_budget_ports}
 
-With Holm correction over each backbone's 36 tests (\cref{tab:fixed_budget_ports}), no port is detectably above \method.
-On mimic-video, \method is detectably above FastV-style and ADP-sel. in all nine cells, above VLA-sel. in eight and above CF-sel. in four.
-On DiT4DiT, \method is detectably above ADP-sel. in six cells, above VLA-sel. in three and above FastV-style in two, and no difference from CF-sel. is detectable.
+On mimic-video, with Holm correction over its 36 tests (\cref{tab:fixed_budget_ports}), no port is detectably above \method:
+\method is detectably above FastV-style and ADP-sel. in all nine cells, above VLA-sel. in eight and above CF-sel. in four.
+On DiT4DiT, \method has the highest mean success rate at every budget; the gap is largest at 391 tokens, where ADP-sel. and VLA-sel. reach 57.7\% and 87.2\% against 98.1\%.
 
 \section{Additional Transfer and Router-Training Results}
 \label{sec:supp_transfer}
@@ -170,6 +171,7 @@ This is a lack of detected benefit for that recipe and sample size, not evidence
   \includegraphics[width=\linewidth]{fig5_action_relevance.pdf}
   \caption{\textbf{Ranking reversal and offline action distortion.}
   (a) Deployed and inverted full-resolution groups at the same budget.
+  % NOTE 2026-11-10: panel (b) still draws the single-run inverted bar at 20% (66.2, +22.0 pp); Table 3 of the main paper now reports 60.2.
   (b) Spatial success over 500 paired episodes, with separately trained low-rank adapters (solid) or without adapters (hatched); bars show Wilson 95\% confidence intervals.
   (c) Spatial insertion curves over 200 windows from 50 held-out episodes: the top-$n$ groups retain full resolution, the rest are merged, and all 14 future frames remain.
   Distortion is the normalized mean squared difference from the native decoder's first five actions under full context, geometrically averaged over windows.
