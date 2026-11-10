@@ -20,8 +20,17 @@
 % 额外的分析与可视化；运行时间测量方式；失败案例；视频说明。
 % ---------------------------------------------------------------------------
 
+This supplementary material is organized as follows.
+\Cref{sec:supp_impl} gives implementation details that the main paper omits.
+\Cref{sec:supp_stats} describes the statistical protocol, the latency and FLOPs measurements, and the numerical checks of the deployed configurations.
+\Cref{sec:supp_original_external} documents how the external methods are adapted and reports their fixed-budget selection ports.
+\Cref{sec:supp_transfer} adds transfer and router-training results, \cref{sec:supp_relevance} the detailed action-relevance analysis, and \cref{sec:supp_absolute} absolute success rates of other policies for context.
+
 \section{Implementation Details}
 \label{sec:supp_impl}
+
+\TODO{Add a hyperparameter table: router architecture and insertion block, router and adapter optimizer settings, LoRA rank and target modules, training steps, loss weights, group and segment counts per budget.}
+
 
 The main text specifies the LIBERO training and evaluation settings.
 The Object router uses pure distillation during router training, while all budget-specific decoder adapters use distillation plus the 0.02-weight ground-truth term.
@@ -30,6 +39,9 @@ For DiT4DiT, the 442-token LIBERO setting pools all future spatial groups and ad
 
 \section{Statistical and Efficiency Details}
 \label{sec:supp_stats}
+
+\subsection{Paired Statistics}
+\label{sec:supp_stats_paired}
 
 \input{tables/paired_uncertainty}
 
@@ -40,10 +52,13 @@ The deletion reference comparisons are separate from that family and do not chan
 \input{tables/native_lora_controls}
 The full-context LoRA controls are statistically indistinguishable from original native on each suite for both backbones (\cref{tab:native_lora_controls}).
 Relative to these adapted references, all 20\%/30\% mimic-video and 75\%/56\% DiT4DiT cells remain statistically indistinguishable; DiT4DiT at 50\% has Object and Goal decreases with Holm-adjusted $p=0.03125$ and $0.00656$ (\cref{tab:ours_native_lora}).
-The DiT4DiT fixed-budget external-method family contains all 36 registered comparisons.
-Mimic-video's completed FastV comparisons retain their separate nine-test family; its 27-/36-test external families await ADP and do not support a combined significance claim yet.
+The fixed-budget external-method comparisons form one Holm family of 36 tests per backbone (\cref{tab:fixed_budget_ports}).
+The mimic-video FastV-style comparisons were first analysed as a separate nine-test family.
 
 The original Goal/Object ours--deletion analysis uses a post-hoc family of 12 contrasts, as documented with the results.
+
+\subsection{Latency Protocol on mimic-video}
+\label{sec:supp_latency_mimic}
 
 The timing benchmark uses Spatial checkpoints on an exclusively allocated H100, batch size one, with text encoding included.
 There are three warmup calls and eight interleaved rounds of four calls per arm; reported values are medians of 32 synchronized wall-clock measurements.
@@ -51,6 +66,10 @@ The graphed native reference is 701.7\,ms; the eager native reference has median
 The deployed 10\%/20\%/30\% configurations run in 404.2/440.7/477.1\,ms and use 35.7/42.7/49.6 TFLOPs per query.
 Speedups relative to graphed native are reported in the main text; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
 The folded-adapter configuration is the one used for timing; these measurements are not a separate closed-loop evaluation of graph/fold equivalence.
+
+\subsection{Deployment and Numerical Checks on DiT4DiT}
+\label{sec:supp_deploy_dit4dit}
+
 \input{tables/dit4dit_deployment}
 
 For DiT4DiT, an exclusively allocated H100 runs three warmup calls followed by eight interleaved rounds of four synchronized calls per configuration, at batch size one.
@@ -71,6 +90,9 @@ The graph-compatible allocation has identical features, source positions and res
 Graph/eager contexts and actions are bit-identical; actual-fold versus live-adapter actions differ by at most $6.26\times10^{-7}$, with no changed gripper decisions in these queries.
 The accuracy values in the main table remain those of the recorded trained-adapter evaluations; these checks are not a new 500-episode closed-loop evaluation of the engineering configuration.
 
+\subsection{FLOPs Accounting on DiT4DiT}
+\label{sec:supp_flops}
+
 The earlier DiT4DiT FLOPs comparison uses a released 4.91-TFLOP pipeline with a padded VAE encode.
 Encoding only the real observed frame reduces this to 2.90 TFLOPs and is shared by native and ours.
 With this common change, the folded 589/442/391-token configurations use 2.44/2.10/1.98 TFLOPs including VAE; the main table excludes the common 0.67-TFLOP VAE cost.
@@ -78,15 +100,17 @@ The exact eager functions underlying the graphs reproduce the previous FLOPs ref
 Graph replay changes latency, not arithmetic; folding removes the low-rank branch.
 The separately trained full-context LoRA benchmark uses the same FP32 fold and both graphs: 65.5\,ms live eager, 58.8\,ms folded eager, and 47.0\,ms with both graphs, with 2.229 TFLOPs excluding VAE.
 Its interleaved native anchor is 47.1\,ms in the same job; this second run does not replace the 47.2\,ms anchor used for the original compressed-arm speedups.
-
 The earlier reductions relative to the released path therefore describe arithmetic rather than wall-clock speedup or compression alone.
-For mimic-video, the formal full-context LoRA and FastV-style measurements pass the registered fold and graph numerical gates, use 32 calls each, and verify the exact trained-adapter hashes.
+
+\subsection{Cost of the Full-Context and External-Method Baselines}
+\label{sec:supp_external_cost}
+
+For mimic-video, the full-context LoRA and FastV-style measurements pass the same fold and graph numerical checks, use 32 calls each, and verify the exact trained-adapter hashes.
 Spatial full-context LoRA uses 98.0 TFLOPs and takes 704.0\,ms; FastV-style uses 37.1/44.0/50.9 TFLOPs and takes 538.2/570.3/607.0\,ms at the three budgets.
 These are fixed-input numerical and timing checks, rather than new closed-loop equivalence evaluations.
 VLA-Pruner, ADP and CF-Prune costs use the same protocol and gates and are expected per-query values, weighted by the branch shares observed in the 500-episode evaluations.
 For mimic-video VLA-Pruner, the query-weighted mean context lengths are 5,535/7,240/8,788 tokens; the suite-specific means range over [5,468,5,623], [7,148,7,373] and [8,664,8,919], respectively.
 Every episode starts with three dense queries, so these values exceed the compressed-branch targets in the table.
-The two unmeasured Table~\ref{tab:ablations} 30\% controls remain unfilled: reversed allocation with its own adapter, and deployed allocation without LoRA.
 
 
 \section{External-Method Policies and Fixed-Budget Ports}
@@ -119,6 +143,7 @@ With 100 full-resolution groups, the three Bridge budgets give 20/96, 24/96 and 
 Their paired differences are $-27.1$ [$-38.1$,$-16.1$], $-22.9$ [$-32.7$,$-13.1$] and $-19.8$ [$-29.6$,$-9.9$] percentage points, with exact McNemar $p=1.3\times10^{-5}$, $2.7\times10^{-5}$ and $3.1\times10^{-4}$, respectively.
 These failed points motivate reporting the entire higher-budget $F=200$ sweep rather than only its best point estimate.
 
+\TODO{This paragraph describes single runs (45/96 at 11,400 tokens) and no longer matches the Bridge rows of the transfer table in the main paper (44.8/48.4/50.0 with intervals). Rewrite it from the source of that table.}
 The original $F=200$, 11,400-token run gives 45/96 successes (46.9\%), versus 46/96 for native; its paired difference is $-1.0$ points [95\% CI $-9.9$,$+7.9$], with discordant counts 9/10 and exact McNemar $p=1.00$.
 The 50.0\% point estimate in the transfer table comes from a separate run on another machine with a different seed.
 Its interval and paired comparison remain pending; the original run's interval is not reused for it.
