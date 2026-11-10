@@ -52,6 +52,7 @@ The deletion reference comparisons are separate from that family and do not chan
 \input{tables/native_lora_controls}
 The full-context LoRA controls are statistically indistinguishable from original native on each suite for both backbones (\cref{tab:native_lora_controls}).
 Relative to these adapted references, all 20\%/30\% mimic-video and 75\%/56\% DiT4DiT cells remain statistically indistinguishable; DiT4DiT at 50\% has Object and Goal decreases with Holm-adjusted $p=0.03125$ and $0.00656$ (\cref{tab:ours_native_lora}).
+The DiT4DiT comparisons in \cref{tab:ours_native_lora} use the paired single-seed evaluation, so their success rates can differ from the main table.
 The fixed-budget external-method comparisons form one Holm family of 36 tests per backbone (\cref{tab:fixed_budget_ports}).
 The mimic-video FastV-style comparisons were first analysed as a separate nine-test family.
 
@@ -143,10 +144,9 @@ With 100 full-resolution groups, the three Bridge budgets give 20/96, 24/96 and 
 Their paired differences are $-27.1$ [$-38.1$,$-16.1$], $-22.9$ [$-32.7$,$-13.1$] and $-19.8$ [$-29.6$,$-9.9$] percentage points, with exact McNemar $p=1.3\times10^{-5}$, $2.7\times10^{-5}$ and $3.1\times10^{-4}$, respectively.
 These failed points motivate reporting the entire higher-budget $F=200$ sweep rather than only its best point estimate.
 
-\TODO{This paragraph describes single runs (45/96 at 11,400 tokens) and no longer matches the Bridge rows of the transfer table in the main paper (44.8/48.4/50.0 with intervals). Rewrite it from the source of that table.}
-The original $F=200$, 11,400-token run gives 45/96 successes (46.9\%), versus 46/96 for native; its paired difference is $-1.0$ points [95\% CI $-9.9$,$+7.9$], with discordant counts 9/10 and exact McNemar $p=1.00$.
-The 50.0\% point estimate in the transfer table comes from a separate run on another machine with a different seed.
-Its interval and paired comparison remain pending; the original run's interval is not reused for it.
+With 200 full-resolution groups, the 11,400-, 12,300- and 13,200-token budgets reach 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native (Table~\ref{tab:transfer}).
+None of the paired intervals in that table excludes zero.
+With 96 episodes the intervals are wide, so these results show no detected loss, not equivalence to native.
 
 Earlier combined spatial/temporal DiT4DiT configurations on GR1 have lower point estimates than native.
 For example, the future-space/time 441-token configuration with 41 full-resolution groups reaches 53.2\%, versus 54.9\% for native, a $-1.8$ point difference with interval [$-4.5$,$+1.0$].
