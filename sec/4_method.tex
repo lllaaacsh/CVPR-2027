@@ -14,13 +14,13 @@
   After an early block of the frozen video DiT, an action-aware router scores the future tokens.
   Spatially, the highest-scoring $2{\times}2$ blocks keep full resolution and every other block is merged into a single tube;
   temporally, each tube is pooled into a number of segments set by its relevance, and the segments are re-indexed contiguously in time.
-  The remaining blocks run on the compact sequence, whose output conditions the action decoder.
+  The remaining blocks run on the compact sequence, whose output conditions the action decoder. \cj{XX I'd take out (a) and (b) as a separate figure for each subsection XX}
 }
   \label{fig:overview}
 \end{figure*}
 
 Our method aims at identifying action-relevant tokens throughout within future representation, which then merge the other tokens to eliminate its negative influences towards both action generation and inference time. Specifically, our method decide the spatial and temporal resolution the backbone computes per region of the scene, using relevance learned from the action decoder.
-
+\cj{XX write Coarse-to-fine ! XX the readers should be able to understand our work from coarse to fine. E.g. formulate the problem and give motivation first as Section 3.1. and then dive into details  }
 % ---------------------------------------------------------------------------
 \subsection{Action-Aware Router}
 \label{sec:router}

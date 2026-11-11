@@ -113,12 +113,12 @@ LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 l
 
 \Cref{fig:operator_ablation} compares token and tube deletion with our allocation at matched budgets.
 Token and tube deletion are internal operator references using the same frozen router and an independently trained adapter for each budget.
-Their gaps are largest on Spatial, while token deletion is much closer on Goal and Object: at 20\%, it reaches 87.2\% and 92.8\%, versus 89.4\% and 94.0\% for ours.
+Their gaps are largest on Spatial, while token deletion is closer on Goal and Object: at 20\%, it reaches 87.2\% and 92.8\%, versus 89.4\% and 94.0\% for ours.
 At 30\% on Goal, tube deletion has the highest point estimate, 91.4\%, versus 90.2\% for ours; their paired difference is not significant ($p=0.48$).
-The deletion references change spatial support and temporal processing together, so their closed-loop gap does not by itself isolate the value of coarse coverage.
+
 
 \Cref{tab:ablations} examines the learned allocation and decoder adaptation.
-Reversing the router scores lowers Spatial success by 42.4 and 22.0 percentage points at 10\% and 20\%, even after retraining the adapter for the reversed allocation (Holm-corrected $p\leq6\times10^{-21}$).
+Reversing the router scores lowers success by 42.4 and 28.2 percentage points at 10\% and 20\%, even after retraining the adapter for the reversed allocation (Holm-corrected $p\leq6\times10^{-21}$).
 Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the full-context LoRA control is reported separately in \cref{tab:main_results}.
 Contiguous temporal positions (\cref{fig:temporal_positions}) improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
 
@@ -132,4 +132,4 @@ The detailed insertion curves and ranking-reversal plot are in the supplementary
 
 Simulator segmentation in \cref{fig:ground_truth} shows that full-resolution groups cover 90\% of Spatial task-object pixels, 84\% of robot pixels and 82\% of the robot's future path, versus 26\% of background pixels.
 On Goal, the corresponding object, robot and background shares are 64\%, 98\% and 21\%.
-These results identify action-relevant workspace content, while the allocation remains largely stable across observations and instructions; they do not support instruction-specific selection or per-step scene tracking.
+
