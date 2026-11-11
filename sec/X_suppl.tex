@@ -75,6 +75,20 @@ The deployed 10\%/20\%/30\% configurations run in 404.2/440.7/477.1\,ms and use 
 Speedups relative to graphed native are reported in the main text; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
 The folded-adapter configuration is the one used for timing; these measurements are not a separate closed-loop evaluation of graph/fold equivalence.
 
+% ---- added 2026-11-11, candidate for the main paper (main-text version of the caption: figures/new_figures.tex) ----
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig10_latency_breakdown.pdf}
+  \caption{\textbf{Where the time of one query goes.}
+  Median stage times on an H100 at batch size one, with CUDA graphs for both policies.
+  Totals are the medians over 32 calls reported in \mainref{tab:main_mimic}{Table~1(a)}; stage times are medians over five traced calls.}
+  \label{fig:supp_latency_breakdown}
+\end{figure}
+
+\Cref{fig:supp_latency_breakdown} splits these totals by stage.
+Text encoding takes about 150\,ms in every setting.
+At the 20\% budget the video DiT runs $1.87\times$ and the action decoder $1.98\times$ faster than in native, which gives $1.59\times$ end to end while total FLOPs fall by 56\%.
+
 \subsection{Deployment and Numerical Checks on DiT4DiT}
 \label{sec:supp_deploy_dit4dit}
 
@@ -119,6 +133,22 @@ These are fixed-input numerical and timing checks, rather than new closed-loop e
 VLA-Pruner, ADP and CF-Prune costs use the same protocol and gates and are expected per-query values, weighted by the branch shares observed in the 500-episode evaluations.
 For mimic-video VLA-Pruner, the query-weighted mean context lengths are 5,535/7,240/8,788 tokens; the suite-specific means range over [5,468,5,623], [7,148,7,373] and [8,664,8,919], respectively.
 Every episode starts with three dense queries, so these values exceed the compressed-branch targets in the table.
+
+% ---- added 2026-11-11, candidate for the main paper. Drawn from tables/main_results.tex: re-render after editing Table 1
+%      (mimic-video-repro/eval/analysis/render_paper_figures_extra.py). One-column cut: fig7_cost_accuracy_1col.pdf ----
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig7_cost_accuracy.pdf}
+  \caption{\textbf{Success versus inference cost on mimic-video.}
+  Each line joins the 10\%, 20\% and 30\% settings of one method in \mainref{tab:main_mimic}{Table~1(a)}; success is the mean over the three LIBERO suites.
+  Costs include every dense call and probe a method makes.
+  The black line and grey band show native with its Wilson 95\% confidence interval over 1,500 episodes, and the dashed line marks its cost.
+  FastV-style lies below the plotted range.}
+  \label{fig:supp_cost_accuracy}
+\end{figure*}
+
+\Cref{fig:supp_cost_accuracy} plots these costs against the mean success rates of the main table.
+In point estimates, every setting of an external method has lower success than a setting of \method with lower latency and fewer FLOPs.
 
 
 \section{External-Method Policies and Fixed-Budget Ports}
@@ -173,6 +203,16 @@ This is a lack of detected benefit for that recipe and sample size, not evidence
 \section{Detailed Action-Relevance Analysis}
 \label{sec:supp_relevance}
 
+% ---- added 2026-11-11, candidate for the main paper. Same data as panel (d) of the figure below, as a stand-alone one-column plot ----
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig8_criteria_forest.pdf}
+  \caption{\textbf{Router scores versus task-agnostic criteria.}
+  Stand-alone version of panel (d) of \cref{fig:supp_relevance}: ratio of offline action distortion when the same spatial coarsening follows router scores instead of each criterion, on 50 held-out LIBERO-Spatial episodes (200 windows).
+  Points are geometric means and bars are 95\% confidence intervals; values below one mean lower distortion with the router.}
+  \label{fig:supp_criteria_forest}
+\end{figure}
+
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{fig5_action_relevance.pdf}
@@ -193,6 +233,23 @@ It requires completing the uncompressed video/decoder forward pass and therefore
 Claims of superiority apply only to the five task-agnostic criteria shown in the figure.
 Similarity ranking in this analysis is not a complete ToMe implementation.
 The matched offline coverage-versus-resolution comparison does not distinguish the two allocations after correction, so it is not used to attribute the closed-loop operator gap to coarse coverage alone.
+
+\TODO{\cref{fig:supp_criteria_forest} repeats panel (d) of \cref{fig:supp_relevance}. Keep one of them: move this plot to the main paper and drop panel (d), or delete this plot.}
+
+% ---- added 2026-11-11, candidate for the main paper. Two-row cut with five tasks per suite: fig9_allocation_gallery.pdf ----
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig9_allocation_gallery_full.pdf}
+  \caption{\textbf{Full-resolution groups across tasks.}
+  One query from each task of two suites at the 20\% budget (first recorded episode, query 12).
+  Blue marks the 100 groups kept at full resolution and grey the 200 merged groups; outlines are simulator masks of the robot arm and the task objects.
+  Labels in the Spatial rows give the location of the bowl to pick up.}
+  \label{fig:supp_allocation_gallery}
+\end{figure*}
+
+\Cref{fig:supp_allocation_gallery} shows the deployed allocation on one query of every Spatial and Goal task.
+The full-resolution set covers the robot arm and its workspace.
+It changes little between the ten tasks of a suite: the mean Jaccard index between tasks is 0.94 on Spatial and 0.95 on Goal.
 
 \section{Absolute Cross-Policy Success Rates}
 \label{sec:supp_absolute}
