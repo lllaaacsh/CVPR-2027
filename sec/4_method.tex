@@ -14,7 +14,9 @@
   After an early block of the frozen video DiT, an action-aware router scores the future tokens.
   Spatially, the highest-scoring $2{\times}2$ blocks keep full resolution and every other block is merged into a single tube;
   temporally, each tube is pooled into a number of segments set by its relevance, and the segments are re-indexed contiguously in time.
-  The remaining blocks run on the compact sequence, whose output conditions the action decoder. \cj{XX I'd take out (a) and (b) as a separate figure for each subsection XX}
+  The remaining blocks run on the compact sequence, whose output conditions the action decoder.
+  \Cref{fig:allocation_detail} details the two allocation steps.
+  % \cj{XX I'd take out (a) and (b) as a separate figure for each subsection XX}
 }
   \label{fig:overview}
 \end{figure*}
@@ -105,6 +107,15 @@ $\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b 
 \subsection{Spatial Resolution Allocation}
 \label{sec:spatial}
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{temporal_spatial_detail.pdf}
+  \caption{\textbf{Spatial and temporal allocation.}
+  (a) $2{\times}2$ groups with high router scores keep their four tokens in every frame (A); every other group is averaged into one token per frame (B), so no region is removed.
+  (b) Tubes with a higher priority $u_p$ (\cref{eq:priority}) are split into more contiguous segments, each averaged into one token; shown are the three levels of the 20\% budget, $K=7$, 5 and 3. Segment boundaries are schematic.}
+  \label{fig:allocation_detail}
+\end{figure}
+
 The video model represents each future frame as a $30{\times}40$ grid of tokens.
 We call the sequence of tokens at grid position $p$ across the 14 future frames \emph{tube} $p$, which gives 1,200 tubes.
 We then group the tubes into $2{\times}2$ neighborhoods, giving 300 groups.
@@ -125,7 +136,7 @@ During training, the router supervision of \cref{sec:router} is computed on thes
 
 We rank the groups by $S_g$.
 The 100 highest-scoring groups keep their four tubes at full resolution.
-In every other group, the four tubes are averaged frame by frame into a single tube.
+In every other group, the four tubes are averaged frame by frame into a single tube (\cref{fig:allocation_detail}a).
 This leaves 600 tubes, and no region of the scene is removed: relevant regions keep full resolution and the rest are kept at a coarser one.
 The group scores thus decide which regions of the scene the backbone sees in detail, and the number of full-resolution groups sets how many.
 
@@ -154,7 +165,7 @@ Each tube $p$ receives a priority
 where $S_{g(p)}$ is the score (\cref{eq:group_score}) of the group $g(p)$ that contains position $p$,
 and $\Delta_p$ is the average change of the features of tube $p$ between consecutive frames, measured as one minus their cosine similarity.
 A tube thus ranks high when it is relevant to the action and its features change across frames.
-We give the most segments to the tubes with the highest priority, with a fixed number of tubes at each level.
+We give the most segments to the tubes with the highest priority, with a fixed number of tubes at each level (\cref{fig:allocation_detail}b).
 For example, when 10\% of the future tokens are kept, the top 300 tubes receive 4 segments, the next 180 receive 2, and the last 120 receive 1, giving 1,680 tokens.
 Within a tube, segment boundaries are placed so that each segment covers a similar amount of feature change.
 
@@ -166,7 +177,8 @@ Because the number of tubes at each level is fixed, every sample is represented 
   \centering
   \includegraphics[width=\linewidth]{contiguous_t.pdf}
   \caption{\textbf{Temporal positions after segment pooling.}
-  The same four segments are assigned representative source-frame positions $(1,4,8,11)$ by source-t, or consecutive positions $(0,1,2,3)$ by contiguous-t.
+  At the 20\% budget, a top-priority tube is split into seven segments of two frames each.
+  Source-t assigns their pooled tokens the representative source-frame positions $(0,2,\dots,12)$, whereas contiguous-t assigns the consecutive positions $(0,1,\dots,6)$.
   Positions are relative to the future sequence in this illustration; the pooled segment features are the same before position encoding.}
   \label{fig:temporal_positions}
 \end{figure}
