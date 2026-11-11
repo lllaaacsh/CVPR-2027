@@ -19,9 +19,39 @@
   \label{fig:overview}
 \end{figure*}
 
-Our method aims at identifying action-relevant tokens throughout within future representation, which then merge the other tokens to eliminate its negative influences towards both action generation and inference time. Specifically, our method decide the spatial and temporal resolution the backbone computes per region of the scene, using relevance learned from the action decoder.
-\cj{XX write Coarse-to-fine ! XX the readers should be able to understand our work from coarse to fine. E.g. formulate the problem and give motivation first as Section 3.1. and then dive into details  }
+\method decides at which spatial and temporal resolution the video model computes each region of the predicted future, using a relevance score learned from the action decoder (\cref{fig:overview}).
+We first formulate this allocation problem (\cref{sec:problem}), then describe the router that produces the scores (\cref{sec:router}), how the scores set the spatial (\cref{sec:spatial}) and temporal (\cref{sec:temporal}) resolution, and how the router and the decoder adapter are trained (\cref{sec:router}).
+
+% \cj{XX write Coarse-to-fine ! XX the readers should be able to understand our work from coarse to fine. E.g. formulate the problem and give motivation first as Section 3.1. and then dive into details  }
 % ---------------------------------------------------------------------------
+
+
+\subsection{Problem Formulation}
+\label{sec:problem}
+
+At every policy query, the video model receives the instruction, the observed frames and noisy latents for the future frames.
+Its transformer blocks process 2,400 observation tokens and 16,800 future tokens, 14 future frames of $30{\times}40$ tokens each, and the action decoder predicts an action chunk from the resulting representation.
+Let $Z$ denote the future tokens after an early block, and $f(Z)$ the action that the remaining blocks and the decoder predict from them.
+We seek an allocation $A$ that represents $Z$ with a fixed budget of $N$ future tokens while keeping the predicted action close to the one predicted from the full future:
+\begin{equation}
+  \min_{A,\,\phi}\ \mathbb{E}\,\big\| f_\phi\big(A(Z)\big) - f(Z) \big\|^2
+  \quad \text{s.t.} \quad |A(Z)| = N ,
+  \label{eq:problem}
+\end{equation}
+where $|A(Z)|$ is the number of tokens after allocation, $N$ is a fixed fraction of the 16,800 future tokens (10--30\% in our experiments), and $f_\phi$ is $f$ with a low-rank adapter $\phi$ in the decoder.
+The observation tokens are always kept, and the video model and the decoder stay frozen.
+$A$ may only average neighboring tokens, in space or over consecutive frames; it never removes a region, so every part of the scene remains represented at some resolution.
+
+The question is therefore where the representation needs detail.
+Appearance measures such as token similarity do not show which regions the action depends on, and the decoder's attention becomes available only after the full-resolution pass that the allocation is meant to avoid.
+We therefore let a small router predict the relevance of every future token early in the video model and train it through the decoder's objective (\cref{sec:router}).
+Because the remaining blocks and the decoder then process $N$ instead of 16,800 future tokens, the same allocation also lowers the cost of every query.
+
+
+
+
+
+
 \subsection{Action-Aware Router}
 \label{sec:router}
 
@@ -52,10 +82,6 @@ $\mathcal{L}_{\text{distill}}$ makes the adapted decoder reproduce the original 
 
 
 
-
-The adapter only needs to let the decoder read the compressed context, not to learn a new policy.
-Distillation keeps the decoder close to the original policy, so the router signal derived from $\mathcal{L}_{\text{task}}$ below reflects what this policy needs, rather than what helps a changing decoder refit the demonstrations;
-the ground-truth term only anchors the decoder to the demonstrations.
 
 The router learns which groups of tokens (\cref{sec:spatial}) should keep full resolution under a fixed token budget.
 Its supervision is the gradient saliency of the decoder objective with respect to the group scores:
