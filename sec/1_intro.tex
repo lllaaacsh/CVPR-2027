@@ -33,14 +33,15 @@
 %   不说 router 优于 decoder attention——E2 离线中完整上下文的 decoder cross-attention 比 router 好 7%（p=0.0078）。
 % ---------------------------------------------------------------------------
 
-Large video generation models~\cite{nvidia2025cosmos}, trained on vast amounts of video, capture how the visual world looks and how it changes over time. World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero} bring this knowledge to robot control:
+Large video generation models~\cite{nvidia2025cosmos}, trained on vast amounts of video, capture how the visual world looks and how it changes over time. World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero} bring this knowledge to robot control by modeling the future of the scene together with the robot's actions:
 a pretrained video model predicts how the scene will evolve under an instruction, and the robot's actions are derived from this predicted future,
 typically by an action decoder that reads the internal representation of the video model.
 Such policies inherit visual and physical priors from video pretraining, rather than learning them from robot demonstrations alone.
 
 A video model, however, is built to generate video.
 Its representation of the future covers every region of every frame on a dense, uniform grid, because generation must render the entire scene.
-Acting in the scene asks for something narrower: the next actions depend mostly on the robot, the objects it interacts with~\cite{bendikas2025oatvla}, and the space it is about to move through. Yet the action decoder receives the full, generation-shaped representation, and the video model computes all of it at full resolution, regardless of which parts the action actually uses.
+Acting in the scene asks for something narrower: the next actions depend mostly on the robot, the objects it interacts with~\cite{bendikas2025oatvla}, and the space it is about to move through. Yet the action decoder receives the full, generation-shaped representation, and the video model computes all of it at full resolution at every policy query, regardless of which parts the action actually uses; this computation accounts for most of the cost of acting.
+
 Recent work has asked whether the future must be generated at test time at all~\cite{yuan2026fastwam} or rolled out step by step~\cite{zhang2026rift}, but whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has received far less attention.
 
 \input{figures/teaser}
@@ -68,11 +69,11 @@ It is supervised only through the action decoder:
 its training signal is the gradient of the decoder's objective with respect to the scores, and no term depends on appearance or similarity (\cref{sec:router}).
 The scores then set the resolution at which the rest of the video model computes each region.
 In space, the most relevant regions keep full resolution, while the others are merged into coarser tokens at their original positions rather than removed (\cref{sec:spatial}).
-In time, the frames of each region are grouped into segments, more of them for more relevant regions, and the segments keep consecutive temporal positions, matching the frame order the video model was trained on (\cref{sec:temporal}).
+In time, the frames of each region are grouped into segments: relevance decides how many segments a region receives, the change of its features over time decides where the segments are cut, and the segments keep consecutive temporal positions, matching the frame order the video model was trained on (\cref{sec:temporal}).
 Only the router and a low-rank adapter in the action decoder are trained, and the adapter can be merged into the decoder after training.
-Because the video model processes fewer tokens after the router, the allocation also reduces computation.
+Because the video model and the decoder then process fewer tokens, the same allocation lowers the cost of every policy query.
 
-On the three LIBERO task suites~\cite{liu2023libero}, \method keeps 20\% of the future tokens (30\% of all tokens) while remaining statistically indistinguishable from the policy that reads the full representation.
+On the three LIBERO task suites~\cite{liu2023libero}, \method keeps between 10\% and 30\% of the future tokens. At 20\% (30\% of all tokens) it remains statistically indistinguishable from the policy that reads the full representation, while a policy query takes 440.7\,ms instead of 701.7\,ms ($1.59\times$).
 Further analysis shows that the regions it keeps at full resolution are necessary for the policy and concentrate on the robot and the objects it manipulates.
 
 In summary, our contributions are as follows.
