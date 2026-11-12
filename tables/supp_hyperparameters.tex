@@ -23,11 +23,11 @@
     Loss & focal $\gamma=2$; $\lambda_b=\lambda_e=0.1$; saliency EMA momentum 0.9 \\
     \midrule
     \multicolumn{2}{@{}l}{\emph{Training}} \\
-    Stage 1: router alone & 1,000 steps; learning rate $10^{-4}$; 4 accumulated batches \\
-    Stage 2: router + adapter & 1,500 steps; learning rates $10^{-4}$ (router) and $4{\times}10^{-5}$ (adapter); 8 accumulated batches \\
-    Stage 3: adapter per budget & router frozen, fresh adapter; 1,500 steps; learning rate $4{\times}10^{-5}$; 8 accumulated batches \\
-    Schedule (stages 2, 3) & 100 warm-up steps, cosine decay to 5\%; gradient norm clipped at 1 \\
-    Objective (stages 2, 3) & $\mathcal{L}_{\text{distill}} + 0.02\,\mathcal{L}_{\text{GT}}$ \\
+
+    Stage 1: router + adapter & 1,500 steps; learning rates $10^{-4}$ (router) and $4{\times}10^{-5}$ (adapter); 8 accumulated batches \\
+    Stage 2: adapter per budget & router frozen, fresh adapter; 1,500 steps; learning rate $4{\times}10^{-5}$; 8 accumulated batches \\
+    Schedule (stages 1, 2) & 100 warm-up steps, cosine decay to 5\%; gradient norm clipped at 1 \\
+    Objective (stages 1, 2) & $\mathcal{L}_{\text{distill}} + 0.02\,\mathcal{L}_{\text{GT}}$ \\
     \midrule
     \multicolumn{2}{@{}l}{\emph{Decoder adapter}} \\
     LoRA & rank 16, $\alpha=8$, on the decoder cross-attention layers; 3.9M parameters \\
