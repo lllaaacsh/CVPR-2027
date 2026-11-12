@@ -1,12 +1,14 @@
 % Insertion-depth ablation, LIBERO-Spatial, n=500 paired, evaluated 2026-11-11.
 % Source: mimic-video-repro/ablations/insertion_depth/README.md (results section) and
-% ablations/temporal_allocation/outcomes_qmul_20261111.txt (keys block6_r10, deployed_r10, deployed_r20).
-% Counts: block 6 391/500; block 2 at 10% 346/500 (discordant 65 vs 20); block 2 at 20% 432/500 (28 vs 69).
+% ablations/temporal_allocation/outcomes_qmul_20261111.txt (keys block6_r10, bsc_deployed_r10, bsc_deployed_r20).
+% 2026-11-12 (author rule: the main tables are authoritative): the block-2 rows are the main-table runs (354/500, 441/500,
+% H100); block 6 (391/500, A100) is paired with them episode by episode: discordant 58 vs 21 and 24 vs 74.
+% The registered same-cluster references (346/500, 432/500) are reported in the text of the supplement.
 % The 445 ms of the block-6 row is an estimate (about 10 ms per additional full-resolution block), never measured.
 \begin{table}[t]
   \centering
   \caption{\textbf{Insertion depth on LIBERO-Spatial.}
-  Success rate (SR, \%) over the same 500 episodes.
+  Success rate (SR, \%) over the same 500 episodes; the block-2 rows are those of \mainref{tab:main_mimic}{Table~1(a)}.
   $\Delta$ is the block-6 row minus the listed row in percentage points, with paired Wald 95\% intervals and two-sided exact McNemar $p$-values.
   The latency of the block-6 row is an estimate; the other two are measured.}
   \label{tab:supp_depth}
@@ -17,8 +19,8 @@
     Routing after & Tokens & ms & SR & $\Delta$ [95\% CI] & $p$ \\
     \midrule
     Block 6 & 4,080 & $\approx$445 & 78.2 & -- & -- \\
-    Block 2 & 4,080 & 404.2 & 69.2 & $+9.0$ [$+5.5$, $+12.5$] & $1.0\!\times\!10^{-6}$ \\
-    Block 2 & 5,760 & 440.7 & 86.4 & $-8.2$ [$-12.0$, $-4.4$] & $3.8\!\times\!10^{-5}$ \\
+    Block 2 & 4,080 & 404.2 & 70.8 & $+7.4$ [$+4.0$, $+10.8$] & $3.8\!\times\!10^{-5}$ \\
+    Block 2 & 5,760 & 440.7 & 88.2 & $-10.0$ [$-13.8$, $-6.2$] & $4.2\!\times\!10^{-7}$ \\
     \bottomrule
   \end{tabular}
 \end{table}
