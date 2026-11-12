@@ -307,6 +307,24 @@ It demonstrates simultaneous spatial and temporal allocation in this evaluated s
 % The stand-alone forest plot fig8_criteria_forest.pdf shows the same data as panel (d) above, so it is not included
 % here. It remains a candidate for the main paper; its figure environment is in figures/new_figures.tex.
 
+\Cref{fig:supp_relevance} gives the ranking-reversal experiment and the offline comparison of scoring criteria that the main paper summarizes.
+
+\paragraph{Pixel coverage across suites.}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig6_ground_truth_object_goal.pdf}
+  \caption{\textbf{Full-resolution pixel coverage on Object and Goal.}
+  The share of each category covered by the 100 full-resolution groups, averaged over 50 episodes per suite with Student's $t$ 95\% confidence intervals.
+  The 20\% future-token budget and simulator categories match \mainref{fig:ground_truth}{Figure~5}.
+  The dashed reference is random allocation (33\%).}
+  \label{fig:supp_spatial_coverage}
+\end{figure}
+
+\Cref{fig:supp_spatial_coverage} extends the Spatial result in \mainref{fig:ground_truth}{Figure~5} to the other two suites.
+Full-resolution groups cover 81\% of Object task-object pixels, 99\% of robot-arm pixels and 97\% of the future path, versus 26\% of background pixels.
+On Goal, the corresponding task-object, robot-arm, future-path and background shares are 64\%, 98\%, 78\% and 21\%.
+
 % Three suites, five overlap-ranked tasks per suite; full candidate archive is not displayed.
 \begin{figure*}[t]
   \centering
@@ -320,7 +338,6 @@ It demonstrates simultaneous spatial and temporal allocation in this evaluated s
   \label{fig:supp_allocation_gallery}
 \end{figure*}
 
-\Cref{fig:supp_relevance} gives the ranking-reversal experiment and the offline comparison of scoring criteria that the main paper summarizes.
 
 \paragraph{Offline criteria.}
 The pre-registered offline family also included full-context decoder cross-attention, which has approximately 7\% lower distortion than the router ($p=0.0078$ after correction).

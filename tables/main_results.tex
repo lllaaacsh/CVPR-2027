@@ -5,67 +5,98 @@
   S/O/G: LIBERO-Spatial/Object/Goal; Avg.: mean success rate (\%).
   Context targets count future tokens in (a), total tokens in (b).
   $*$: measured mean context including dense calls, so these rows are not equal-token.
-  $\dagger$: point estimate above Native; bold: best available per budget; blue: \method.
+  $\dagger$: point estimate above Native; bold: best available per budget; lavender: \method.
+  Summary boxes compare with Native using the displayed values: Avg. SR changes in percentage points and latency reductions in percent.
   External methods use decoder LoRA; CF-Prune's cost includes its extra dense probe.
   TFLOPs include VAE/text in (a) and exclude them in (b).
   At 391 tokens in (b), VLA-Pruner and ADP restore their dense calls on a 293/98-token branch, with costs composed from measured branches.
 }
   \label{tab:main_results}
   \renewcommand{\TODO}[1]{{\color{red}--}}
-  % One column layout and font size for both sub-tables, so they render at exactly the same size.
+
+  % Layout follows the author-supplied reference; table entries remain editable.
+  \definecolor{ArrowPanel}{HTML}{E5EBF4}
+  \definecolor{ArrowBudget}{HTML}{EFEFEF}
+  \definecolor{ArrowOurs}{HTML}{EBE9FF}
+  \definecolor{ArrowSRGoodBG}{HTML}{E4F3E5}
+  \definecolor{ArrowSRGoodText}{HTML}{176321}
+  \definecolor{ArrowSRGrayBG}{HTML}{EFEFF0}
+  \definecolor{ArrowSRGrayText}{HTML}{60656B}
+  \definecolor{ArrowLatencyBG}{HTML}{DFEBFF}
+  \definecolor{ArrowLatencyText}{HTML}{0045AA}
+  \newlength{\ArrowMainDataWidth}
   \newcolumntype{Q}[1]{>{\raggedleft\arraybackslash}p{#1}}
-  \newcolumntype{K}{@{}>{\raggedright\arraybackslash}p{46pt}Q{25pt}Q{32pt}Q{21pt}Q{19pt}Q{21pt}Q{19pt}Q{20pt}@{}}
+  \newcolumntype{K}{@{\hspace{3pt}}>{\raggedright\arraybackslash}p{.24\ArrowMainDataWidth}Q{.14\ArrowMainDataWidth}Q{.14\ArrowMainDataWidth}Q{.115\ArrowMainDataWidth}Q{.09\ArrowMainDataWidth}Q{.095\ArrowMainDataWidth}Q{.09\ArrowMainDataWidth}Q{.09\ArrowMainDataWidth}@{\hspace{3pt}}}
+  \newcommand{\ArrowPanelHeading}[2]{%
+    \begin{tikzpicture}[baseline=(panelheader.base)]
+      \node[fill=ArrowPanel,rounded corners=3.5pt,inner xsep=3pt,inner ysep=1.9pt,outer sep=0pt] (panelheader) {%
+        \begin{minipage}{\dimexpr\linewidth-6pt\relax}
+          \captionsetup{font={bf,normalsize},skip=0pt,justification=centering,singlelinecheck=false}
+          \caption{#1}\label{#2}
+        \end{minipage}};
+    \end{tikzpicture}\par\vspace{4pt}}
+  \newcommand{\ArrowSummary}[5]{%
+    \begin{tikzpicture}[baseline=3pt]
+      \path[use as bounding box] (0pt,0pt) rectangle (\linewidth,21.5pt);
+      \node[fill=#3,text=#4,rounded corners=3.5pt,minimum width=.435\linewidth,minimum height=13.5pt,inner sep=0pt,outer sep=0pt,font={\fontsize{7}{8}\selectfont\bfseries}] at (.2625\linewidth,11.25pt)
+        {Avg. SR gain: $\mathbf{#1}$\,pp $#5$};
+      \node[fill=ArrowLatencyBG,text=ArrowLatencyText,rounded corners=3.5pt,minimum width=.45\linewidth,minimum height=13.5pt,inner sep=0pt,outer sep=0pt,font={\fontsize{7}{8}\selectfont\bfseries}] at (.735\linewidth,11.25pt)
+        {Latency reduction: $\mathbf{#2\%}$ $\downarrow$};
+    \end{tikzpicture}}
+
   \begin{subtable}[t]{0.49\textwidth}
     \centering
-    \caption{mimic-video on LIBERO.}
-    \label{tab:main_mimic}
+    \ArrowPanelHeading{mimic-video on LIBERO.}{tab:main_mimic}
     \scriptsize
     \setlength{\tabcolsep}{1.5pt}
-    \renewcommand{\arraystretch}{0.95}
+    \setlength{\ArrowMainDataWidth}{\dimexpr\linewidth-27pt\relax}
+    \renewcommand{\arraystretch}{1.12}
     \begin{tabular}{K}
       \toprule
-      Method & Tokens & TFLOPs $\downarrow$ & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & Avg. $\uparrow$ \\
+      \textbf{Method} & \textbf{Tokens} & \mbox{\textbf{TFLOPs}$\downarrow$} & \textbf{ms} $\downarrow$ & \textbf{S} $\uparrow$ & \textbf{O} $\uparrow$ & \textbf{G} $\uparrow$ & \textbf{Avg.} $\uparrow$ \\
       \midrule
       Native & 19,200 & 98.0 & 701.7 & 90.4 & 94.0 & 90.2 & 91.5 \\
       Native + LoRA & 19,200 & 98.0 & 704.0 & 91.6$\dagger$ & 93.2 & 89.8 & 91.5 \\
       \midrule
-\rowcolor{black!4}
-      \multicolumn{8}{@{}l}{\emph{10\% context}} \\
+      \rowcolor{ArrowBudget}[0pt][0pt]
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\hspace*{3pt}{\fontsize{8}{9}\selectfont\bfseries\itshape 10\% context}\rule[-1.5pt]{0pt}{10pt}} \\
       FastV-style & 4,080 & 37.1 & 538.2 & 2.2 & 5.0 & 2.0 & 3.1 \\
       VLA-Pruner & 5,535$*$ & 41.6 & 437.8 & 56.4 & 93.6 & 74.0 & 74.7 \\
       ADP & 12,101$*$ & 68.7 & 557.7 & 65.8 & 60.2 & \textbf{81.6} & 69.2 \\
       CF-Prune & 4,080 & 128.2 & 952.2 & 37.4 & 80.8 & 75.6 & 64.6 \\
-      \rowcolor{blue!6}
+      \rowcolor{ArrowOurs}[3pt][3pt]
       \method & 4,080 & 35.7 & 404.2 & \textbf{70.8} & \textbf{93.8} & 74.8 & \textbf{79.8} \\
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\ArrowSummary{-11.7}{42.4}{ArrowSRGrayBG}{ArrowSRGrayText}{\downarrow}} \\
       \midrule
-\rowcolor{black!4}
-      \multicolumn{8}{@{}l}{\emph{20\% context}} \\
+      \rowcolor{ArrowBudget}[0pt][0pt]
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\hspace*{3pt}{\fontsize{8}{9}\selectfont\bfseries\itshape 20\% context}\rule[-1.5pt]{0pt}{10pt}} \\
       FastV-style & 5,760 & 44.0 & 570.3 & 26.6 & 7.6 & 11.6 & 15.3 \\
       VLA-Pruner & 7,240$*$ & 48.7 & 477.4 & 83.8 & 93.4 & 85.8 & 87.7 \\
       ADP & 13,059$*$ & 72.6 & 579.1 & 80.8 & 63.8 & \textbf{90.0} & 78.2 \\
       CF-Prune & 5,760 & 135.1 & 989.4 & 78.0 & 93.4 & 87.4 & 86.3 \\
-      \rowcolor{blue!6}
+      \rowcolor{ArrowOurs}[3pt][3pt]
       \method & 5,760 & 42.7 & 440.7 & \textbf{88.2} & \textbf{94.0} & 89.4 & \textbf{90.5} \\
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\ArrowSummary{-1.0}{37.2}{ArrowSRGrayBG}{ArrowSRGrayText}{\downarrow}} \\
       \midrule
-\rowcolor{black!4}
-      \multicolumn{8}{@{}l}{\emph{30\% context}} \\
+      \rowcolor{ArrowBudget}[0pt][0pt]
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\hspace*{3pt}{\fontsize{8}{9}\selectfont\bfseries\itshape 30\% context}\rule[-1.5pt]{0pt}{10pt}} \\
       FastV-style & 7,440 & 50.9 & 607.0 & 43.0 & 11.6 & 25.2 & 26.6 \\
       VLA-Pruner & 8,788$*$ & 55.1 & 511.3 & 89.8 & 94.0 & 90.4$\dagger$ & 91.4 \\
       ADP & 13,881$*$ & 76.0 & 594.8 & 87.6 & 69.4 & \textbf{92.8}$\dagger$ & 83.3 \\
       CF-Prune & 7,440 & 142.1 & 1020.1 & 85.6 & 93.4 & 89.0 & 89.3 \\
-      \rowcolor{blue!6}
+      \rowcolor{ArrowOurs}[3pt][3pt]
       \method & 7,440 & 49.6 & 477.1 & \textbf{92.0}$\dagger$ & \textbf{96.4}$\dagger$ & 90.2 & \textbf{92.9}$\dagger$ \\
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\ArrowSummary{+1.4}{32.0}{ArrowSRGoodBG}{ArrowSRGoodText}{\uparrow}} \\
       \bottomrule
     \end{tabular}
   \end{subtable}\hfill
   \begin{subtable}[t]{0.49\textwidth}
     \centering
-    \caption{DiT4DiT: spatial allocation on LIBERO.}
-    \label{tab:main_dit4dit}
+    \ArrowPanelHeading{DiT4DiT on LIBERO.}{tab:main_dit4dit}
     \scriptsize
     \setlength{\tabcolsep}{1.5pt}
-    \renewcommand{\arraystretch}{0.95}
+    \setlength{\ArrowMainDataWidth}{\dimexpr\linewidth-27pt\relax}
+    \renewcommand{\arraystretch}{1.12}
     \input{tables/main_results_dit4dit}
   \end{subtable}
 \end{table*}
-						

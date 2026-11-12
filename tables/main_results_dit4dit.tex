@@ -1,36 +1,39 @@
 
 \begin{tabular}{K}
   \toprule
-  Method & Tokens & TFLOPs $\downarrow$ & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & Avg. $\uparrow$ \\
+      \textbf{Method} & \textbf{Tokens} & \mbox{\textbf{TFLOPs}$\downarrow$} & \textbf{ms} $\downarrow$ & \textbf{S} $\uparrow$ & \textbf{O} $\uparrow$ & \textbf{G} $\uparrow$ & \textbf{Avg.} $\uparrow$ \\
   \midrule
   Native & 784 & 2.23 & 47.2 & 98.6 & 99.4 & 98.6 & 98.9 \\
   Native + LoRA & 784 & 2.23 & 47.2 & 98.0 & 100.0$\dagger$ & 98.6 & 98.9 \\
   \midrule
-\rowcolor{black!4}
-  \multicolumn{8}{@{}l}{\emph{50\% context}} \\
+      \rowcolor{ArrowBudget}[0pt][0pt]
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\hspace*{3pt}{\fontsize{8}{9}\selectfont\bfseries\itshape 50\% context}\rule[-1.5pt]{0pt}{10pt}} \\
   FastV-style & 391 & 1.32 & 40.3 & 92.6 & 96.0 & 79.4 & 89.3 \\
   VLA-Pruner & 474.3$*$ & 1.52 & 45.1 & 87.8 & 90.8 & 83.0 & 87.2 \\
   ADP & 612.4$*$ & 1.82 & 44.1 & 70.4 & 62.2 & 40.6 & 57.7 \\
   CF-Prune & 391 & 3.22 & 72.3 & 97.5 & \textbf{98.3} & 96.0 & 97.3 \\
-  \rowcolor{blue!6}
+      \rowcolor{ArrowOurs}[3pt][3pt]
   \method & 391 & 1.31 & 40.6 & \textbf{98.2} & 98.2 & \textbf{98.0} & \textbf{98.1} \\
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\ArrowSummary{-0.8}{14.0}{ArrowSRGrayBG}{ArrowSRGrayText}{\downarrow}} \\
   \midrule
-\rowcolor{black!4}
-  \multicolumn{8}{@{}l}{\emph{56\% context}} \\
+      \rowcolor{ArrowBudget}[0pt][0pt]
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\hspace*{3pt}{\fontsize{8}{9}\selectfont\bfseries\itshape 56\% context}\rule[-1.5pt]{0pt}{10pt}} \\
   FastV-style & 442 & 1.44 & 41.0 & 95.6 & 98.4 & 95.4 & 96.5 \\
   VLA-Pruner & 514.1$*$ & 1.62 & 44.4 & 95.8 & \textbf{99.2} & 96.0 & 97.0 \\
   ADP & 638.5$*$ & 1.89 & 44.5 & 94.6 & 93.4 & 83.4 & 90.5 \\
   CF-Prune & 442 & 3.34 & 72.6 & 98.2 & 99.0 & 97.8 & 98.3 \\
-  \rowcolor{blue!6}
+      \rowcolor{ArrowOurs}[3pt][3pt]
   \method & 442 & 1.43 & 41.0 & \textbf{98.4} & 98.6 & \textbf{98.2} & \textbf{98.4} \\
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\ArrowSummary{-0.5}{13.1}{ArrowSRGrayBG}{ArrowSRGrayText}{\downarrow}} \\
   \midrule
-\rowcolor{black!4}
-  \multicolumn{8}{@{}l}{\emph{75\% context}} \\
+      \rowcolor{ArrowBudget}[0pt][0pt]
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\hspace*{3pt}{\fontsize{8}{9}\selectfont\bfseries\itshape 75\% context}\rule[-1.5pt]{0pt}{10pt}} \\
   FastV-style & 589 & 1.78 & 43.7 & 97.8 & 99.6$\dagger$ & \textbf{99.4}$\dagger$ & 98.9 \\
   VLA-Pruner & 630.9$*$ & 1.90 & 47.2 & 98.2 & 99.8$\dagger$ & 98.2 & 98.7 \\
   ADP & 703.4$*$ & 2.05 & 45.8 & 97.6 & 98.6 & 98.0 & 98.1 \\
   CF-Prune & 589 & 3.68 & 75.5 & 98.0 & 99.8$\dagger$ & 98.0 & 98.6 \\
-  \rowcolor{blue!6}
+      \rowcolor{ArrowOurs}[3pt][3pt]
   \method & 589 & 1.77 & 43.7 & \textbf{99.2}$\dagger$ & \textbf{100.0}$\dagger$ & 98.6 & \textbf{99.3}$\dagger$ \\
+      \multicolumn{8}{@{}p{\linewidth}@{}}{\ArrowSummary{+0.4}{7.4}{ArrowSRGoodBG}{ArrowSRGoodText}{\uparrow}} \\
   \bottomrule
 \end{tabular}

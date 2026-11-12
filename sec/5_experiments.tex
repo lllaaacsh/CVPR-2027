@@ -92,16 +92,16 @@ LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 l
 
 \input{tables/operator_comparison}
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{fig6_ground_truth.pdf}
+  \includegraphics[width=\linewidth]{fig6_ground_truth_spatial.pdf}
   \caption{\textbf{Content receiving full spatial resolution.}
-  Left: one LIBERO-Spatial query, with full-resolution groups in blue, merged groups in grey, and simulator outlines for task objects, the robot and its future path.
-  Right: the share of each pixel category in full-resolution groups, averaged over 50 episodes per suite with Student's $t$ 95\% confidence intervals.
-  Randomly allocating 100 of 300 groups gives 33\%.
-  The path is simulator ground truth for subsequent motion.}
+  LIBERO-Spatial at the 20\% future-token budget.
+  Left: one query with simulator outlines.
+  Right: percentage of each category's pixels in full-resolution groups over 50 episodes (means and Student's $t$ 95\% intervals).
+  Random allocation gives 33\%.}
   \label{fig:ground_truth}
-\end{figure*}
+\end{figure}
 
 \Cref{tab:operator_comparison} compares token and tube deletion with our allocation at matched budgets.
 Token and tube deletion are internal operator references using the same frozen router and an independently trained adapter for each budget.
@@ -123,5 +123,5 @@ The detailed insertion curves and ranking-reversal plot are in the supplementary
 
 
 Simulator segmentation in \cref{fig:ground_truth} shows that full-resolution groups cover 90\% of Spatial task-object pixels, 84\% of robot pixels and 82\% of the robot's future path, versus 26\% of background pixels.
-On Goal, the corresponding object, robot and background shares are 64\%, 98\% and 21\%.
+The Object and Goal coverage results are reported in the supplementary material.
 
