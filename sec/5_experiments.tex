@@ -90,15 +90,7 @@ LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 l
 \subsection{Allocation and Adaptation Ablations}
 \label{sec:exp_ablation}
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\linewidth]{fig4_main_results.pdf}
-  \caption{\textbf{Internal operator comparisons.}
-  Ours (blue), token deletion and tube deletion use the same router and matched future-token budgets, each with its own trained low-rank adapter.
-  The 2,400 observation tokens are always retained.
-  Black lines and grey bands show native; error bars and bands are Wilson 95\% confidence intervals over 500 paired episodes.}
-  \label{fig:operator_ablation}
-\end{figure*}
+\input{tables/operator_comparison}
 
 \begin{figure*}[t]
   \centering
@@ -111,7 +103,7 @@ LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 l
   \label{fig:ground_truth}
 \end{figure*}
 
-\Cref{fig:operator_ablation} compares token and tube deletion with our allocation at matched budgets.
+\Cref{tab:operator_comparison} compares token and tube deletion with our allocation at matched budgets.
 Token and tube deletion are internal operator references using the same frozen router and an independently trained adapter for each budget.
 Their gaps are largest on Spatial, while token deletion is closer on Goal and Object: at 20\%, it reaches 87.2\% and 92.8\%, versus 89.4\% and 94.0\% for ours.
 At 30\% on Goal, tube deletion has the highest point estimate, 91.4\%, versus 90.2\% for ours; their paired difference is not significant ($p=0.48$).

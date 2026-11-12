@@ -253,6 +253,22 @@ Block 6 was evaluated on A100 GPUs with the simulator version of the main experi
 Evaluating the two block-2 policies again on A100 together with block 6 gives 69.2\% and 86.4\% and the same conclusion: block 6 is 9.0 points above block 2 at 10\% ($p=1.0\times10^{-6}$) and 8.2 points below block 2 at 20\% ($p=3.8\times10^{-5}$).
 The block-6 configuration uses the router trained on block-2 features and one adapter, so it does not bound what a router trained for block 6 could reach.
 
+\subsection{Pooling and Deletion at Matched Budgets}
+\label{sec:supp_operator_comparison}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig4_main_results.pdf}
+  \caption{\textbf{Internal operator comparisons.}
+  Ours (blue), token deletion and tube deletion use the same router and matched future-token budgets, each with its own trained low-rank adapter.
+  The 2,400 observation tokens are always retained.
+  Black lines and grey bands show native; error bars and bands are Wilson 95\% confidence intervals over 500 paired episodes.}
+  \label{fig:supp_operator_ablation}
+\end{figure*}
+
+\Cref{fig:supp_operator_ablation} gives the complete curves underlying the compact operator-comparison table in the main paper.
+The confidence intervals are retained here; the main table reports the same success counts and the difference from the better deletion arm.
+
 \subsection{Joint Router Training}
 \label{sec:supp_joint_router}
 
