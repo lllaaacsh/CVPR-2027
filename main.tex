@@ -8,14 +8,11 @@
 \usepackage[review]{cvpr}      % To produce the REVIEW version
 % \usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
 
-% Packages and layout tweaks (must come before hyperref)
-\input{preamble}
-
-% It is strongly recommended to use hyperref, especially for the review version.
-% hyperref with option pagebackref eases the reviewers' job.
-% If you comment hyperref and then uncomment it, you should delete *.aux before re-running LaTeX.
+% preamble.tex loads hyperref; pass its options before that first load.
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
-\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+\PassOptionsToPackage{pagebackref,breaklinks,colorlinks,allcolors=cvprblue}{hyperref}
+\input{preamble}
+\usepackage{hyperref}
 
 % Project macros: draft notes, method name, notation, table helpers
 \input{macros}

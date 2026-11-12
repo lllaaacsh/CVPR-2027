@@ -32,15 +32,16 @@
 
 % ---------------------------------------------------------------------------------------------
 % (3) Allocation on real queries of five tasks per suite. Two columns.
-%     fig9_allocation_gallery_full.pdf shows all ten tasks per suite (supplementary material).
+%     fig9_allocation_gallery_full.pdf archives all ten candidates per suite; it is not included.
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{fig9_allocation_gallery.pdf}
   \caption{\textbf{Full-resolution groups across tasks.}
-  One query from each even-numbered task of two suites at the 20\% budget (first recorded episode, query 12).
-  Blue marks the 100 groups kept at full resolution and grey the 200 merged groups; outlines are simulator masks of the robot arm and the task objects.
-  Labels in the top row give the location of the bowl to pick up.
-  The full-resolution set covers the arm and its workspace and changes little between the ten tasks of a suite (mean Jaccard index 0.94 on Spatial and 0.95 on Goal).}
+  Five tasks from each of LIBERO-Spatial, LIBERO-Object and LIBERO-Goal at the 20\% future-token budget, selected for the highest mean coverage of task-object and robot-arm pixels by full-resolution groups.
+  Each panel uses the first recorded episode and the query nearest 12.
+  Blue marks the 100 groups kept at full resolution and grey the 200 merged groups; outlines are simulator masks of task objects (green) and the robot arm (black).
+  Spatial labels give the location of the bowl to pick up.
+  These selected examples illustrate spatial overlap; they do not estimate average coverage.}
   \label{fig:allocation_gallery}
 \end{figure*}
 

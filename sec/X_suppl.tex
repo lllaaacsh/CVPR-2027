@@ -22,60 +22,80 @@
   \DeclareRobustCommand{\mainref}[2]{\cref{#1}}
 \fi
 
-% ---- 可能的内容（写完删除）--------------------------------------------------
-% 实现细节与超参数；统计协议（配对方式、McNemar、CI）；逐任务完整结果；
-% 额外的分析与可视化；运行时间测量方式；失败案例；视频说明。
-% ---------------------------------------------------------------------------
+% Layout. LaTeX puts a page-wide float (table*, figure*) at the top of the page AFTER the one on which it is
+% declared. Each page-wide float is therefore declared one (sub)section before the text that discusses it, so
+% that it lands on the page of that text; one-column floats are declared next to their text. Floats are
+% numbered in reading order. If text is added and a float drifts, move its declaration, not the text.
+% \raggedbottom keeps the paragraph spacing uniform instead of stretching it to fill a column.
+\raggedbottom
 
 This supplementary material is organized as follows.
-\Cref{sec:supp_impl} gives implementation details that the main paper omits.
-\Cref{sec:supp_stats} describes the statistical protocol, the latency and FLOPs measurements, and the numerical checks of the deployed configurations.
-\Cref{sec:supp_original_external} documents how the external methods are adapted and reports their fixed-budget selection ports.
-\Cref{sec:supp_transfer} adds transfer and router-training results, \cref{sec:supp_relevance} the detailed action-relevance analysis, and \cref{sec:supp_absolute} absolute success rates of other policies for context.
+\Cref{sec:supp_impl} lists the implementation settings.
+\Cref{sec:supp_stats} describes the statistical protocol and the paired comparisons behind the main tables.
+\Cref{sec:supp_efficiency} documents the latency and FLOPs measurements.
+\Cref{sec:supp_original_external} explains how the external methods are adapted and reports their fixed-budget selection ports.
+\Cref{sec:supp_ablations} adds ablations of the insertion depth and of router training, \cref{sec:supp_transfer} further transfer results, \cref{sec:supp_relevance} the detailed action-relevance analysis, and \cref{sec:supp_absolute} absolute success rates of other policies for context.
 
+% =============================================================================================
 \section{Implementation Details}
 \label{sec:supp_impl}
 
-\TODO{Add a hyperparameter table: router architecture and insertion block, router and adapter optimizer settings, LoRA rank and target modules, training steps, loss weights, group and segment counts per budget.}
+\input{tables/supp_hyperparameters}
 
+\Cref{tab:supp_hparams} lists the settings of \method on mimic-video for the LIBERO suites.
 
-The main text specifies the LIBERO training and evaluation settings.
-The Object router uses pure distillation during router training, while all budget-specific decoder adapters use distillation plus the 0.02-weight ground-truth term.
+\paragraph{Router training.}
+The router is trained on the demonstrations of each suite in two stages, with the video model and the decoder frozen.
+It is first trained alone for 1,000 steps under a simpler operator, which keeps the highest-scoring 80\% of the grid positions and pools time uniformly into ten segments.
+It is then trained jointly with a decoder adapter for 1,500 steps under the $2{\times}2$ spatial allocation with 100 full-resolution groups; in this stage time is pooled uniformly into 12, 10 or 8 segments, drawn at random at every step.
+The Object router differs in three settings: the first stage keeps 67\% of the positions and uses six segments, the second stage uses 8, 6 or 4 segments, and its objective is pure distillation without the ground-truth term.
+
+\paragraph{Decoder adapters.}
+For every suite and budget, the router is then frozen and a fresh adapter is trained for 1,500 steps under the allocation of that budget.
+All budget-specific adapters, including those of Object, use distillation plus the 0.02-weight ground-truth term.
+
+\paragraph{Other settings.}
 Bridge uses its separately trained pure-distillation router; its training data and camera setup differ from LIBERO.
 For DiT4DiT, the 442-token LIBERO setting pools all future spatial groups and additionally coarsens the observed slice; it is not the 589-token future allocation with only the observation budget changed.
 
-\section{Statistical and Efficiency Details}
+% =============================================================================================
+\section{Statistical Protocol and Paired Comparisons}
 \label{sec:supp_stats}
 
-\subsection{Paired Statistics}
-\label{sec:supp_stats_paired}
-
 \input{tables/paired_uncertainty}
+\input{tables/native_lora_controls}
 
+\paragraph{Protocol.}
+All configurations of a suite are evaluated on the same episodes, so every comparison is paired by episode.
 Confidence intervals describe paired episode differences, not variation over independently trained models.
 The mimic-video intervals and tests use one adapter and 500 paired episodes per cell.
 The DiT4DiT success rates in the main table are means over three seeds, each evaluated on 500 episodes per suite.
-The nine mimic-video ours--native comparisons in the main table use a common Holm family; its Object 30\% adjusted $p$-value is 0.250.
-The deletion reference comparisons are separate from that family and do not change the dagger marks.
-\input{tables/native_lora_controls}
+
+\paragraph{\method versus native.}
+The nine mimic-video comparisons with native in the main table use a common Holm family (\cref{tab:paired_uncertainty}, left); its Object 30\% adjusted $p$-value is 0.25.
+The comparisons with the deletion references are separate from that family and do not change the dagger marks.
+The Goal and Object comparisons with token and tube deletion were added post hoc and use their own family of 12 contrasts.
+
+\paragraph{Full-context LoRA controls.}
 The full-context LoRA controls are statistically indistinguishable from original native on each suite for both backbones (\cref{tab:native_lora_controls}).
-Relative to its adapted reference, mimic-video at 20\% and 30\% remains statistically indistinguishable on every suite (\cref{tab:ours_native_lora}).
-For DiT4DiT, the differences from its adapted reference range from $-1.8$ to $+1.2$ points.
+Relative to its adapted reference, mimic-video at 20\% and 30\% remains statistically indistinguishable on every suite (\cref{tab:paired_uncertainty}, right).
+For DiT4DiT, the differences between the three-seed mean success rates of \mainref{tab:main_results}{Table~1} and the adapted reference range from $-1.8$ to $+1.2$ points: at 75\%, 56\% and 50\% context they are $+1.2$, $+0.4$ and $+0.2$ on Spatial, $+0.0$, $-1.4$ and $-1.8$ on Object, and $+0.0$, $-0.4$ and $-0.6$ on Goal.
+Paired intervals and tests are not reported for these DiT4DiT differences.
+
+\paragraph{Fixed-budget ports.}
 The mimic-video fixed-budget comparisons form one Holm family of 36 tests (\cref{tab:fixed_budget_ports}); its FastV-style comparisons were first analysed as a separate nine-test family.
 
-The original Goal/Object ours--deletion analysis uses a post-hoc family of 12 contrasts, as documented with the results.
+% =============================================================================================
+\section{Efficiency Measurements}
+\label{sec:supp_efficiency}
+
+% Discussed in \cref{sec:supp_deploy_dit4dit}.
+\input{tables/dit4dit_deployment}
 
 \subsection{Latency Protocol on mimic-video}
 \label{sec:supp_latency_mimic}
 
-The timing benchmark uses Spatial checkpoints on an exclusively allocated H100, batch size one, with text encoding included.
-There are three warmup calls and eight interleaved rounds of four calls per arm; reported values are medians of 32 synchronized wall-clock measurements.
-The graphed native reference is 701.7\,ms; the eager native reference has median 770.4\,ms across the three budget runs.
-The deployed 10\%/20\%/30\% configurations run in 404.2/440.7/477.1\,ms and use 35.7/42.7/49.6 TFLOPs per query.
-Speedups relative to graphed native are reported in the main text; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
-The folded-adapter configuration is the one used for timing; these measurements are not a separate closed-loop evaluation of graph/fold equivalence.
-
-% ---- added 2026-11-11, candidate for the main paper (main-text version of the caption: figures/new_figures.tex) ----
+% Candidate for the main paper; main-text version of the caption: figures/new_figures.tex.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig10_latency_breakdown.pdf}
@@ -85,6 +105,13 @@ The folded-adapter configuration is the one used for timing; these measurements 
   \label{fig:supp_latency_breakdown}
 \end{figure}
 
+The timing benchmark uses Spatial checkpoints on an exclusively allocated H100, batch size one, with text encoding included.
+There are three warmup calls and eight interleaved rounds of four calls per arm; reported values are medians of 32 synchronized wall-clock measurements.
+The graphed native reference is 701.7\,ms; the eager native reference has median 770.4\,ms across the three budget runs.
+The deployed 10\%/20\%/30\% configurations run in 404.2/440.7/477.1\,ms and use 35.7/42.7/49.6 TFLOPs per query.
+Speedups relative to graphed native are reported in the main text; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
+The folded-adapter configuration is the one used for timing; these measurements are not a separate closed-loop evaluation of graph/fold equivalence.
+
 \Cref{fig:supp_latency_breakdown} splits these totals by stage.
 Text encoding takes about 150\,ms in every setting.
 At the 20\% budget the video DiT runs $1.87\times$ and the action decoder $1.98\times$ faster than in native, which gives $1.59\times$ end to end while total FLOPs fall by 56\%.
@@ -92,13 +119,13 @@ At the 20\% budget the video DiT runs $1.87\times$ and the action decoder $1.98\
 \subsection{Deployment and Numerical Checks on DiT4DiT}
 \label{sec:supp_deploy_dit4dit}
 
-\input{tables/dit4dit_deployment}
-
+\paragraph{Protocol.}
 For DiT4DiT, an exclusively allocated H100 runs three warmup calls followed by eight interleaved rounds of four synchronized calls per configuration, at batch size one.
 Timing includes the VAE, cached-text retrieval, image/state preparation, input copies, current router scores and allocation, the video forward, and all four action-flow steps.
 Cold prompt encoding and graph capture are setup costs outside this steady-state measurement.
 The fixed timing input is the first Spatial task at initial state zero after ten settling steps, with both camera views; it is not an average over suites.
 
+\paragraph{Deployed configuration.}
 The deployed decoder has native FP32 weights.
 We load all 64 trained adapter tensors, add their scaled products to the 32 affected projections, and remove the low-rank branches, preserving FP32 rather than quantizing the head.
 Projected-prompt caching, the single-real-frame VAE encode, exit at extraction block 17, and both video/action graphs also apply to native.
@@ -107,7 +134,8 @@ At 442 tokens, live-adapter eager inference takes 68.7\,ms, actual-fold eager 61
 Native changes from 59.1\,ms eager to 47.2\,ms with both graphs; the latter is the common reference for reported speedups.
 Its latency interquartile range is [47.04,47.20]\,ms, versus [40.98,41.09]\,ms at 442 tokens; a separately captured native replica measures 47.18\,ms.
 
-Numerical checks use the first task of each of Spatial/Object/Goal with initial state zero and two policy-noise seeds.
+\paragraph{Numerical checks.}
+The checks use the first task of each of Spatial/Object/Goal with initial state zero and two policy-noise seeds.
 The graph-compatible allocation has identical features, source positions and resulting video context to the original operator at all four tested budgets.
 Graph/eager contexts and actions are bit-identical; actual-fold versus live-adapter actions differ by at most $6.26\times10^{-7}$, with no changed gripper decisions in these queries.
 The accuracy values in the main table remain those of the recorded trained-adapter evaluations; these checks are not a new 500-episode closed-loop evaluation of the engineering configuration.
@@ -115,27 +143,9 @@ The accuracy values in the main table remain those of the recorded trained-adapt
 \subsection{FLOPs Accounting on DiT4DiT}
 \label{sec:supp_flops}
 
-The earlier DiT4DiT FLOPs comparison uses a released 4.91-TFLOP pipeline with a padded VAE encode.
-Encoding only the real observed frame reduces this to 2.90 TFLOPs and is shared by native and ours.
-With this common change, the folded 589/442/391-token configurations use 2.44/2.10/1.98 TFLOPs including VAE; the main table excludes the common 0.67-TFLOP VAE cost.
-The exact eager functions underlying the graphs reproduce the previous FLOPs reference, with maximum relative difference zero across the 20 timed configurations.
-Graph replay changes latency, not arithmetic; folding removes the low-rank branch.
-The separately trained full-context LoRA benchmark uses the same FP32 fold and both graphs: 65.5\,ms live eager, 58.8\,ms folded eager, and 47.0\,ms with both graphs, with 2.229 TFLOPs excluding VAE.
-Its interleaved native anchor is 47.1\,ms in the same job; this second run does not replace the 47.2\,ms anchor used for the original compressed-arm speedups.
-The earlier reductions relative to the released path therefore describe arithmetic rather than wall-clock speedup or compression alone.
-
-\subsection{Cost of the Full-Context and External-Method Baselines}
-\label{sec:supp_external_cost}
-
-For mimic-video, the full-context LoRA and FastV-style measurements pass the same fold and graph numerical checks, use 32 calls each, and verify the exact trained-adapter hashes.
-Spatial full-context LoRA uses 98.0 TFLOPs and takes 704.0\,ms; FastV-style uses 37.1/44.0/50.9 TFLOPs and takes 538.2/570.3/607.0\,ms at the three budgets.
-These are fixed-input numerical and timing checks, rather than new closed-loop equivalence evaluations.
-VLA-Pruner, ADP and CF-Prune costs use the same protocol and gates and are expected per-query values, weighted by the branch shares observed in the 500-episode evaluations.
-For mimic-video VLA-Pruner, the query-weighted mean context lengths are 5,535/7,240/8,788 tokens; the suite-specific means range over [5,468,5,623], [7,148,7,373] and [8,664,8,919], respectively.
-Every episode starts with three dense queries, so these values exceed the compressed-branch targets in the table.
-
-% ---- added 2026-11-11, candidate for the main paper. Drawn from tables/main_results.tex: re-render after editing Table 1
-%      (mimic-video-repro/eval/analysis/render_paper_figures_extra.py). One-column cut: fig7_cost_accuracy_1col.pdf ----
+% Discussed in \cref{sec:supp_external_cost}.
+% Candidate for the main paper. Drawn from tables/main_results.tex: re-render after editing Table 1
+% (mimic-video-repro/eval/analysis/render_paper_figures_extra.py). One-column cut: fig7_cost_accuracy_1col.pdf.
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{fig7_cost_accuracy.pdf}
@@ -147,19 +157,45 @@ Every episode starts with three dense queries, so these values exceed the compre
   \label{fig:supp_cost_accuracy}
 \end{figure*}
 
+The earlier DiT4DiT FLOPs comparison uses a released 4.91-TFLOP pipeline with a padded VAE encode.
+Encoding only the real observed frame reduces this to 2.90 TFLOPs and is shared by native and ours.
+With this common change, the folded 589/442/391-token configurations use 2.44/2.10/1.98 TFLOPs including VAE; the main table excludes the common 0.67-TFLOP VAE cost.
+The exact eager functions underlying the graphs reproduce the previous FLOPs reference, with maximum relative difference zero across the 20 timed configurations.
+Graph replay changes latency, not arithmetic; folding removes the low-rank branch.
+The earlier reductions relative to the released path therefore describe arithmetic rather than wall-clock speedup or compression alone.
+
+The separately trained full-context LoRA benchmark uses the same FP32 fold and both graphs: 65.5\,ms live eager, 58.8\,ms folded eager, and 47.0\,ms with both graphs, with 2.229 TFLOPs excluding VAE.
+Its interleaved native anchor is 47.1\,ms in the same job; this second run does not replace the 47.2\,ms anchor used for the original compressed-arm speedups.
+
+\subsection{Cost of the Full-Context and External-Method Baselines}
+\label{sec:supp_external_cost}
+
+For mimic-video, the full-context LoRA and FastV-style measurements pass the same fold and graph numerical checks, use 32 calls each, and verify the exact trained-adapter hashes.
+Spatial full-context LoRA uses 98.0 TFLOPs and takes 704.0\,ms; FastV-style uses 37.1/44.0/50.9 TFLOPs and takes 538.2/570.3/607.0\,ms at the three budgets.
+These are fixed-input numerical and timing checks, rather than new closed-loop equivalence evaluations.
+
+VLA-Pruner, ADP and CF-Prune costs use the same protocol and gates and are expected per-query values, weighted by the branch shares observed in the 500-episode evaluations.
+For mimic-video VLA-Pruner, the query-weighted mean context lengths are 5,535/7,240/8,788 tokens; the suite-specific means range over [5,468,5,623], [7,148,7,373] and [8,664,8,919], respectively.
+Every episode starts with three dense queries, so these values exceed the compressed-branch targets in the table.
+
 \Cref{fig:supp_cost_accuracy} plots these costs against the mean success rates of the main table.
 In point estimates, every setting of an external method has lower success than a setting of \method with lower latency and fewer FLOPs.
 
-
+% =============================================================================================
 \section{External-Method Policies and Fixed-Budget Ports}
 \label{sec:supp_original_external}
 
 % tables/dit4dit_original_external.tex (2026-11-05 single-seed protocol) is no longer included: it reports the same
 % methods as the main table with different numbers, and the main table is authoritative (author decision, 2026-11-10).
 
+\input{tables/fixed_budget_ports}
+
+\paragraph{Full policies.}
 VLA-Pruner and ADP use more context than their compressed-branch targets because of dense calls (the rows marked $*$ in \mainref{tab:main_results}{Table~1}).
 They therefore do not constitute fixed-context comparisons.
 The 391-token rows of the main table restore these dense calls on a 293/98-token compressed branch, because the observation-preserving port cannot go below 392 tokens; their costs are composed from the measured dense branch and the compressed branch of the same 391-token adapter.
+
+\paragraph{Fixed-budget ports.}
 We also evaluated explicit fixed-budget selection ports, with 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 total context tokens.
 ADP-sel. removes trajectory-gated dense fallback and tests the text-guided selection component.
 VLA-sel. uses three semantic-only compressed bootstrap queries and scatters their action attention to source positions before maintaining its causal history.
@@ -169,50 +205,16 @@ All DiT4DiT fixed-context ports use fresh matched decoder adapters.
 The mimic-video ports follow the same idea: ADP-sel. removes the motion gate and dense fallback and reuses the ADP adapters, which were trained on the same compressed branch, and VLA-sel. replaces the three dense warm starts with semantic-only compressed queries and is retrained.
 We added the mimic-video ports after seeing the full-policy results, so that comparison is post hoc.
 
-\input{tables/fixed_budget_ports}
-
+\paragraph{Results.}
 On mimic-video, with Holm correction over its 36 tests (\cref{tab:fixed_budget_ports}), no port is detectably above \method:
 \method is detectably above FastV-style and ADP-sel. in all nine cells, above VLA-sel. in eight and above CF-sel. in four.
 On DiT4DiT, \method has the highest mean success rate at every budget; the gap is largest at 391 tokens, where ADP-sel. and VLA-sel. reach 57.7\% and 87.2\% against 98.1\%.
 
-\section{Additional Transfer and Router-Training Results}
-\label{sec:supp_transfer}
+% =============================================================================================
+\section{Additional Ablations}
+\label{sec:supp_ablations}
 
-With 100 full-resolution groups, the three Bridge budgets give 20/96, 24/96 and 27/96 successes, versus 46/96 for native.
-Their paired differences are $-27.1$ [$-38.1$,$-16.1$], $-22.9$ [$-32.7$,$-13.1$] and $-19.8$ [$-29.6$,$-9.9$] percentage points, with exact McNemar $p=1.3\times10^{-5}$, $2.7\times10^{-5}$ and $3.1\times10^{-4}$, respectively.
-These failed points motivate reporting the entire higher-budget $F=200$ sweep rather than only its best point estimate.
-
-With 200 full-resolution groups, the 11,400-, 12,300- and 13,200-token budgets reach 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native (\mainref{tab:transfer}{Table~2}).
-None of the paired intervals in that table excludes zero.
-With 96 episodes the intervals are wide, so these results show no detected loss, not equivalence to native.
-
-Earlier combined spatial/temporal DiT4DiT configurations on GR1 have lower point estimates than native.
-For example, the future-space/time 441-token configuration with 41 full-resolution groups reaches 53.2\%, versus 54.9\% for native, a $-1.8$ point difference with interval [$-4.5$,$+1.0$].
-The completed 466-token follow-up keeps 41 future $2\times2$ groups at full resolution and merges 74 spatial tubes across time; it removes 48 tokens spatially and 74 temporally while leaving the observation unchanged.
-Its frozen router and 1,500-step decoder adapter yield 660/1,200 successes, versus 659/1,200 for native.
-The paired difference is $+0.08$ points [95\% CI $-2.66$,$+2.83$], with discordant counts 142/141 and exact McNemar $p=1.00$.
-This configuration was selected after inspecting the intermediate 441-token results and uses one training seed.
-It demonstrates simultaneous spatial and temporal allocation in this evaluated setting, but its confidence interval does not establish equivalence to native.
-
-Continuing to train the router jointly with the adapter for 1,500 steps gives the following success rates, in 10\%/20\%/30\% budget order:
-Spatial 72.2/90.8/91.6\%, Goal 76.2/86.2/89.4\%, and Object 91.8/94.4/96.0\%.
-Relative to frozen-router training, no improvement survives Holm correction over nine suite--budget comparisons; the pooled, post-hoc paired test has $p=0.83$.
-The individual adjusted $p$-values, in the same order, are 1.00/0.68/1.00, 1.00/0.10/1.00 and 0.77/1.00/1.00.
-This is a lack of detected benefit for that recipe and sample size, not evidence of equivalence.
-
-\section{Detailed Action-Relevance Analysis}
-\label{sec:supp_relevance}
-
-% ---- added 2026-11-11, candidate for the main paper. Same data as panel (d) of the figure below, as a stand-alone one-column plot ----
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\linewidth]{fig8_criteria_forest.pdf}
-  \caption{\textbf{Router scores versus task-agnostic criteria.}
-  Stand-alone version of panel (d) of \cref{fig:supp_relevance}: ratio of offline action distortion when the same spatial coarsening follows router scores instead of each criterion, on 50 held-out LIBERO-Spatial episodes (200 windows).
-  Points are geometric means and bars are 95\% confidence intervals; values below one mean lower distortion with the router.}
-  \label{fig:supp_criteria_forest}
-\end{figure}
-
+% Discussed in \cref{sec:supp_relevance}.
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{fig5_action_relevance.pdf}
@@ -228,38 +230,99 @@ This is a lack of detected benefit for that recipe and sample size, not evidence
   \label{fig:supp_relevance}
 \end{figure*}
 
+\subsection{Insertion Depth}
+\label{sec:supp_depth}
+
+\input{tables/supp_insertion_depth}
+
+\method routes after the second block of the video model, so only two of the 20 blocks that a query runs process the full 19,200 tokens.
+We test a later insertion on LIBERO-Spatial.
+The allocation is applied after block 6 at the 10\% budget, with the same frozen router, which still reads the block-2 features, the same allocation rule, and a decoder adapter trained for this configuration with the recipe of \cref{tab:supp_hparams}.
+Four more blocks then run at full resolution.
+We estimate that each of them adds about 10\,ms per query, which gives about 445\,ms; this is close to the measured 440.7\,ms of routing after block 2 at the 20\% budget.
+The latency of the block-6 configuration is this estimate and was not measured.
+
+\Cref{tab:supp_depth} compares the three configurations on the same 500 episodes.
+At equal token count, routing after block 6 is 9.0 points more accurate than routing after block 2.
+At similar cost, however, routing after block 2 at the 20\% budget is 8.2 points more accurate than routing after block 6 at 10\%.
+Spending the cost of four additional full-resolution blocks on a larger token budget at block 2 therefore gives the higher success rate.
+We fixed this comparison at similar cost as the criterion for the insertion depth before running the evaluation.
+
+The three configurations were evaluated together on A100 GPUs, with the simulator version of the main experiments.
+In this re-evaluation the two block-2 policies reach 69.2\% and 86.4\%, versus 70.8\% and 88.2\% in the main table; 30 and 39 of the 500 episodes change outcome between the two evaluations ($p=0.20$ in both cases).
+The block-6 configuration uses the router trained on block-2 features and one adapter, so it does not bound what a router trained for block 6 could reach.
+
+\subsection{Joint Router Training}
+\label{sec:supp_joint_router}
+
+Continuing to train the router jointly with the adapter for 1,500 steps gives the following success rates, in 10\%/20\%/30\% budget order:
+Spatial 72.2/90.8/91.6\%, Goal 76.2/86.2/89.4\%, and Object 91.8/94.4/96.0\%.
+Relative to frozen-router training, no improvement survives Holm correction over nine suite--budget comparisons; the pooled, post-hoc paired test has $p=0.83$.
+The individual adjusted $p$-values, in the same order, are 1.00/0.68/1.00, 1.00/0.10/1.00 and 0.77/1.00/1.00.
+This is a lack of detected benefit for that recipe and sample size, not evidence of equivalence.
+
+% =============================================================================================
+\section{Additional Transfer Results}
+\label{sec:supp_transfer}
+
+\paragraph{SIMPLER-Bridge.}
+With 100 full-resolution groups, the three Bridge budgets give 20/96, 24/96 and 27/96 successes, versus 46/96 for native.
+Their paired differences are $-27.1$ [$-38.1$,$-16.1$], $-22.9$ [$-32.7$,$-13.1$] and $-19.8$ [$-29.6$,$-9.9$] percentage points, with exact McNemar $p=1.3\times10^{-5}$, $2.7\times10^{-5}$ and $3.1\times10^{-4}$, respectively.
+These failed points motivate reporting the entire higher-budget $F=200$ sweep rather than only its best point estimate.
+
+With 200 full-resolution groups, the 11,400-, 12,300- and 13,200-token budgets reach 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native (\mainref{tab:transfer}{Table~2}).
+None of the paired intervals in that table excludes zero.
+With 96 episodes the intervals are wide, so these results show no detected loss, not equivalence to native.
+
+\paragraph{RoboCasa-GR1.}
+Earlier combined spatial/temporal DiT4DiT configurations on GR1 have lower point estimates than native.
+For example, the future-space/time 441-token configuration with 41 full-resolution groups reaches 53.2\%, versus 54.9\% for native, a $-1.8$ point difference with interval [$-4.5$,$+1.0$].
+The completed 466-token follow-up keeps 41 future $2\times2$ groups at full resolution and merges 74 spatial tubes across time; it removes 48 tokens spatially and 74 temporally while leaving the observation unchanged.
+Its frozen router and 1,500-step decoder adapter yield 660/1,200 successes, versus 659/1,200 for native.
+The paired difference is $+0.08$ points [95\% CI $-2.66$,$+2.83$], with discordant counts 142/141 and exact McNemar $p=1.00$.
+This configuration was selected after inspecting the intermediate 441-token results and uses one training seed.
+It demonstrates simultaneous spatial and temporal allocation in this evaluated setting, but its confidence interval does not establish equivalence to native.
+
+% =============================================================================================
+\section{Detailed Action-Relevance Analysis}
+\label{sec:supp_relevance}
+
+% The stand-alone forest plot fig8_criteria_forest.pdf shows the same data as panel (d) above, so it is not included
+% here. It remains a candidate for the main paper; its figure environment is in figures/new_figures.tex.
+
+% Three suites, five overlap-ranked tasks per suite; full candidate archive is not displayed.
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig9_allocation_gallery.pdf}
+  \caption{\textbf{Full-resolution groups across tasks.}
+  Five tasks from each of LIBERO-Spatial, LIBERO-Object and LIBERO-Goal at the 20\% future-token budget, selected for the highest mean coverage of task-object and robot-arm pixels by full-resolution groups.
+  Each panel uses the first recorded episode and the query nearest 12.
+  Blue marks the 100 groups kept at full resolution and grey the 200 merged groups; outlines are simulator masks of task objects (green) and the robot arm (black).
+  Spatial labels give the location of the bowl to pick up.
+  These selected examples illustrate spatial overlap; they do not estimate average coverage.}
+  \label{fig:supp_allocation_gallery}
+\end{figure*}
+
+\Cref{fig:supp_relevance} gives the ranking-reversal experiment and the offline comparison of scoring criteria that the main paper summarizes.
+
+\paragraph{Offline criteria.}
 The pre-registered offline family also included full-context decoder cross-attention, which has approximately 7\% lower distortion than the router ($p=0.0078$ after correction).
 It requires completing the uncompressed video/decoder forward pass and therefore is not an equal-cost block-2 scoring substitute.
 Claims of superiority apply only to the five task-agnostic criteria shown in the figure.
 Similarity ranking in this analysis is not a complete ToMe implementation.
 The matched offline coverage-versus-resolution comparison does not distinguish the two allocations after correction, so it is not used to attribute the closed-loop operator gap to coarse coverage alone.
 
-\TODO{\cref{fig:supp_criteria_forest} repeats panel (d) of \cref{fig:supp_relevance}. Keep one of them: move this plot to the main paper and drop panel (d), or delete this plot.}
+\paragraph{Allocation across tasks.}
+\Cref{fig:supp_allocation_gallery} shows five selected tasks from each of Spatial, Object and Goal.
+For each suite, we rank the ten task candidates by the equally weighted mean of task-object and robot-arm pixel coverage, using the first recorded episode and the query nearest 12, and display the five highest-scoring tasks.
+This qualitative selection illustrates where full-resolution groups overlap control-relevant regions; it is not used to estimate suite-average coverage.
+Across all ten task candidates in each suite, before selection, the mean pairwise Jaccard index of the full-resolution sets is 0.94 on Spatial, 0.97 on Object and 0.95 on Goal.
 
-% ---- added 2026-11-11, candidate for the main paper. Two-row cut with five tasks per suite: fig9_allocation_gallery.pdf ----
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\linewidth]{fig9_allocation_gallery_full.pdf}
-  \caption{\textbf{Full-resolution groups across tasks.}
-  One query from each task of two suites at the 20\% budget (first recorded episode, query 12).
-  Blue marks the 100 groups kept at full resolution and grey the 200 merged groups; outlines are simulator masks of the robot arm and the task objects.
-  Labels in the Spatial rows give the location of the bowl to pick up.}
-  \label{fig:supp_allocation_gallery}
-\end{figure*}
-
-\Cref{fig:supp_allocation_gallery} shows the deployed allocation on one query of every Spatial and Goal task.
-The full-resolution set covers the robot arm and its workspace.
-It changes little between the ten tasks of a suite: the mean Jaccard index between tasks is 0.94 on Spatial and 0.95 on Goal.
-
+% =============================================================================================
 \section{Absolute Cross-Policy Success Rates}
 \label{sec:supp_absolute}
 
 \input{tables/absolute_success}
-
-The results in \cref{tab:absolute_success} provide context rather than a common-backbone or common-protocol comparison.
-The main claims concern changes relative to each policy's own native backbone.
-For $\pi_0$ and $\pi_0$-FAST, the listed numbers are the released-model results tabulated by OpenVLA-OFT; $\pi_{0.5}$ uses the OpenPI release numbers reproduced in the LeRobot documentation.
-The three-suite means are recomputed, rather than copied from four-suite LIBERO averages.
 
 \begin{figure*}[t]
   \centering
@@ -267,7 +330,12 @@ The three-suite means are recomputed, rather than copied from four-suite LIBERO 
   \caption{\textbf{Performance versus model size on LIBERO.}
   Points show three-suite mean success; the horizontal axis is total parameter count and circle area represents backbone size.
   Our points use 20\% of mimic-video's future tokens and 589/784 DiT4DiT tokens.
-  The plot uses a selected set of policies and omits frozen instruction encoders from parameter totals; the table above includes the omitted SmolVLA and Cosmos Policy results and both native evaluations.
+  The plot uses a selected set of policies and omits frozen instruction encoders from parameter totals; \cref{tab:absolute_success} includes the omitted SmolVLA and Cosmos Policy results and both native evaluations.
   This figure does not establish a matched efficiency comparison across architectures.}
   \label{fig:supp_bubble}
 \end{figure*}
+
+The results in \cref{tab:absolute_success} and \cref{fig:supp_bubble} provide context rather than a common-backbone or common-protocol comparison.
+The main claims concern changes relative to each policy's own native backbone.
+For $\pi_0$ and $\pi_0$-FAST, the listed numbers are the released-model results tabulated by OpenVLA-OFT; $\pi_{0.5}$ uses the OpenPI release numbers reproduced in the LeRobot documentation.
+The three-suite means are recomputed, rather than copied from four-suite LIBERO averages.

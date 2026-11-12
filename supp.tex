@@ -13,10 +13,13 @@
 
 \usepackage[review]{cvpr}      % KEEP IN SYNC with main.tex (review / camera-ready)
 
-\input{preamble}
-
+% preamble.tex loads hyperref itself, so the link options are handed over before it is read.
+% Giving them in a second \usepackage[...]{hyperref} afterwards is an "Option clash" error and
+% leaves the links as boxes.
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
-\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+\PassOptionsToPackage{pagebackref,breaklinks,colorlinks,allcolors=cvprblue}{hyperref}
+\input{preamble}
+\usepackage{hyperref}
 
 \input{macros}
 

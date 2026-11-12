@@ -1,25 +1,33 @@
-\begin{table}[t]
+% Paired comparisons of ARROW on mimic-video: against native (left) and against the full-context LoRA control (right).
+% 2026-11-11: the two former tables (ours vs native; mimic-video rows of ours vs native + LoRA) were merged here.
+% The DiT4DiT differences of the former second table are given in the text of the supplement.
+\begin{table*}[t]
   \centering
-  \caption{\textbf{Paired uncertainty for ours versus native.}
-  All cells have 500 paired episodes.
-  $\Delta$ and unadjusted paired Wald 95\% intervals are in percentage points; $p_H$ is Holm-corrected over these nine tests.
-  In particular, the nominal Object 30\% interval does not establish significance after correction.}
+  \caption{\textbf{Paired comparisons of \method on mimic-video.}
+  Every cell has 500 paired episodes.
+  $\Delta$ is \method minus the reference in percentage points, with unadjusted paired Wald 95\% intervals.
+  $p_H$ is Holm-corrected; each reference forms its own family of nine tests.
+  The nominal Object 30\% intervals do not establish significance after correction.}
   \label{tab:paired_uncertainty}
   \small
-  \setlength{\tabcolsep}{3pt}
-  \begin{tabular}{lrlr}
+  \setlength{\tabcolsep}{6pt}
+  \begin{tabular}{lr lr lr}
     \toprule
-    Suite & Future & $\Delta$ [95\% CI] & $p_H$ \\
+    & & \multicolumn{2}{c}{vs.\ native} & \multicolumn{2}{c}{vs.\ native + LoRA} \\
+    \cmidrule(lr){3-4} \cmidrule(lr){5-6}
+    Suite & Future & $\Delta$ [95\% CI] & $p_H$ & $\Delta$ [95\% CI] & $p_H$ \\
     \midrule
-    Spatial & 10\% & $-19.6$ [$-24.0$, $-15.2$] & $4.8\!\times\!10^{-16}$ \\
-    Spatial & 20\% & $-2.2$ [$-5.4$, $+1.0$] & 1.00 \\
-    Spatial & 30\% & $+1.6$ [$-1.2$, $+4.4$] & 1.00 \\
-    Object & 10\% & $-0.2$ [$-2.8$, $+2.4$] & 1.00 \\
-    Object & 20\% & $+0.0$ [$-2.3$, $+2.3$] & 1.00 \\
-    Object & 30\% & $+2.4$ [$+0.3$, $+4.5$] & 0.25 \\
-    Goal & 10\% & $-15.4$ [$-19.6$, $-11.2$] & $1.6\!\times\!10^{-11}$ \\
-    Goal & 20\% & $-0.8$ [$-4.0$, $+2.4$] & 1.00 \\
-    Goal & 30\% & $+0.0$ [$-2.9$, $+2.9$] & 1.00 \\
+    Spatial & 10\% & $-19.6$ [$-24.0$, $-15.2$] & $4.8\!\times\!10^{-16}$ & $-20.8$ [$-25.0$, $-16.6$] & $1.4\!\times\!10^{-19}$ \\
+    Spatial & 20\% & $-2.2$ [$-5.4$, $+1.0$] & 1.00 & $-3.4$ [$-6.4$, $-0.4$] & 0.24 \\
+    Spatial & 30\% & $+1.6$ [$-1.2$, $+4.4$] & 1.00 & $+0.4$ [$-2.4$, $+3.2$] & 1.00 \\
+    \addlinespace[2pt]
+    Object & 10\% & $-0.2$ [$-2.8$, $+2.4$] & 1.00 & $+0.6$ [$-2.1$, $+3.3$] & 1.00 \\
+    Object & 20\% & $+0.0$ [$-2.3$, $+2.3$] & 1.00 & $+0.8$ [$-1.6$, $+3.2$] & 1.00 \\
+    Object & 30\% & $+2.4$ [$+0.3$, $+4.5$] & 0.25 & $+3.2$ [$+0.9$, $+5.5$] & 0.063 \\
+    \addlinespace[2pt]
+    Goal & 10\% & $-15.4$ [$-19.6$, $-11.2$] & $1.6\!\times\!10^{-11}$ & $-15.0$ [$-19.3$, $-10.7$] & $2.2\!\times\!10^{-10}$ \\
+    Goal & 20\% & $-0.8$ [$-4.0$, $+2.4$] & 1.00 & $-0.4$ [$-3.6$, $+2.8$] & 1.00 \\
+    Goal & 30\% & $+0.0$ [$-2.9$, $+2.9$] & 1.00 & $+0.4$ [$-2.5$, $+3.3$] & 1.00 \\
     \bottomrule
   \end{tabular}
-\end{table}
+\end{table*}

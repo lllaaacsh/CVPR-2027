@@ -1,0 +1,42 @@
+% Settings of the adopted mimic-video cells. Sources: recipe.json of the adopted adapters (training job 47002579),
+% the router checkpoint (6,427,905 parameters) and the launchers of the two router-training stages.
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Implementation settings for mimic-video on LIBERO.}
+  All stages use AdamW with batch size one and gradient accumulation.
+  Segment counts are listed for the 120, 180 and 300 tubes of lowest to highest priority.}
+  \label{tab:supp_hparams}
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{1.04}
+  \begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \multicolumn{2}{@{}l}{\emph{Video model and context}} \\
+    Blocks run per query & 20; the action decoder reads block 20 \\
+    Routing and allocation & after block 2 \\
+    Native context & 2,400 observation + 16,800 future tokens ($14{\times}30{\times}40$) \\
+    \midrule
+    \multicolumn{2}{@{}l}{\emph{Router}} \\
+    Inputs & future tokens after block 2 (2,048-d), instruction tokens (1,024-d) \\
+    Architecture & linear projection to 1,024-d; one cross-attention layer with 8 heads; MLP 1,024--128--1; sigmoid \\
+    Parameters & 6.4M \\
+    Loss & focal $\gamma=2$; $\lambda_b=\lambda_e=0.1$; saliency EMA momentum 0.9 \\
+    \midrule
+    \multicolumn{2}{@{}l}{\emph{Training}} \\
+    Stage 1: router alone & 1,000 steps; learning rate $10^{-4}$; 4 accumulated batches \\
+    Stage 2: router + adapter & 1,500 steps; learning rates $10^{-4}$ (router) and $4{\times}10^{-5}$ (adapter); 8 accumulated batches \\
+    Stage 3: adapter per budget & router frozen, fresh adapter; 1,500 steps; learning rate $4{\times}10^{-5}$; 8 accumulated batches \\
+    Schedule (stages 2, 3) & 100 warm-up steps, cosine decay to 5\%; gradient norm clipped at 1 \\
+    Objective (stages 2, 3) & $\mathcal{L}_{\text{distill}} + 0.02\,\mathcal{L}_{\text{GT}}$ \\
+    \midrule
+    \multicolumn{2}{@{}l}{\emph{Decoder adapter}} \\
+    LoRA & rank 16, $\alpha=8$, on the decoder cross-attention layers; 3.9M parameters \\
+    \midrule
+    \multicolumn{2}{@{}l}{\emph{Allocation}} \\
+    Spatial & 300 groups of $2{\times}2$ positions; 100 at full resolution; 600 tubes \\
+    Segments at 10\% & 1 / 2 / 4, giving 1,680 future and 4,080 total tokens \\
+    Segments at 20\% & 3 / 5 / 7, giving 3,360 future and 5,760 total tokens \\
+    Segments at 30\% & 5 / 8 / 10, giving 5,040 future and 7,440 total tokens \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
