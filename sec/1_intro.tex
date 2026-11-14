@@ -1,37 +1,7 @@
 \section{Introduction}
 \label{sec:intro}
 
-% ---- 脉络--------------------------------------------------------
-% P1  World action model（WAM）：用预训练视频生成模型做 backbone，policy 继承世界知识与动态先验。
-% P2  代价与矛盾：backbone 的 token 空间由生成目标决定（稠密、均匀的时空网格），
-%     而 action head 只需要其中一小部分；推理成本跟着生成形状走，而不是跟着控制需要走。
-% P3  为什么现成的 token 剪枝在 WAM 的部署点上不成立：
-%     相似度 != 冗余（future 帧近似噪声占位）；删除会破坏 backbone 的结构；
-%     空间与时间两个轴的位置约定相反。
-% P4  观点：应由 action 而不是视觉内容决定 backbone 在哪里、以什么分辨率计算
-%     （在常规的 video -> action 之外，加上 action -> video 的通路）。
-% P5  方法一段：C1 action-aware router；C2 空间分辨率分配（合并而非删除）；
-%     C3 router 引导的时间分辨率 + 紧凑时间位置；可 fold 的 decoder 适配。
-% P6  结果一句（对 native 只能写"不可区分"，不能写"超过"）。
-% 贡献列表：C1 / C2 / C3（分析部分作为动机，不另算）。
-% 若用 teaser：main.tex 中有整栏 teaser 的写法，label 为 fig:teaser。
-% ---------------------------------------------------------------------------
 
-% ---- 数字来源与措辞边界（Claude 起草时记录）----------------------------------
-% 写法：由一般到具体逐步收窄，P2、P3 末尾用陈述句点出问题（intro 中不用疑问句），P4 隐晦地指向方法；正文不出现具体模型名。
-% 引用共 4 篇：pai2025mimicvideo、ye2026dreamzero（提出 "world action model" 一词）、bolya2023tome、liu2023libero，均已在 main.bib 中。
-% 只引用已写的 Sec. 4 与 fig:overview。Sec. 3 已删除，P3 的论断（相似度不等于动作相关、删除会丢掉场景）需在 Sec. 5 给出依据。
-% P6 数字（LIBERO，每个套件 n=500，逐 episode 配对 exact McNemar；预算只作用于 16,800 个 future token，
-%   2,400 个 observation token 全部保留）：20% future（总 5,760 = 30%）Spatial 441 vs 452（p=0.22），
-%   Object 470 vs 470（p=1），Goal 447 vs 451（p=0.71）-> 只写"不可区分"。Object 的冻结 router 配方不同，Sec. 5 需注明。
-% "necessary for the policy"：E1 反转排序（Spatial），20% -22.0pp、10% -42.4pp，Holm p<=6e-21。
-% "concentrate on the robot and the objects"：E3（Spatial）满分辨率组覆盖任务物体像素 90%、机械臂 84%、背景 26%（随机 33%）；
-%   不能写"按指令选择"。
-% adapter 可 fold：闭环核查只在旧算子上做过（合并 -1.10pp，p=0.15），定稿算子上尚未复核。
-% 第二个 backbone（DiT4DiT）按"暂不提具体模型名"的要求不放 intro；DeVA 不在论文中出现。
-% P4 讨论 decoder attention 的利弊：只从"时机"（要先算完全分辨率的 future）和"度量的量不同"两点论证，
-%   不说 router 优于 decoder attention——E2 离线中完整上下文的 decoder cross-attention 比 router 好 7%（p=0.0078）。
-% ---------------------------------------------------------------------------
 
 Large video generation models~\cite{nvidia2025cosmos}, trained on vast amounts of video, capture how the visual world looks and how it changes over time. World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero} bring this knowledge to robot control by modeling the future of the scene together with the robot's actions:
 a pretrained video model predicts how the scene will evolve under an instruction, and the robot's actions are derived from this predicted future,
@@ -44,7 +14,7 @@ Acting in the scene asks for something narrower: the next actions depend mostly 
 
 Recent work has asked whether the future must be generated at test time at all~\cite{yuan2026fastwam} or rolled out step by step~\cite{zhang2026rift}, but whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has received far less attention.
 
-\input{figures/teaser}
+% \input{figures/teaser}
 
 A natural tool for making such a representation more compact is token reduction, which merges tokens that look alike~\cite{bolya2023tome} or discards tokens that receive little attention~\cite{chen2024fastv}.
 These criteria, however, describe the image rather than the task: they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it.
