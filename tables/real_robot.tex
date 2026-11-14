@@ -1,0 +1,67 @@
+% Real-robot setup (figure) and results (table) of Sec. 5.3, in ONE page-wide float so that the
+% table always sits directly under the figure. Numbering is unaffected: the figure takes the next
+% figure number, \captionof{table} the next table number.
+%
+% Efficiency, re-measured 2026-11-14 with the protocol of Table 1 (robot workstation, RTX 4090, batch 1,
+% 5 input frames 480x640, 15x10 action chunk; T5 text encoding included; FLOPs counted as in Table 1,
+% i.e. matmuls/convolutions incl. text encoder and VAE, attention-score FLOPs not counted):
+%   Native : CUDA graphs for video DiT + action decoder     97.60 TFLOPs, median 1402.1 ms, 0.713 Hz
+%   ARROW  : router + folded LoRA + graphed action decoder  49.25 TFLOPs, median  763.8 ms, 1.309 Hz
+%   -49.5% FLOPs, 1.84x faster (2.06x without T5); per-task speedups 1.834-1.837x.
+%   Stages (ms), T5 / video / action decoder: Native 161.5 / 892.1 / 351.2; ARROW 161.5 / 437.5 / 164.6.
+%   Cross-check: Table 1(a) at 30% context (same 7,440 tokens) gives 98.0 -> 49.6 TFLOPs.
+%   These numbers SUPERSEDE the first measurement (eager, live LoRA, no T5, FLOPs incl. attention:
+%   154.5 -> 59.3 TFLOPs, mean 1257 -> 742 ms).
+% Native + LoRA is NOT measured yet (waiting for the trained adapter). The three \RRest cells are an
+%   ESTIMATE: the folded adapter has exactly the Native compute, so 97.60 TFLOPs; latency uses the
+%   Table 1(a) ratio 704.0/701.7, i.e. 1402.1 x 1.0033 = 1406.7 ms, 0.71 Hz.
+%   Replace them with the measurement and delete the double-dagger note in the caption.
+% SR is not filled yet: each \TODO{} cell renders as a red dash.
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{robot_tasks_layout_cropped.pdf}
+  \caption{\textbf{Real-robot environment and tasks.}
+  Left: a Franka arm in a toy kitchen, recorded by a side-view camera.
+  Right: the six evaluation tasks.}
+  \label{fig:real_robot}
+
+  \vspace{8pt}
+
+  % \leavevmode: a bare \color at the start of a p/X cell pushes the cell onto a second line.
+  \renewcommand{\TODO}[1]{\textcolor{red}{--}}
+  \definecolor{ArrowOurs}{HTML}{EBE9FF}
+  \newcommand{\RRest}[1]{\leavevmode\todo{#1}\textsuperscript{$\ddagger$}}
+  \captionof{table}{\textbf{Real-robot results of mimic-video.}
+  Success rate (SR, \%) per task and averaged over the six tasks.
+  Lat.: median latency per query on an RTX 4090 at batch size one, including text encoding; Freq.: $1/$Lat.
+  Deployment settings follow \cref{tab:main_results}: Native uses CUDA graphs, and \method uses the folded adapter with a graphed action decoder.
+  FLOPs are counted as in \cref{tab:main_results}, including text encoding and the VAE; attention-score FLOPs are not counted.
+  \method keeps 7,440 of the 19,200 context tokens.
+  Lavender: \method.
+  $\ddagger$: estimated from the Native + LoRA overhead in \cref{tab:main_mimic}; not yet measured.}
+  \label{tab:real_robot}
+  \footnotesize
+  \setlength{\tabcolsep}{2.5pt}
+  \renewcommand{\arraystretch}{1.1}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{1.9cm}*{10}{>{\centering\arraybackslash}X}@{}}
+    \toprule[1pt]
+    & \multicolumn{7}{c}{SR (\%) $\uparrow$} & \multicolumn{3}{c}{Efficiency} \\
+    \cmidrule(lr){2-8}\cmidrule(l){9-11}
+    Method
+      & \makecell{Pick Cup\\from Sink} & \makecell{Stack\\Bowls} & \makecell{Pour\\Water}
+      & \makecell{Open\\Microwave} & \makecell{Cup out\\Microwave} & \makecell{Open\\Lid} & Avg.
+      & \makecell{Freq.\\(Hz) $\uparrow$} & \makecell{Lat.\\(ms) $\downarrow$} & \makecell{FLOPs\\(T) $\downarrow$} \\
+    \midrule
+    Native
+      & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{}
+      & 0.71 & 1402.1 & 97.60 \\
+    Native + LoRA
+      & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{}
+      & \RRest{0.71} & \RRest{1406.7} & \RRest{97.60} \\
+    \rowcolor{ArrowOurs}
+    \method
+      & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{}
+      & \textbf{1.31} & \textbf{763.8} & \textbf{49.25} \\
+    \bottomrule[1pt]
+  \end{tabularx}
+\end{figure*}
