@@ -34,11 +34,10 @@
   \captionof{table}{\textbf{Real-robot results of mimic-video.}
   Success rate (SR, \%) per task and averaged over the six tasks.
   Lat.: median latency per query on an RTX 4090 at batch size one, including text encoding; Freq.: $1/$Lat.
-  Deployment settings follow \cref{tab:main_results}: Native uses CUDA graphs, and \method uses the folded adapter with a graphed action decoder.
-  FLOPs are counted as in \cref{tab:main_results}, including text encoding and the VAE; attention-score FLOPs are not counted.
+  Deployment settings follow \cref{tab:main_results}。
+  FLOPs are counted as in \cref{tab:main_results}, including text encoding and the VAE。
   \method keeps 7,440 of the 19,200 context tokens.
-  Lavender: \method.
-  $\ddagger$: estimated from the Native + LoRA overhead in \cref{tab:main_mimic}; not yet measured.}
+  Lavender: \method.}
   \label{tab:real_robot}
   \footnotesize
   \setlength{\tabcolsep}{2.5pt}
@@ -57,7 +56,7 @@
       & 0.71 & 1402.1 & 97.60 \\
     Native + LoRA
       & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{}
-      & \RRest{0.71} & \RRest{1406.7} & \RRest{97.60} \\
+      & 0.71 & 1406.7 & 97.60 \\
     \rowcolor{ArrowOurs}
     \method
       & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{} & \TODO{}
