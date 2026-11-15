@@ -67,7 +67,6 @@ General accelerations of diffusion models, through feature caching~\cite{zhao202
 aim to preserve the generated images or video, a goal that a policy does not share.
 None of these approaches uses the action to decide which parts of the future are computed in detail.
 
-
 \subsection{Action-Aware Token Selection}
 \label{sec:related_tokens}
 
@@ -84,9 +83,6 @@ or with a small selector trained by the task loss~\cite{rao2021dynamicvit,ryoo20
 Recent VLA methods select visual tokens by their attention to the instruction~\cite{yang2025efficientvla}, by their change between control steps~\cite{xu2025vlacache},
 by text relevance gated on the recent motion of the end effector~\cite{pei2026adp}, by semantic attention combined with the action-decoding attention of recent control steps~\cite{liu2025vlapruner}, or with a selector learned while the policy is fine-tuned~\cite{jiang2025lightvla}.
 Some training-free methods bring selection to the future tokens of WAMs: they score tokens by action attention~\cite{xie2026sparsewam} or by action and instruction attention~\cite{kim2026cfprune} at the first denoising step and compute only the selected tokens in the remaining steps.
-
-Recent VLA methods select visual tokens by their attention to the instruction~\cite{yang2025efficientvla}, by their change between control steps~\cite{xu2025vlacache},
-by the recent motion of the end effector~\cite{pei2026adp}, by the attention of the action-decoding stage~\cite{liu2025vlapruner}, or with a selector learned while the whole policy is fine-tuned~\cite{jiang2025lightvla}.
 
 These methods leave three gaps for our setting.
 Relevance is built into a newly trained model, approximated by appearance, attention or motion, or learned by retraining the model whose tokens are selected.

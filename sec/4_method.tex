@@ -22,11 +22,9 @@
 \end{figure}
 
 \method decides at which spatial and temporal resolution the video model computes each region of the predicted future, using a relevance score learned from the action decoder (\cref{fig:overview}).
-We first formulate this allocation problem (\cref{sec:problem}), then describe the router that produces the scores (\cref{sec:router}), how the scores set the spatial (\cref{sec:spatial}) and temporal (\cref{sec:temporal}) resolution, and how the router and the decoder adapter are trained (\cref{sec:router}).
 
 % \cj{XX write Coarse-to-fine ! XX the readers should be able to understand our work from coarse to fine. E.g. formulate the problem and give motivation first as Section 3.1. and then dive into details  }
 % ---------------------------------------------------------------------------
-
 
 \subsection{Problem Formulation}
 \label{sec:problem}
@@ -44,16 +42,6 @@ where $|A(Z)|$ is the number of tokens after allocation, $N$ is a fixed fraction
 The observation tokens are always kept, and the video model and the decoder stay frozen.
 $A$ may only average neighboring tokens, in space or over consecutive frames; it never removes a region, so every part of the scene remains represented at some resolution.
 
-The question is therefore where the representation needs detail.
-Appearance measures such as token similarity do not show which regions the action depends on, and the decoder's attention becomes available only after the full-resolution pass that the allocation is meant to avoid.
-We therefore let a small router predict the relevance of every future token early in the video model and train it through the decoder's objective (\cref{sec:router}).
-Because the remaining blocks and the decoder then process $N$ instead of 16,800 future tokens, the same allocation also lowers the cost of every query.
-
-
-
-
-
-
 \subsection{Action-Aware Router}
 \label{sec:router}
 
@@ -66,7 +54,6 @@ The scores provided by this small router then drive both allocation steps (\cref
 The router is trained on the demonstrations of the target task suite, the same data used to train the policy.
 Video features are computed as at inference, with the future frames at the inference noise level and the compression applied,
 so the router learns on the inputs it will see when deployed.
-The video model and the action decoder are frozen.
 The router is trained together with a LoRA adapter~\cite{hu2022lora} on the cross-attention layers of the action decoder, which lets the decoder adjust to the compressed input.
 
 The action decoder is a flow-matching model~\cite{lipman2023flow} that predicts a velocity for a noised action chunk.
@@ -80,10 +67,7 @@ The adapter is trained on the compressed context to match the output of the same
 where $v$ is the velocity predicted by the adapted decoder from the compressed context,
 $v_{\text{full}}$ is the velocity predicted by the original decoder from the full context for the same noised action and robot state,
 and $v_{\text{gt}}$ is the ground-truth velocity.
-$\mathcal{L}_{\text{distill}}$ makes the adapted decoder reproduce the original decoder's full-context prediction, and $\mathcal{L}_{\text{GT}}$ weakly anchors it to the demonstrated ground-truth velocity. Since the adapter only compresses the context rather than learning a new policy, $\mathcal{L}_{\text{distill}}$ is the main objective. This keeps the decoder close to the original policy, so the router signal from $\mathcal{L}_{\text{task}}$ reflects the policy's needs rather than compensating for a drifting decoder; $\mathcal{L}_{\text{GT}}$ only prevents it from drifting too far from the demonstrations.
-
-
-
+$\mathcal{L}_{\text{distill}}$ makes the adapted decoder reproduce the original decoder's full-context prediction, and $\mathcal{L}_{\text{GT}}$ weakly anchors it to the demonstrated ground-truth velocity.
 
 The router learns which groups of tokens (\cref{sec:spatial}) should keep full resolution under a fixed token budget.
 Its supervision is the gradient saliency of the decoder objective with respect to the group scores:
@@ -101,7 +85,6 @@ We smooth $r_g$ with an exponential moving average over training steps, label th
 where $\mathcal{L}_{\text{focal}}$ is a focal binary cross-entropy~\cite{lin2017focal} between the scores and the labels,
 $\mathcal{L}_{\text{budget}}$ keeps the mean score at the fraction of groups kept at full resolution,
 $\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b = \lambda_e = 0.1$.
-
 
 % ---------------------------------------------------------------------------
 \subsection{Spatial Resolution Allocation}
@@ -137,8 +120,7 @@ During training, the router supervision of \cref{sec:router} is computed on thes
 We rank the groups by $S_g$.
 The 100 highest-scoring groups keep their four tubes at full resolution.
 In every other group, the four tubes are averaged frame by frame into a single tube (\cref{fig:allocation_detail}a).
-This leaves 600 tubes, and no region of the scene is removed: relevant regions keep full resolution and the rest are kept at a coarser one.
-The group scores thus decide which regions of the scene the backbone sees in detail, and the number of full-resolution groups sets how many.
+This leaves 600 tubes.
 
 Every tube keeps its position on the original grid; a merged tube takes the position $p$ of the top-left tube of its group,
 so every remaining tube is still identified by a grid position $p$.
@@ -151,12 +133,9 @@ the observation frames stay on the original grid, so a future tube at position $
 % 按现行实现写：排序用组分数 x 帧间特征变化，切点使各段覆盖的特征变化相近。按约定不写"按运动自适应"、不声称优于固定 K。
 % 诊断事实：段数档位与满分辨率/合并划分完全重合，给定段数时切点近乎均匀，部署时不同观测间段数分配 97.3% 相同。
 
-Since the scene is changing as the robot and the objects move, the action-relevant content of a region also changes over the prediction horizon.
-Regions that matter for the action therefore need finer temporal detail to follow how they evolve, while other regions are adequately described by a few tokens.
-We therefore give each tube its own temporal resolution as a single temporal resolution shared by all tubes cannot reflect this. So we further split 14 frames into a few consecutive segments, where the tokens within each segment are averaged into one.
-Tubes are split into $K$ segments, and more segments mean finer temporal detail.
+We allocate temporal detail to each tube according to its action relevance and feature variation.
+Its 14 future frames are split into $K$ consecutive segments, each averaged into one token.
 
-The number of segments follows relevance.
 Each tube $p$ receives a priority
 \begin{equation}
   u_p = S_{g(p)} \cdot \Delta_p ,
@@ -169,8 +148,7 @@ We give the most segments to the tubes with the highest priority, with a fixed n
 For example, when 10\% of the future tokens are kept, the top 300 tubes receive 4 segments, the next 180 receive 2, and the last 120 receive 1, giving 1,680 tokens.
 Within a tube, segment boundaries are placed so that each segment covers a similar amount of feature change.
 
-As a result, temporal detail is concentrated on the tubes that matter for the action.
-Every tube keeps at least one token, so no region disappears from the sequence, and averaging rather than dropping frames keeps information from all of them.
+Every tube keeps at least one token, and averaging incorporates contributions from all 14 frames.
 Because the number of tubes at each level is fixed, every sample is represented by the same number of tokens, independent of the scene.
 
 \begin{figure}[t]
@@ -184,13 +162,7 @@ Because the number of tubes at each level is fixed, every sample is represented 
 \end{figure}
 
 The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers, so the temporal positions stay consecutive as in the original sequence.
-\Cref{fig:temporal_positions} illustrates these indices alongside the source-t alternative for the same pooled segments.
-This differs from the spatial axis (\cref{sec:spatial}) because the two kinds of position carry different information.
-A spatial position says where a token lies in the scene, and it must stay aligned with the observation frames, which remain on the original grid.
-A temporal position only says in which order the future frames come.
-After slicing, a segment spans several frames, so no single original frame index describes it; what must be preserved is the order of the segments.
-Consecutive indices keep this order and match the pattern of consecutive frames the video model was trained on,
-whereas original frame indices would leave gaps between segments, a pattern the model never sees during training.
+Unlike spatial coordinates, which preserve alignment with the observations (\cref{sec:spatial}), consecutive temporal indices preserve segment order and match the position pattern used during pretraining; source-frame indices would leave gaps (\cref{fig:temporal_positions}).
 % 实验依据（写 Sec. 5 时用，正文暂不引用）：
 %   空间：2x1 池化后改为紧凑重编号 4/100 vs 保留原坐标 83/100（LIBERO-Spatial 7200 tok，n=100）。
 %   时间：contiguous vs source 354 vs 275、441 vs 396、460 vs 437（10/20/30%，n=500，配对 McNemar 均 p<0.005）。

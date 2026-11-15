@@ -30,13 +30,10 @@ For mimic-video, 10\%, 20\% and 30\% context refer to the retained fraction of t
 The resulting context lengths are 4,080, 5,760 and 7,440, versus 19,200 for native.
 The spatial stage keeps 100 of 300 groups at full resolution.
 In increasing priority order, 120, 180 and 300 tubes receive $(1,2,4)$, $(3,5,7)$ or $(5,8,10)$ segments at the respective budgets.
-For each suite and budget, we freeze the router and train the router together with a fresh rank-16 decoder cross-attention LoRA with \cref{eq:task_loss}.
-
-
+For each suite and budget, we freeze the router and train a fresh rank-16 decoder cross-attention LoRA with \cref{eq:task_loss}.
 
 Efficiency is measured per policy query with Spatial checkpoints, batch size one, on an exclusively allocated H100, including text encoding.
 We report median wall-clock latency over 32 calls in eight interleaved rounds after warmup.
-
 
 \subsection{Main Results}
 \label{sec:exp_main}
@@ -55,29 +52,19 @@ We compare adaptations of FastV~\cite{chen2024fastv}, VLA-Pruner~\cite{liu2025vl
 FastV-style ranks tokens by received visual self-attention; VLA-Pruner combines semantic scores with historical action attention; ADP gates text-guided selection using robot motion; CF-Prune combines instruction and action attention without the original phase gate.
 VLA-Pruner uses three dense bootstrap queries per episode and ADP falls back to dense queries under its motion gate, so their measured mean contexts exceed the compressed target and they are not equal-token comparisons; these dense calls and the paid full-context CF-Prune probe are charged in the reported inference costs.
 At strictly equal token counts, ADP's selection component without its dense fallback is slightly cheaper than \method (35.6/42.5/49.4 versus 35.7/42.7/49.6 TFLOPs, 396.1/430.9/465.5 versus 404.2/440.7/477.1\,ms) but reaches only 24.9/51.3/62.7\% mean success versus 79.8/90.5/92.9\% (supplementary material).
-All method SR are below native at the 10 and 20\% context, while \method achieved the best results among them. At 30\% context, \method even surpassed the SR of native model. 
-
 
 \Cref{tab:main_dit4dit} reports same comparison results on DiT4DiT~\cite{ma2026dit4dit}, each with 500 paired episodes and one adapter per method and budget trained on \texttt{libero\_all}.
-Since VLA-Pruner and ADP include dense bootstrap or fallback queries, we allow their actual context lengths to exceed ours to preserve their execution policies and keep the comparison fair.
 Fixed-budget selection ports of these methods, which remove the dense calls, are reported in the supplementary material.
 Context percentages count total tokens: 391, 442 and 589 of the native 784 tokens, rounded to 50\%, 56\% and 75\% in the table.
 
-
-
-
-
 With our adpatation, the 391/442/589-token configurations take 40.6/41.0/43.7\,ms, versus 47.2\,ms for native with the same common optimizations.
 These give $1.16\times$, $1.15\times$ and $1.08\times$ speedups; full-context LoRA measures 47.2\,ms in its separate interleaved benchmark.
-External-method costs are expected per-query values over the dense and compressed branches observed in evaluation; CF-Prune's include its full-context probe.
 
 \input{tables/transfer_and_ablations}
 
 \Cref{tab:transfer} separates the axes actually tested in each setting.
 On SIMPLER-Bridge, we increase the number of full-resolution groups to $F=200$ and report all three budgets.
 Their success rates are 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native.
-
-
 
 On RoboCasa-GR1, our method reduces 588 tokens to 539, 490 and 466. Our method generally achieved better SR than the native model with lower context budget but all settings are statistically indistinguishable from native.
 LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 latency remains to be measured.
@@ -90,7 +77,7 @@ LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 l
 We evaluate mimic-video on six kitchen manipulation tasks with a Franka arm and a single RGB camera (\cref{fig:real_robot}).
 Each query uses five $480{\times}640$ RGB frames and the robot state to predict 15 actions; five are executed before replanning.
 We use task-specific action decoders with a frozen video backbone and compare \method with Native and Native + LoRA over 15 trials per task and method.
-\method retains 30\% of future tokens and all observation tokens, reducing the context from 19,200 to 7,440 tokens.
+We use the 30\% future-token budget.
 
 \Cref{tab:real_robot} reports a mean success rate of 77.8\%, compared with 60.0\% for Native and 63.3\% for Native + LoRA.
 \method matches or exceeds both baselines on every task, with the largest gain over Native on opening the microwave (66.7\% versus 33.3\%).
@@ -117,19 +104,15 @@ Token and tube deletion are internal operator references using the same frozen r
 Their gaps are largest on Spatial, while token deletion is closer on Goal and Object: at 20\%, it reaches 87.2\% and 92.8\%, versus 89.4\% and 94.0\% for ours.
 At 30\% on Goal, tube deletion has the highest point estimate, 91.4\%, versus 90.2\% for ours; their paired difference is not significant ($p=0.48$).
 
-
 \Cref{tab:ablations} examines the learned allocation and decoder adaptation.
 Reversing the router scores lowers success by 42.4 and 28.2 percentage points at 10\% and 20\%, even after retraining the adapter for the reversed allocation (Holm-corrected $p\leq6\times10^{-21}$).
 Removing LoRA lowers success from 70.8\% to 56.6\% and from 88.2\% to 81.0\%, respectively; this measures adaptation to compressed context, while the full-context LoRA control is reported separately in \cref{tab:main_results}.
 Contiguous temporal positions (\cref{fig:temporal_positions}) improve success over source-frame positions by 15.8, 9.0 and 4.6 points at the three budgets (paired $p\leq0.0044$).
 
-
 Offline spatial coarsening gives lower action distortion with router scores than with similarity, motion, block-2 self-attention, edge energy or random selection (Holm-corrected $p\leq4.2\times10^{-4}$).
 The respective router-to-criterion distortion ratios are 0.495, 0.478, 0.785, 0.838 and 0.598.
 This comparison concerns these five task-agnostic criteria, not full-context decoder attention; the latter has lower distortion but requires the full forward pass.
 The detailed insertion curves and ranking-reversal plot are in the supplementary material.
-
-
 
 Simulator segmentation in \cref{fig:ground_truth} shows that full-resolution groups cover 90\% of Spatial task-object pixels, 84\% of robot pixels and 82\% of the robot's future path, versus 26\% of background pixels.
 The Object and Goal coverage results are reported in the supplementary material.

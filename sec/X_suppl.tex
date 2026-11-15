@@ -108,7 +108,6 @@ The mimic-video fixed-budget comparisons form one Holm family of 36 tests (\cref
 The timing benchmark uses Spatial checkpoints on an exclusively allocated H100, batch size one, with text encoding included.
 There are three warmup calls and eight interleaved rounds of four calls per arm; reported values are medians of 32 synchronized wall-clock measurements.
 The graphed native reference is 701.7\,ms; the eager native reference has median 770.4\,ms across the three budget runs.
-The deployed 10\%/20\%/30\% configurations run in 404.2/440.7/477.1\,ms and use 35.7/42.7/49.6 TFLOPs per query.
 Speedups relative to graphed native are reported in the main text; relative to the pooled eager reference they are approximately $1.91\times$, $1.75\times$ and $1.61\times$.
 The folded-adapter configuration is the one used for timing; these measurements are not a separate closed-loop evaluation of graph/fold equivalence.
 
@@ -130,7 +129,7 @@ The deployed decoder has native FP32 weights.
 We load all 64 trained adapter tensors, add their scaled products to the 32 affected projections, and remove the low-rank branches, preserving FP32 rather than quantizing the head.
 Projected-prompt caching, the single-real-frame VAE encode, exit at extraction block 17, and both video/action graphs also apply to native.
 Caching fixed geometry and using fixed-size gathers makes the existing one-future-slice allocation graph-compatible; router scores and decisions are recomputed for each current input.
-At 442 tokens, live-adapter eager inference takes 68.7\,ms, actual-fold eager 61.9\,ms, fold plus action graph 53.9\,ms, and fold plus both graphs 41.0\,ms (\cref{tab:dit4dit_deployment}).
+\Cref{tab:dit4dit_deployment} reports the latency of each optimization stage.
 Native changes from 59.1\,ms eager to 47.2\,ms with both graphs; the latter is the common reference for reported speedups.
 Its latency interquartile range is [47.04,47.20]\,ms, versus [40.98,41.09]\,ms at 442 tokens; a separately captured native replica measures 47.18\,ms.
 
@@ -287,8 +286,7 @@ With 100 full-resolution groups, the three Bridge budgets give 20/96, 24/96 and 
 Their paired differences are $-27.1$ [$-38.1$,$-16.1$], $-22.9$ [$-32.7$,$-13.1$] and $-19.8$ [$-29.6$,$-9.9$] percentage points, with exact McNemar $p=1.3\times10^{-5}$, $2.7\times10^{-5}$ and $3.1\times10^{-4}$, respectively.
 These failed points motivate reporting the entire higher-budget $F=200$ sweep rather than only its best point estimate.
 
-With 200 full-resolution groups, the 11,400-, 12,300- and 13,200-token budgets reach 44.8\%, 48.4\% and 50.0\%, versus 47.9\% for native (\mainref{tab:transfer}{Table~2}).
-None of the paired intervals in that table excludes zero.
+None of the paired intervals for $F=200$ in \mainref{tab:transfer}{Table~2} excludes zero.
 With 96 episodes the intervals are wide, so these results show no detected loss, not equivalence to native.
 
 \paragraph{RoboCasa-GR1.}
@@ -316,12 +314,12 @@ It demonstrates simultaneous spatial and temporal allocation in this evaluated s
   \includegraphics[width=\linewidth]{fig6_ground_truth_object_goal.pdf}
   \caption{\textbf{Full-resolution pixel coverage on Object and Goal.}
   The share of each category covered by the 100 full-resolution groups, averaged over 50 episodes per suite with Student's $t$ 95\% confidence intervals.
-  The 20\% future-token budget and simulator categories match \mainref{fig:ground_truth}{Figure~6}.
+  The 20\% future-token budget and simulator categories match \mainref{fig:ground_truth}{Figure~5}.
   The dashed reference is random allocation (33\%).}
   \label{fig:supp_spatial_coverage}
 \end{figure}
 
-\Cref{fig:supp_spatial_coverage} extends the Spatial result in \mainref{fig:ground_truth}{Figure~6} to the other two suites.
+\Cref{fig:supp_spatial_coverage} extends the Spatial result in \mainref{fig:ground_truth}{Figure~5} to the other two suites.
 Full-resolution groups cover 81\% of Object task-object pixels, 99\% of robot-arm pixels and 97\% of the future path, versus 26\% of background pixels.
 On Goal, the corresponding task-object, robot-arm, future-path and background shares are 64\%, 98\%, 78\% and 21\%.
 
@@ -330,14 +328,13 @@ On Goal, the corresponding task-object, robot-arm, future-path and background sh
   \centering
   \includegraphics[width=\linewidth]{fig9_allocation_gallery.pdf}
   \caption{\textbf{Full-resolution groups across tasks.}
-  Five tasks from each of LIBERO-Spatial, LIBERO-Object and LIBERO-Goal at the 20\% future-token budget, selected for the highest mean coverage of task-object and robot-arm pixels by full-resolution groups.
+  Five tasks from each of LIBERO-Spatial, LIBERO-Object and LIBERO-Goal at the 20\% future-token budget, selected for the highest equally weighted mean coverage of task-object and robot-arm pixels by full-resolution groups.
   Each panel uses the first recorded episode and the query nearest 12.
   Blue marks the 100 groups kept at full resolution and grey the 200 merged groups; outlines are simulator masks of task objects (green) and the robot arm (black).
   Spatial labels give the location of the bowl to pick up.
   These selected examples illustrate spatial overlap; they do not estimate average coverage.}
   \label{fig:supp_allocation_gallery}
 \end{figure*}
-
 
 \paragraph{Offline criteria.}
 The pre-registered offline family also included full-context decoder cross-attention, which has approximately 7\% lower distortion than the router ($p=0.0078$ after correction).
@@ -347,9 +344,6 @@ Similarity ranking in this analysis is not a complete ToMe implementation.
 The matched offline coverage-versus-resolution comparison does not distinguish the two allocations after correction, so it is not used to attribute the closed-loop operator gap to coarse coverage alone.
 
 \paragraph{Allocation across tasks.}
-\Cref{fig:supp_allocation_gallery} shows five selected tasks from each of Spatial, Object and Goal.
-For each suite, we rank the ten task candidates by the equally weighted mean of task-object and robot-arm pixel coverage, using the first recorded episode and the query nearest 12, and display the five highest-scoring tasks.
-This qualitative selection illustrates where full-resolution groups overlap control-relevant regions; it is not used to estimate suite-average coverage.
 Across all ten task candidates in each suite, before selection, the mean pairwise Jaccard index of the full-resolution sets is 0.94 on Spatial, 0.97 on Object and 0.95 on Goal.
 
 % =============================================================================================
@@ -369,7 +363,6 @@ Across all ten task candidates in each suite, before selection, the mean pairwis
   \label{fig:supp_bubble}
 \end{figure*}
 
-The results in \cref{tab:absolute_success} and \cref{fig:supp_bubble} provide context rather than a common-backbone or common-protocol comparison.
 The main claims concern changes relative to each policy's own native backbone.
 For $\pi_0$ and $\pi_0$-FAST, the listed numbers are the released-model results tabulated by OpenVLA-OFT; $\pi_{0.5}$ uses the OpenPI release numbers reproduced in the LeRobot documentation.
 The three-suite means are recomputed, rather than copied from four-suite LIBERO averages.
