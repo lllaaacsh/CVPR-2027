@@ -21,7 +21,7 @@
 \def\paperID{*****} % *** Enter the Paper ID here
 \def\confName{CVPR}
 \def\confYear{2027}
-
+\newcommand{\ziquancomment}[1]{{\color{red} [ZQ: #1]}}
 %%%%%%%%% TITLE - PLEASE UPDATE
 \title{ARROW: Action-Aware Resolution Routing for World Action Models}
 
@@ -60,6 +60,10 @@ Institution2\\
 \input{sec/4_method}
 \input{sec/5_experiments}
 \input{sec/6_conclusion}
+
+\newpage
+\section*{LLM Usage Statement}
+LLM tools were used to assist with manuscript editing, related work, code, experiments, and figures. Anthropic Claude was also used for reviewer-style feedback. No LLMs were used for data creation or generating research ideas and conclusions. All AI-assisted content was reviewed and verified by the authors.
 
 % The base model is cited in any case; \nocite keeps BibTeX from failing while
 % the text has no \cite yet. Harmless to keep.

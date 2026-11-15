@@ -10,7 +10,7 @@
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{pipelinev2}
-  \caption{\textbf{Overview of \method.}
+  \caption{ \ziquancomment{you may want to show this in the introduction}\textbf{Overview of \method.}
   After an early block of the frozen video DiT, an action-aware router scores the future tokens.
   Spatially, the highest-scoring $2{\times}2$ blocks keep full resolution and every other block is merged into a single tube;
   temporally, each tube is pooled into a number of segments set by its relevance, and the segments are re-indexed contiguously in time.
@@ -29,27 +29,26 @@
 \subsection{Problem Formulation}
 \label{sec:problem}
 
-At every policy query, the video model receives the instruction, the observed frames and noisy latents for the future frames.
-Its transformer blocks process 2,400 observation tokens and 16,800 future tokens, 14 future frames of $30{\times}40$ tokens each, and the action decoder predicts an action chunk from the resulting representation.
-Let $Z$ denote the future tokens after an early block, and $f(Z)$ the action that the remaining blocks and the decoder predict from them.
-We seek an allocation $A$ that represents $Z$ with a fixed budget of $N$ future tokens while keeping the predicted action close to the one predicted from the full future:
+Generally in WAM, Video backbones process dense future representations at uniform spatiotemporal resolution, although their relevance to action prediction can vary across regions and time intervals.
+At every policy query, the video model receives an instruction, observed frames, and noisy future latents.
+Let $Z$ denote the future tokens after an early block, and $f(Z)$ the action predicted by the remaining backbone and decoder.
+We seek an allocation $A$ that represents $Z$ with a fixed budget of $N$ future tokens while minimizing deviation from the full-context action prediction:
 \begin{equation}
   \min_{A,\,\phi}\ \mathbb{E}\,\big\| f_\phi\big(A(Z)\big) - f(Z) \big\|^2
   \quad \text{s.t.} \quad |A(Z)| = N ,
   \label{eq:problem}
 \end{equation}
-where $|A(Z)|$ is the number of tokens after allocation, $N$ is a fixed fraction of the 16,800 future tokens (10--30\% in our experiments), and $f_\phi$ is $f$ with a low-rank adapter $\phi$ in the decoder.
+where $|A(Z)|$ is the number of tokens after allocation, $N\leq THW$ is the retained future-token budget, and $f_\phi$ augments $f$ with a low-rank decoder adapter.
+The pretrained backbone and decoder weights remain frozen.
 The observation tokens are always kept, and the video model and the decoder stay frozen.
 $A$ may only average neighboring tokens, in space or over consecutive frames; it never removes a region, so every part of the scene remains represented at some resolution.
 
 \subsection{Action-Aware Router}
 \label{sec:router}
-\cj{xx Start with motivation ``what is missing in the existing models'' ``To XXXXX, we present'' xx}
-The router gives every future token a score between 0 and 1 that indicates how relevant the token is to the action.
-It reads the future-frame tokens after the second block of the video DiT together with the instruction:
-each token attends to the instruction tokens through one cross-attention layer, and an MLP with a sigmoid outputs its score $s_{t,p}$,
-where $t$ indexes the future frame and $p$ the position on the token grid.
-The scores provided by this small router then drive both allocation steps (\cref{sec:spatial,sec:temporal}).
+Early resolution allocation requires action-relevance estimates before the full video forward pass is complete.
+We introduce a lightweight router supervised by the action decoder to provide this signal.
+Given early future features, each token attends to the instruction through one cross-attention layer, followed by an MLP and sigmoid that output $s_{t,p}\in[0,1]$.
+Here $t$ and $p$ index future time and spatial position.(\cref{sec:spatial,sec:temporal}).
 
 The router is trained on the demonstrations of the target task suite, the same data used to train the policy.
 Video features are computed as at inference, with the future frames at the inference noise level and the compression applied,
@@ -99,15 +98,11 @@ $\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b 
   \label{fig:allocation_detail}
 \end{figure}
 
-\cj{xx Start with motivation xx}
-
-The video model represents each future frame as a $30{\times}40$ grid of tokens. \cj{xx no baseline-specific numbers xx}
-We call the sequence of tokens at grid position $p$ across the 14 future frames \emph{tube} $p$, which gives 1,200 tubes.
-We then group the tubes into $2{\times}2$ neighborhoods, giving 300 groups.
-We use $2{\times}2$ groups for three reasons.
-Neighboring tokens cover adjacent image regions, so averaging a small neighborhood still keeps a coarse view of that region.
-A $2{\times}2$ group is the smallest square neighborhood, so merging reduces resolution equally in both directions.
-And it tiles the $30{\times}40$ grid exactly, so every token belongs to exactly one group.
+A region may tolerate spatial coarsening while still providing useful information for control, such as the approximate location of a nearby object.
+Deleting that region also removes its contribution to this spatial context.
+We therefore retain high-relevance regions at full resolution and locally average the remaining regions, preserving a coarse representation of every region.
+A tube contains the $T$ tokens at one spatial position.
+We partition the spatial grid into $G=HW/4$ non-overlapping $2\times2$ groups.
 
 Each group receives one score from the router:
 \begin{equation}
@@ -120,9 +115,8 @@ averaging over the group gives its overall relevance.
 During training, the router supervision of \cref{sec:router} is computed on these group scores.
 
 We rank the groups by $S_g$.
-The 100 highest-scoring groups keep their four tubes at full resolution.
-In every other group, the four tubes are averaged frame by frame into a single tube (\cref{fig:allocation_detail}a).
-This leaves 600 tubes.
+The $F$ highest-scoring groups retain their four tubes, while each remaining group is averaged frame by frame into one tube.
+This produces $P=G+3F$ tubes.
 
 Every tube keeps its position on the original grid; a merged tube takes the position $p$ of the top-left tube of its group,
 so every remaining tube is still identified by a grid position $p$.
@@ -132,13 +126,9 @@ the observation frames stay on the original grid, so a future tube at position $
 % ---------------------------------------------------------------------------
 \subsection{Temporal Resolution Allocation}
 \label{sec:temporal}
-% 按现行实现写：排序用组分数 x 帧间特征变化，切点使各段覆盖的特征变化相近。按约定不写"按运动自适应"、不声称优于固定 K。
-% 诊断事实：段数档位与满分辨率/合并划分完全重合，给定段数时切点近乎均匀，部署时不同观测间段数分配 97.3% 相同。
 
-\cj{xx Start with motivation xx}
 
-We allocate temporal detail to each tube according to its action relevance and feature variation.
-Its 14 future frames are split into $K$ consecutive segments, each averaged into one token.
+Since redundancy exists along both spatial and temporal dimensions, spatial allocation alone cannot fully fix the gap. To further reduce temporal redundancy, we divide each tube into \(K_p\) contiguous segments based on action relevance and feature variation, and average the tokens within each segment.
 
 Each tube $p$ receives a priority
 \begin{equation}
@@ -149,11 +139,10 @@ where $S_{g(p)}$ is the score (\cref{eq:group_score}) of the group $g(p)$ that c
 and $\Delta_p$ is the average change of the features of tube $p$ between consecutive frames, measured as one minus their cosine similarity.
 A tube thus ranks high when it is relevant to the action and its features change across frames.
 We give the most segments to the tubes with the highest priority, with a fixed number of tubes at each level (\cref{fig:allocation_detail}b).
-For example, when 10\% of the future tokens are kept, the top 300 tubes receive 4 segments, the next 180 receive 2, and the last 120 receive 1, giving 1,680 tokens.
+The segment counts satisfy $\sum_{p=1}^{P}K_p=N$, with $1\leq K_p\leq T$.
 Within a tube, segment boundaries are placed so that each segment covers a similar amount of feature change.
 
-Every tube keeps at least one token, and averaging incorporates contributions from all 14 frames.
-Because the number of tubes at each level is fixed, every sample is represented by the same number of tokens, independent of the scene.
+Every tube retains at least one token, and pooling incorporates contributions from all $T$ future positions.
 
 \begin{figure}[t]
   \centering

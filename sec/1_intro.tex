@@ -17,16 +17,16 @@ Recent work has asked whether the future must be generated at test time at all~\
 A natural tool for making such a representation more compact is token reduction, which merges tokens that look alike~\cite{bolya2023tome} or discards tokens that receive little attention~\cite{chen2024fastv}.
 These criteria, however, describe the image rather than the task: they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it.
 Cues specific to robots, such as recent end-effector motion~\cite{pei2026adp}, help decide when to reduce tokens but not which tokens the action depends on.
-However, discarding tokens also removes parts of the scene altogether, even though a policy may still need a coarse view of them.
+However, discarding tokens also removes parts of the scene altogether, even though a policy may still need a coarse view of them. \ziquancomment{the first four paragraphs are too verbose and redundant, just describe the background using 2 sentences then introduce the status quo of token reduction.}
 
 The action decoder's attention over the predicted future directly shows which regions it reads.
-As a basis for deciding where the video model computes, however, it has two limitations.
+\ziquancomment{the writing following is not quite intuitive to me, didn't quite get what it means}As a basis for deciding where the video model computes, however, it has two limitations.
 First, it arrives too late to guide the pass that produces it: the decoder attends to features that the video model produces late in its forward pass, so attention exists only after every token of the future has been computed at full resolution.
 Methods that select tokens by attention therefore take it from an earlier denoising step~\cite{kim2026cfprune,xie2026sparsewam} or earlier control steps~\cite{liu2025vlapruner}, and still pay for at least one full-resolution pass to obtain it.
 Second, attention shows where the decoder looks, which need not coincide with how much its prediction would change if a region were represented more coarsely~\cite{serrano2019attention}, and it is the latter that decides whether a region can be coarsened.
-The decoder's objective can instead supervise an early router to identify where coarsening least affects the predicted action.
+The decoder's objective can instead supervise an early router to identify where coarsening least affects the predicted action. \ziquancomment{My understanding is that your contribution is you want to learn the token selection criterion end-to-end so that the resulting tokens are sufficient for downstream action decoder? the insight described in this paragraph is too opaque and hard to understand. and the contrast between your work and existing ones is not straightforward either.}
 
-Building on this idea, we propose \method, an action-aware router for WAMs (\cref{fig:overview}).
+Building on this idea \ziquancomment{which idea?}, we propose \method, an action-aware router for WAMs (\cref{fig:overview}).
 A lightweight router, placed after an early block of the frozen video model, scores every token of the predicted future by its relevance to the action.
 It is supervised only through the action decoder:
 its training signal is the gradient of the decoder's objective with respect to the scores, and no term depends on appearance or similarity (\cref{sec:router}).
@@ -40,7 +40,7 @@ Further analysis shows that the regions it keeps at full resolution are necessar
 In summary, our contributions are as follows.
 \begin{itemize}
   \item An action-aware router for WAMs, supervised only through the objective of the action decoder, which identifies the parts of the predicted future that the action relies on.
-  \item A spatial resolution allocation that keeps the most relevant regions at full resolution and merges the others instead of removing them, keeping every token at its original position.
+  \item A spatial resolution allocation that keeps the most relevant regions at full resolution and merges the others instead of removing them, keeping every token at its original position. \ziquancomment{is this counted as a contribution? and it is unclear what this contribution is compared with existing work}
   \item A temporal resolution allocation that gives each region a number of time segments set by its relevance, with consecutive temporal positions.
 \end{itemize}
 
