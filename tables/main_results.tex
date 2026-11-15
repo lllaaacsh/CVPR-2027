@@ -23,6 +23,11 @@
   \definecolor{ArrowSRGrayText}{HTML}{60656B}
   \definecolor{ArrowLatencyBG}{HTML}{DFEBFF}
   \definecolor{ArrowLatencyText}{HTML}{0045AA}
+
+ \colorlet{ArrowSRGoodBG}{ArrowSRGoodBG!50!white}
+ \colorlet{ArrowLatencyBG}{ArrowLatencyBG!40!white}
+  
+
   \setlength{\aboverulesep}{1.1pt}
   \setlength{\belowrulesep}{1.1pt}
   \newlength{\ArrowMainDataWidth}
@@ -30,7 +35,7 @@
   \newcolumntype{K}{@{\hspace{3pt}}>{\raggedright\arraybackslash}p{.24\ArrowMainDataWidth}Q{.14\ArrowMainDataWidth}Q{.14\ArrowMainDataWidth}Q{.115\ArrowMainDataWidth}Q{.09\ArrowMainDataWidth}Q{.095\ArrowMainDataWidth}Q{.09\ArrowMainDataWidth}Q{.09\ArrowMainDataWidth}@{\hspace{3pt}}}
   \newcommand{\ArrowPanelHeading}[2]{%
     \begin{tikzpicture}[baseline=(panelheader.base)]
-      \node[fill=ArrowPanel,rounded corners=2.5pt,inner xsep=3pt,inner ysep=1pt,outer sep=0pt] (panelheader) {%
+      \node[fill=white,rounded corners=2.5pt,inner xsep=3pt,inner ysep=1pt,outer sep=0pt] (panelheader) {%
         \begin{minipage}{\dimexpr\linewidth-6pt\relax}
           \captionsetup{font={rm,bf,small},skip=0pt,justification=centering,singlelinecheck=false}
           \caption{#1}\label{#2}
