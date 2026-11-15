@@ -33,7 +33,7 @@ In increasing priority order, 120, 180 and 300 tubes receive $(1,2,4)$, $(3,5,7)
 For each suite and budget, we freeze the router and train a fresh rank-16 decoder cross-attention LoRA with \cref{eq:task_loss}.
 
 Efficiency is measured per policy query with Spatial checkpoints, batch size one, on an exclusively allocated H100, including text encoding.
-We report median wall-clock latency over 32 calls in eight interleaved rounds after warmup.
+We report median wall-clock latency over 32 calls in eight interleaved rounds after warmup. All evaluations use a single video denoising step to reduce inference latency.
 
 \subsection{Main Results}
 \label{sec:exp_main}

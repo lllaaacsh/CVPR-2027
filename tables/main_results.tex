@@ -5,7 +5,7 @@
   S/O/G: LIBERO-Spatial/Object/Goal; Avg.: mean success rate (\%).
   Context targets count future tokens in (a), total tokens in (b).
   $*$: measured mean context including dense calls, so these rows are not equal-token.
-  $\dagger$: point estimate above Native; bold: best available per budget; lavender: \method.
+  $\dagger$: point estimate above Native; bold: best available per budget.
   Summary boxes compare with Native using the displayed values: Avg. SR changes in percentage points and latency reductions in percent.
   External methods use decoder LoRA; CF-Prune's cost includes its extra dense probe.
   TFLOPs include VAE/text in (a) and exclude them in (b).
@@ -104,4 +104,38 @@
     \renewcommand{\arraystretch}{0.95}
     \input{tables/main_results_dit4dit}
   \end{subtable}
+
+  % ===== 调整参数，只需修改这里 =====
+  \def\QualFigScale{1.00}    % 图宽：1.00=满宽；0.95、0.90=缩小
+  \def\QualTableGap{8pt}     % 主表与图之间的距离
+  \def\QualCaptionGap{3pt}   % 图与图注之间的距离
+  % ================================
+
+  \par\vspace{\QualTableGap}
+  \begin{minipage}{\textwidth}
+    \centering
+    \captionsetup{
+      type=figure,
+      font=small,
+      skip=\QualCaptionGap
+    }
+
+    \includegraphics[
+      width=\QualFigScale\linewidth
+    ]{qualitative.pdf}
+
+    \caption{
+      \textbf{Qualitative comparison of spatial selection.}
+      Rows show observations from LIBERO-Spatial, LIBERO-Goal,
+      and LIBERO-Object.
+      All methods select 100 of the same 300 non-overlapping
+      $2\times2$ spatial groups.
+      Selected regions are outlined in gray for the baselines
+      and purple for ARROW; unselected regions are faded.
+      The maps compare spatial selection components at a matched
+      group budget, rather than complete adaptive execution policies.
+    }
+    \label{fig:qualitative_selection}
+  \end{minipage}
+
 \end{table*}
