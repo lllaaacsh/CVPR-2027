@@ -109,7 +109,7 @@ $\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b 
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{temporal_spatial_detail.pdf}
+  \includegraphics[width=0.9\linewidth]{temporal_spatial_detail.pdf}
   \caption{\textbf{Spatial and temporal allocation.}
   (a) $2{\times}2$ groups with high router scores keep their four tokens in every frame (A); every other group is averaged into one token per frame (B), so no region is removed.
   (b) Tubes with a higher priority $u_p$ (\cref{eq:priority}) are split into more contiguous segments, each averaged into one token; shown are the three levels of the 20\% budget, $K=7$, 5 and 3. Segment boundaries are schematic.}
@@ -175,7 +175,7 @@ Because the number of tubes at each level is fixed, every sample is represented 
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{contiguous_t.pdf}
+  \includegraphics[width=0.9\linewidth]{contiguous_t.pdf}
   \caption{\textbf{Temporal positions after segment pooling.}
   At the 20\% budget, a top-priority tube is split into seven segments of two frames each.
   Source-t assigns their pooled tokens the representative source-frame positions $(0,2,\dots,12)$, whereas contiguous-t assigns the consecutive positions $(0,1,\dots,6)$.
