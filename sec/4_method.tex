@@ -44,7 +44,7 @@ $A$ may only average neighboring tokens, in space or over consecutive frames; it
 
 \subsection{Action-Aware Router}
 \label{sec:router}
-
+\cj{xx Start with motivation ``what is missing in the existing models'' ``To XXXXX, we present'' xx}
 The router gives every future token a score between 0 and 1 that indicates how relevant the token is to the action.
 It reads the future-frame tokens after the second block of the video DiT together with the instruction:
 each token attends to the instruction tokens through one cross-attention layer, and an MLP with a sigmoid outputs its score $s_{t,p}$,
@@ -99,7 +99,7 @@ $\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b 
   \label{fig:allocation_detail}
 \end{figure}
 
-The video model represents each future frame as a $30{\times}40$ grid of tokens.
+The video model represents each future frame as a $30{\times}40$ grid of tokens. \cj{xx no baseline-specific numbers xx}
 We call the sequence of tokens at grid position $p$ across the 14 future frames \emph{tube} $p$, which gives 1,200 tubes.
 We then group the tubes into $2{\times}2$ neighborhoods, giving 300 groups.
 We use $2{\times}2$ groups for three reasons.
