@@ -87,7 +87,14 @@ LIBERO deployment latency is reported in \cref{tab:main_dit4dit}; RoboCasa-GR1 l
 
 \input{tables/real_robot}
 
-\TODO{Experimental setup and results to be added (\cref{fig:real_robot}, \cref{tab:real_robot}).}
+We evaluate mimic-video on six kitchen manipulation tasks with a Franka arm and a single RGB camera (\cref{fig:real_robot}).
+Each query uses five $480{\times}640$ RGB frames and the robot state to predict 15 actions; five are executed before replanning.
+We use task-specific action decoders with a frozen video backbone and compare \method with Native and Native + LoRA over 15 trials per task and method.
+\method retains 30\% of future tokens and all observation tokens, reducing the context from 19,200 to 7,440 tokens.
+
+\Cref{tab:real_robot} reports a mean success rate of 77.8\%, compared with 60.0\% for Native and 63.3\% for Native + LoRA.
+\method matches or exceeds both baselines on every task, with the largest gain over Native on opening the microwave (66.7\% versus 33.3\%).
+On an RTX 4090 at batch size one, including text encoding, median query latency falls from 1,402.1 to 763.8\,ms ($1.84\times$ speedup), while FLOPs fall by 49.5\%, from 97.60 to 49.25 TFLOPs.
 
 \subsection{Allocation and Adaptation Ablations}
 \label{sec:exp_ablation}
