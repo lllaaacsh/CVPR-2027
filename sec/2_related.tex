@@ -27,9 +27,7 @@
 \label{sec:related_wam}
 
 Learning to predict how the environment evolves has long served robot control.
-World models have been used to train policies in imagination~\cite{ha2018worldmodels,hafner2020dreamer,hafner2023dreamerv3},
-to plan by predicting the outcomes of candidate actions~\cite{finn2017foresight,zhou2024dinowm,assran2025vjepa2},
-and as interactive simulators and data generators~\cite{yang2024unisim,bruce2024genie,jang2025dreamgen}.
+World models that predict how the environment evolves has been used to support policy learning in imagination~\cite{ha2018worldmodels,hafner2020dreamer,hafner2023dreamerv3}, predictive planning ~\cite{finn2017foresight,zhou2024dinowm,assran2025vjepa2}, and interactive simulation or data generation~\cite{yang2024unisim,bruce2024genie,jang2025dreamgen}. 
 Video generation models trained on web-scale video~\cite{nvidia2025cosmos,wan2025wan} now provide such predictions with strong visual and physical priors,
 and WAMs turn them into policies that output robot actions~\cite{ye2026dreamzero,pai2025mimicvideo}.
 WAMs thereby complement vision-language-action models (VLAs), which build policies on vision-language models~\cite{brohan2023rt2,kim2024openvla,black2025pi0}.

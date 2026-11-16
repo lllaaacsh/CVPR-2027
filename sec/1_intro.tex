@@ -1,31 +1,72 @@
 \section{Introduction}
 \label{sec:intro}
+    \ji{
+    World action models (WAMs)~\cite{pai2025mimicvideo,hu2025vpp,ma2026dit4dit,ye2026dreamzero} leverage pre-trained video foundation models~\cite{nvidia2025cosmos,wan2025wan} to transfer visual and physical priors to robotic manipulation.
+    At each control step, a video diffusion transformer (DiT) processes observed frames and noisy future tokens through a stack of transformer blocks, and an action decoder cross-attends to the resulting future features to predict robot actions~\cite{pai2025mimicvideo,ma2026dit4dit}.
+    Because video DiTs are designed for full-scene pixel synthesis, they represent future frames on a dense, uniform spatiotemporal token grid.
+    Even in single-pass WAMs that avoid iterative denoising~\cite{pai2025mimicvideo,zhang2026rift}, processing this dense future grid across all DiT blocks incurs substantial inference latency.
+    However, robotic control relies unevenly on the predicted future: accurate manipulation requires fine detail around the robot arm, target objects~\cite{bendikas2025oatvla}, and motion trajectories, whereas static surroundings only provide coarse spatial layout.
+    }
 
-Large video generation models~\cite{nvidia2025cosmos}, pretrained on massive video data, capture both the appearance of the visual world and how it changes over time. While World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero}leverage this knowledge for robot control by jointly modeling future scene evolution and robot actions: given an instruction, a pretrained video model predicts the future scene, and an action decoder maps its internal representation of that future into robot actions.
-Such policies inherit visual and physical priors from video pretraining, rather than learning them from robot demonstrations alone.
+    \ji{
+    With a frozen video DiT, token reduction must occur after a shallow block so that all remaining blocks process fewer future tokens.
+    However, existing token reduction methods face three key limitations in single-pass WAMs.
+    First, visual token merging and pruning methods~\cite{bolya2023tome,li2024vidtome,chen2024fastv,hyun2025sttm} score tokens using feature similarity or shallow self-attention, which reflect appearance redundancy rather than action relevance.
+    Second, action-guided pruning methods~\cite{liu2025vlapruner,pei2026adp,xie2026sparsewam,kim2026cfprune} score tokens via action-decoder cross-attention or robot motion gates, yet the action decoder operates only after all video DiT blocks complete.
+    Such methods therefore require an extra full-resolution pass or dense fallback queries~\cite{liu2025vlapruner,pei2026adp,kim2026cfprune} that offset single-pass speedups, and attention weights do not directly measure action sensitivity to coarsening~\cite{serrano2019attention}.
+    Meanwhile, end-to-end differentiable selectors~\cite{brohan2023rt1,jiang2025lightvla} avoid extra passes during inference, but require updating the visual backbone.
+    Third, pruning-based approaches~\cite{chen2024fastv,yang2025efficientvla,liu2025vlapruner,kim2026cfprune} delete unselected tokens entirely, erasing coarse workspace layout and creating gapped temporal indices incompatible with pre-trained positional priors.
+    }
 
-A video model is built to generate video, so its future representation densely covers every region of every frame, whereas acting depends mainly on the robot, the objects it interacts with~\cite{bendikas2025oatvla}, and the space it will move through. Yet the action decoder receives this full generation-shaped representation, which the video model computes at full resolution for every policy query regardless of what the action uses, accounting for most of the cost of acting. Recent work has asked whether the future must be generated at test time at all~\cite{yuan2026fastwam} or rolled out step by step~\cite{zhang2026rift}, but whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has received far less attention.
+    \ji{
+    To overcome these limitations, we propose \textbf{A}ction-aware \textbf{R}esolution \textbf{RO}uting for \textbf{W}orld action models (\method), a multi-resolution framework for single-pass WAMs with frozen video backbones (\cref{fig:teaser}c).
+    \method inserts a lightweight, instruction-conditioned router after a shallow block of the frozen video DiT to predict per-token action relevance in a single forward pass.
+    During training, the router is supervised solely by the gradient of the action decoder's objective, directly identifying regions where coarsening would perturb the predicted action.
+    Under a fixed token budget, these relevance scores guide two-stage spatiotemporal resolution allocation without discarding any region of the scene.
+    In the spatial stage, \method retains high-scoring patch groups at full resolution and locally averages remaining groups on native grid coordinates, preserving spatial alignment with observed frames.
+    In the temporal stage, \method pools each spatial tubelet into contiguous segments weighted by action relevance and feature dynamics, and assigns consecutive temporal indices for the frozen DiT.
+    Finally, we adapt the flow-matching action decoder~\cite{lipman2023flow} to compressed representations via velocity distillation~\cite{hinton2015distilling} using a low-rank adapter (LoRA)~\cite{hu2022lora}, which merges into the decoder weights after training with zero inference overhead. 
+    }
+
+    \ji{
+    We evaluate \method on two WAM backbones (\texttt{mimic-video}~\cite{pai2025mimicvideo} and \texttt{DiT4DiT}~\cite{ma2026dit4dit}) across LIBERO~\cite{liu2023libero}, SIMPLER-Bridge, and RoboCasa-GR1.
+    On \texttt{mimic-video}, \method at a 20\% future-token budget achieves 90.5\% mean success on LIBERO (vs.\ 91.5\% full-context) with a 1.59$\times$ speedup (440.7\,ms vs.\ 701.7\,ms), and reaches 92.9\% success (1.47$\times$ speedup) at a 30\% budget.
+    Segmentation and distortion analyses confirm that full-resolution groups cover 90\% of task objects, 84\% of the robot arm, and 82\% of the future arm path, outperforming task-agnostic selection criteria.
+    In real-world evaluations across six Franka kitchen tasks, \method improves mean success from 60.0\% to 77.8\% while accelerating policy inference by 1.84$\times$.
+    }
+
+    Our main contributions are summarized as follows:
+    \begin{itemize}
+        \item We propose \method, an action-aware resolution routing framework for frozen single-pass WAMs, supervised directly by action-decoder gradients and paired with velocity-distilled decoder adaptation.
+        \item We introduce a context-preserving spatiotemporal allocator that locally merges low-relevance spatial groups on native coordinates and aggregates dynamics-aware temporal tubelets with consecutive indices.
+        \item We demonstrate consistent speedups and strong control performance across two WAM backbones, three simulation benchmarks, and six real-world robotic manipulation tasks.
+    \end{itemize}
+
+% Large video generation models~\cite{nvidia2025cosmos}, pretrained on massive video data, capture both the appearance of the visual world and how it changes over time. While World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero}leverage this knowledge for robot control by jointly modeling future scene evolution and robot actions: given an instruction, a pretrained video model predicts the future scene, and an action decoder maps its internal representation of that future into robot actions.
+% Such policies inherit visual and physical priors from video pretraining, rather than learning them from robot demonstrations alone.
+
+% A video model is built to generate video, so its future representation densely covers every region of every frame, whereas acting depends mainly on the robot, the objects it interacts with~\cite{bendikas2025oatvla}, and the space it will move through. Yet the action decoder receives this full generation-shaped representation, which the video model computes at full resolution for every policy query regardless of what the action uses, accounting for most of the cost of acting. Recent work has asked whether the future must be generated at test time at all~\cite{yuan2026fastwam} or rolled out step by step~\cite{zhang2026rift}, but whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has received far less attention.
 
 
-Token reduction is a natural way to make this representation more compact, typically by merging visually similar tokens~\cite{bolya2023tome} or discarding low-attention ones~\cite{chen2024fastv}. Existing criteria, however, are image-centric: they measure appearance redundancy or network salience rather than task relevance, they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it. Robot-specific cues such as recent end-effector motion~\cite{pei2026adp} help decide when to reduce tokens, but not which tokens the action relies on. Moreover, discarding tokens removes scene regions entirely, even though the policy may still need a coarse view of them.
+% Token reduction is a natural way to make this representation more compact, typically by merging visually similar tokens~\cite{bolya2023tome} or discarding low-attention ones~\cite{chen2024fastv}. Existing criteria, however, are image-centric: they measure appearance redundancy or network salience rather than task relevance, they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it. Robot-specific cues such as recent end-effector motion~\cite{pei2026adp} help decide when to reduce tokens, but not which tokens the action relies on. Moreover, discarding tokens removes scene regions entirely, even though the policy may still need a coarse view of them.
 
-The action decoder’s attention provides a natural clue for identifying important regions, but it is not an ideal criterion for token reduction. First, it becomes available only after the video model has processed future tokens at full resolution. Existing attention-based methods therefore reuse signals from earlier denoising~\cite{kim2026cfprune,xie2026sparsewam} or control steps~\cite{liu2025vlapruner}, still requiring full-resolution computation to obtain them. More fundamentally, where the decoder attends is not necessarily where visual detail matters for the predicted action~\cite{serrano2019attention}. A region may receive high attention even when representing it more coarsely barely changes the action. Consequently, existing methods either use image-centric criteria that ignore action relevance or rely on attention signals that are both delayed and indirect. We instead learn to allocate computation based on its impact on action prediction, using the decoder’s objective to supervise an early router that preserves fine-grained tokens where needed and coarse representations elsewhere.
+% The action decoder’s attention provides a natural clue for identifying important regions, but it is not an ideal criterion for token reduction. First, it becomes available only after the video model has processed future tokens at full resolution. Existing attention-based methods therefore reuse signals from earlier denoising~\cite{kim2026cfprune,xie2026sparsewam} or control steps~\cite{liu2025vlapruner}, still requiring full-resolution computation to obtain them. More fundamentally, where the decoder attends is not necessarily where visual detail matters for the predicted action~\cite{serrano2019attention}. A region may receive high attention even when representing it more coarsely barely changes the action. Consequently, existing methods either use image-centric criteria that ignore action relevance or rely on attention signals that are both delayed and indirect. We instead learn to allocate computation based on its impact on action prediction, using the decoder’s objective to supervise an early router that preserves fine-grained tokens where needed and coarse representations elsewhere.
 
-Building on this idea, we propose \method, an action-aware router for WAMs (\cref{fig:overview}).
-A lightweight router, placed after an early block of the frozen video model, scores every token of the predicted future by its relevance to the action.
-It is supervised only through the action decoder:
-its training signal is the gradient of the decoder's objective with respect to the scores, and no term depends on appearance or similarity (\cref{sec:router}).
-These scores guide spatial merging and temporal aggregation under a fixed token budget.
-Only the router and a low-rank adapter in the action decoder are trained, and the adapter can be merged into the decoder after training.
-Because the video model and the decoder then process fewer tokens, the same allocation lowers the cost of every policy query.
+% Building on this idea, we propose \method, an action-aware router for WAMs (\cref{fig:overview}).
+% A lightweight router, placed after an early block of the frozen video model, scores every token of the predicted future by its relevance to the action.
+% It is supervised only through the action decoder:
+% its training signal is the gradient of the decoder's objective with respect to the scores, and no term depends on appearance or similarity (\cref{sec:router}).
+% These scores guide spatial merging and temporal aggregation under a fixed token budget.
+% Only the router and a low-rank adapter in the action decoder are trained, and the adapter can be merged into the decoder after training.
+% Because the video model and the decoder then process fewer tokens, the same allocation lowers the cost of every policy query.
 
-On the three LIBERO task suites~\cite{liu2023libero}, \method keeps between 10\% and 30\% of the future tokens. At 20\% (30\% of all tokens) it remains statistically indistinguishable from the policy that reads the full representation, while a policy query takes 440.7\,ms instead of 701.7\,ms ($1.59\times$).
-Further analysis shows that the regions it keeps at full resolution are necessary for the policy and concentrate on the robot and the objects it manipulates.
+% On the three LIBERO task suites~\cite{liu2023libero}, \method keeps between 10\% and 30\% of the future tokens. At 20\% (30\% of all tokens) it remains statistically indistinguishable from the policy that reads the full representation, while a policy query takes 440.7\,ms instead of 701.7\,ms ($1.59\times$).
+% Further analysis shows that the regions it keeps at full resolution are necessary for the policy and concentrate on the robot and the objects it manipulates.
 
-In summary, our contributions are as follows.
-\begin{itemize}
-  \item An action-aware router for WAMs, supervised only through the objective of the action decoder, which identifies the parts of the predicted future that the action relies on.
-  \item A spatial resolution allocation scheme that preserves fine-grained representations in action-critical regions while coarsening less relevant regions, maintaining spatial coverage rather than discarding potentially useful scene information.
-  \item A temporal resolution allocation that gives each region a number of time segments set by its relevance, with consecutive temporal positions.
-\end{itemize}
+% In summary, our contributions are as follows.
+% \begin{itemize}
+%   \item An action-aware router for WAMs, supervised only through the objective of the action decoder, which identifies the parts of the predicted future that the action relies on.
+%   \item A spatial resolution allocation scheme that preserves fine-grained representations in action-critical regions while coarsening less relevant regions, maintaining spatial coverage rather than discarding potentially useful scene information.
+%   \item A temporal resolution allocation that gives each region a number of time segments set by its relevance, with consecutive temporal positions.
+% \end{itemize}
 
