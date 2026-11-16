@@ -218,15 +218,10 @@ On DiT4DiT, \method has the highest mean success rate at every budget; the gap i
   \centering
   \includegraphics[width=\linewidth]{fig5_action_relevance.pdf}
   \caption{\textbf{Ranking reversal and offline action distortion.}
-  (a) Deployed and inverted full-resolution groups at the same budget.
-  % 2026-11-12: panel (b) takes its values from tables/ablations.tex (Table 3), which is authoritative.
-  (b) Spatial success over 500 paired episodes, with separately trained low-rank adapters (solid) or without adapters (hatched); bars show Wilson 95\% confidence intervals.
-  Values follow \mainref{tab:ablations}{Table~3}, which does not list the inverted allocation without adapters; brackets give the difference between the deployed and inverted allocations with adapters.
-  (c) Spatial insertion curves over 200 windows from 50 held-out episodes: the top-$n$ groups retain full resolution, the rest are merged, and all 14 future frames remain.
-  Distortion is the normalized mean squared difference from the native decoder's first five actions under full context, geometrically averaged over windows.
-  The dashed line is the full-resolution numerical floor.
-  (d) Router-to-criterion distortion ratios, averaged over six group counts in log space, with episode-level Student's $t$ 95\% intervals.
-  The five criteria are similarity, motion, block-2 self-attention, observed-frame edge energy and random selection.}
+  (a) Deployed and reversed spatial allocations.
+  (b) LIBERO-Spatial success with retrained LoRA (solid) or without LoRA (hatched); error bars are Wilson 95\% intervals.
+  (c) Insertion curves; the dashed line marks the full-resolution numerical floor.
+  (d) Router-to-criterion distortion ratios with episode-level Student's $t$ 95\% intervals.}
   \label{fig:supp_relevance}
 \end{figure*}
 
@@ -258,15 +253,16 @@ The block-6 configuration uses the router trained on block-2 features and one ad
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{fig4_main_results.pdf}
-  \caption{\textbf{Internal operator comparisons.}
-  Ours (blue), token deletion and tube deletion use the same router and matched future-token budgets, each with its own trained low-rank adapter.
-  The 2,400 observation tokens are always retained.
-  Black lines and grey bands show native; error bars and bands are Wilson 95\% confidence intervals over 500 paired episodes.}
+  \caption{\textbf{Merging and deletion at matched future-token budgets.}
+  Success rates over 500 paired episodes per suite.
+  Error bars and the grey Native bands are Wilson 95\% confidence intervals.}
   \label{fig:supp_operator_ablation}
 \end{figure*}
 
-\Cref{fig:supp_operator_ablation} gives the complete curves underlying the compact operator-comparison table in the main paper.
-The confidence intervals are retained here; the main table reports the same success counts and the difference from the better deletion arm.
+\Cref{fig:supp_operator_ablation} compares spatial-temporal allocation with token and tube deletion using the same frozen router and matched future-token budgets.
+Each variant has its own trained decoder LoRA, and all 2,400 observation tokens are retained.
+The success counts match \mainref{tab:operator_comparison}{Table~5}; the curves additionally show uncertainty.
+The allocation advantage is largest on Spatial and smaller on Object and Goal; at the 30\% Goal budget, tube deletion has the higher point estimate, with no significant paired difference from ours ($p=0.48$).
 
 \subsection{Joint Router Training}
 \label{sec:supp_joint_router}
@@ -305,7 +301,25 @@ It demonstrates simultaneous spatial and temporal allocation in this evaluated s
 % The stand-alone forest plot fig8_criteria_forest.pdf shows the same data as panel (d) above, so it is not included
 % here. It remains a candidate for the main paper; its figure environment is in figures/new_figures.tex.
 
-\Cref{fig:supp_relevance} gives the ranking-reversal experiment and the offline comparison of scoring criteria that the main paper summarizes.
+\paragraph{Ranking reversal.}
+\Cref{fig:supp_relevance}(a,b) compares the deployed and reversed allocations at matched future-token budgets on LIBERO-Spatial.
+Each adapted variant has its own retrained LoRA; hatched bars use no decoder LoRA.
+Success is evaluated over 500 paired episodes.
+Reversal lowers adapted success by 42.4 and 28.0 percentage points at the 10\% and 20\% budgets, respectively, as indicated by the brackets in panel (b) and the corresponding rows of \mainref{tab:ablations}{Table~3}.
+
+\paragraph{Offline spatial coarsening.}
+\Cref{fig:supp_relevance}(c,d) evaluates scoring criteria over 200 windows from 50 held-out LIBERO-Spatial episodes.
+For each criterion, the top-$n$ spatial groups retain full resolution and the remaining groups are merged; all 14 future frames remain.
+Distortion is the normalized mean squared difference from the Native decoder's first five actions under full context, geometrically averaged over windows.
+Panel (c) varies $n$; panel (d) averages router-to-criterion distortion ratios over six group counts in log space.
+Ratios below one indicate lower distortion with the router than with similarity, motion, block-2 self-attention, observed-frame edge energy or random selection.
+
+\paragraph{Offline criteria.}
+The pre-registered offline family also included full-context decoder cross-attention, which has approximately 7\% lower distortion than the router ($p=0.0078$ after correction).
+It requires completing the uncompressed video/decoder forward pass and therefore is not an equal-cost block-2 scoring substitute.
+Claims of superiority apply only to the five task-agnostic criteria shown in the figure.
+Similarity ranking in this analysis is not a complete ToMe implementation.
+The matched offline coverage-versus-resolution comparison does not distinguish the two allocations after correction, so it is not used to attribute the closed-loop operator gap to coarse coverage alone.
 
 \paragraph{Pixel coverage across suites.}
 
@@ -327,24 +341,19 @@ On Goal, the corresponding task-object, robot-arm, future-path and background sh
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{fig9_allocation_gallery.pdf}
-  \caption{\textbf{Full-resolution groups across tasks.}
-  Five tasks from each of LIBERO-Spatial, LIBERO-Object and LIBERO-Goal at the 20\% future-token budget, selected for the highest equally weighted mean coverage of task-object and robot-arm pixels by full-resolution groups.
-  Each panel uses the first recorded episode and the query nearest 12.
-  Blue marks the 100 groups kept at full resolution and grey the 200 merged groups; outlines are simulator masks of task objects (green) and the robot arm (black).
-  Spatial labels give the location of the bowl to pick up.
-  These selected examples illustrate spatial overlap; they do not estimate average coverage.}
+  \caption{\textbf{Full-resolution groups across LIBERO tasks.}
+  Coverage-ranked examples at the 20\% future-token budget.
+  Blue/grey: the 100 full-resolution/200 merged groups.
+  Green/black outlines: simulator masks of task objects/the robot arm.}
   \label{fig:supp_allocation_gallery}
 \end{figure*}
 
-\paragraph{Offline criteria.}
-The pre-registered offline family also included full-context decoder cross-attention, which has approximately 7\% lower distortion than the router ($p=0.0078$ after correction).
-It requires completing the uncompressed video/decoder forward pass and therefore is not an equal-cost block-2 scoring substitute.
-Claims of superiority apply only to the five task-agnostic criteria shown in the figure.
-Similarity ranking in this analysis is not a complete ToMe implementation.
-The matched offline coverage-versus-resolution comparison does not distinguish the two allocations after correction, so it is not used to attribute the closed-loop operator gap to coarse coverage alone.
-
 \paragraph{Allocation across tasks.}
-Across all ten task candidates in each suite, before selection, the mean pairwise Jaccard index of the full-resolution sets is 0.94 on Spatial, 0.97 on Object and 0.95 on Goal.
+\Cref{fig:supp_allocation_gallery} shows five tasks per suite at the 20\% future-token budget.
+Tasks are selected by the highest equally weighted mean coverage of task-object and robot-arm pixels by full-resolution groups.
+Each panel uses the first recorded episode and the query nearest 12; Spatial labels identify the location of the bowl to pick up.
+These selected examples illustrate spatial overlap rather than estimate average coverage.
+Across all ten task candidates per suite before selection, the mean pairwise Jaccard index of the full-resolution sets is 0.94 on Spatial, 0.97 on Object and 0.95 on Goal, indicating substantial consistency across tasks.
 
 % =============================================================================================
 \section{Absolute Cross-Policy Success Rates}
@@ -356,13 +365,15 @@ Across all ten task candidates in each suite, before selection, the mean pairwis
   \centering
   \includegraphics[width=\linewidth]{fig_bubble_params.pdf}
   \caption{\textbf{Performance versus model size on LIBERO.}
-  Points show three-suite mean success; the horizontal axis is total parameter count and circle area represents backbone size.
-  Our points use 20\% of mimic-video's future tokens and 589/784 DiT4DiT tokens.
-  The plot uses a selected set of policies and omits frozen instruction encoders from parameter totals; \cref{tab:absolute_success} includes the omitted SmolVLA and Cosmos Policy results and both native evaluations.
-  This figure does not establish a matched efficiency comparison across architectures.}
+  Points show mean Spatial/Object/Goal success against total parameter count, excluding frozen instruction encoders.
+  Circle area represents backbone parameter count.}
   \label{fig:supp_bubble}
 \end{figure*}
 
-The main claims concern changes relative to each policy's own native backbone.
-For $\pi_0$ and $\pi_0$-FAST, the listed numbers are the released-model results tabulated by OpenVLA-OFT; $\pi_{0.5}$ uses the OpenPI release numbers reproduced in the LeRobot documentation.
-The three-suite means are recomputed, rather than copied from four-suite LIBERO averages.
+\Cref{tab:absolute_success} reports absolute success rates for context, and \cref{fig:supp_bubble} visualizes a selected subset against parameter count.
+Three-suite means are recomputed over Spatial, Object and Goal; LIBERO-Long is omitted throughout.
+Our points use the 20\% future-token budget on mimic-video and 589 of 784 context tokens on DiT4DiT, repeating the corresponding results in \mainref{tab:main_results}{Table~1}.
+The table additionally includes both Native evaluations, SmolVLA and Cosmos Policy, which are omitted from the plot.
+For $\pi_0$ and $\pi_0$-FAST, results are the released-model values tabulated by OpenVLA-OFT; $\pi_{0.5}$ uses the OpenPI release numbers reproduced in the LeRobot documentation.
+Source links identify the result tables or releases, including secondary reporting where applicable.
+Training, sensing and evaluation protocols differ across policies, so this comparison is descriptive; our efficiency claims concern changes relative to each policy's own Native backbone.

@@ -1,11 +1,10 @@
 % Formal deployment48677499; exact artifact hash in main_results_dit4dit_sources.json.
 \begin{table*}[t]
   \centering
-  \caption{\textbf{DiT4DiT deployment optimizations on an exclusive H100.}
-  Latencies are synchronized wall-clock medians in milliseconds over 32 calls (eight interleaved rounds); all rows include VAE and cached-text retrieval.
-  Fold is actual FP32 weight merging; AG and VG denote action and video CUDA graphs.
-  Native receives the same common optimizations and both graphs.
-  TFLOPs exclude the common 0.672-TFLOP VAE; the 367-token row is a diagnostic point outside the main table.}
+  \caption{\textbf{DiT4DiT deployment optimizations.}
+  Median latency (ms) includes VAE and cached-text retrieval; TFLOPs exclude VAE.
+  Fold: FP32 LoRA weight merging; AG/VG: action/video CUDA graphs.
+  The 367-token row is diagnostic.}
   \label{tab:dit4dit_deployment}
   \footnotesize
   \setlength{\tabcolsep}{4pt}
