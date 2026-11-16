@@ -12,7 +12,7 @@
   \includegraphics[width=\textwidth]{pipelinev2} % 根据需要调整宽度，通常用 \textwidth 或 0.9\textwidth
   \caption{ \ziquancomment{you may want to show this in the introduction}\textbf{Overview of \method.}
   After an early block of the frozen video DiT, an action-aware router scores the future tokens.
-  Spatially, the highest-scoring $2{\times}2$ blocks keep full resolution and every other block is merged into a single tube;
+  Spatially, the highest-scoring blocks keep full resolution and other blocks are merged into a single tube;
   temporally, each tube is pooled into a number of segments set by its relevance, and the segments are re-indexed contiguously in time.
   The remaining blocks run on the compact sequence, whose output conditions the action decoder.
   \Cref{fig:allocation_detail} details the two allocation steps.
