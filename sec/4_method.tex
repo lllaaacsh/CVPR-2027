@@ -9,15 +9,11 @@
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=\textwidth]{pipelinev2} % 根据需要调整宽度，通常用 \textwidth 或 0.9\textwidth
-  \caption{ \ziquancomment{you may want to show this in the introduction}\textbf{Overview of \method.}
-  After an early block of the frozen video DiT, an action-aware router scores the future tokens.
-  Spatially, the highest-scoring blocks keep full resolution and other blocks are merged into a single tube;
-  temporally, each tube is pooled into a number of segments set by its relevance, and the segments are re-indexed contiguously in time.
-  The remaining blocks run on the compact sequence, whose output conditions the action decoder.
-  \Cref{fig:allocation_detail} details the two allocation steps.
-}
-  \label{fig:overview}
+  \includegraphics[width=\textwidth]{pipelinev2}
+   \caption{\textbf{Overview of \method.}
+An early action-aware router allocates spatial and temporal resolution
+in the frozen video backbone, producing compact features for the action decoder.}
+   \label{fig:overview}
 \end{figure*}
 
 \method decides at which spatial and temporal resolution the video model computes each region of the predicted future, using a relevance score learned from the action decoder (\cref{fig:overview}).
@@ -91,10 +87,11 @@ $\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b 
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.9\linewidth]{temporal_spatial_detail.pdf}
-  \caption{\textbf{Spatial and temporal allocation.}
-  (a) $2{\times}2$ groups with high router scores keep their four tokens in every frame (A); every other group is averaged into one token per frame (B), so no region is removed.
-  (b) Tubes with a higher priority $u_p$ (\cref{eq:priority}) are split into more contiguous segments, each averaged into one token; shown are the three levels of the 20\% budget, $K=7$, 5 and 3. Segment boundaries are schematic.}
-  \label{fig:allocation_detail}
+\caption{\textbf{Spatial and temporal allocation.}
+(a) Full-resolution and merged $2{\times}2$ spatial groups.
+(b) Temporal segmentations at the 20\% future-token budget.
+Segment boundaries are schematic.}
+\label{fig:allocation_detail}
 \end{figure}
 
 A region may tolerate spatial coarsening while still providing useful information for control, such as the approximate location of a nearby object.
@@ -146,11 +143,10 @@ Every tube retains at least one token, and pooling incorporates contributions fr
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.9\linewidth]{contiguous_t.pdf}
-  \caption{\textbf{Temporal positions after segment pooling.}
-  At the 20\% budget, a top-priority tube is split into seven segments of two frames each.
-  Source-t assigns their pooled tokens the representative source-frame positions $(0,2,\dots,12)$, whereas contiguous-t assigns the consecutive positions $(0,1,\dots,6)$.
-  }
-  \label{fig:temporal_positions}
+\caption{\textbf{Temporal positions after segment pooling.}
+Source-frame indices (source-t) and consecutive segment indices
+(contiguous-t) for the same pooled tube at the 20\% future-token budget.}
+\label{fig:temporal_positions}
 \end{figure}
 
 The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers, so the temporal positions stay consecutive as in the original sequence.

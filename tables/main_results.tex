@@ -1,16 +1,14 @@
 
 \begin{table*}[t]
   \centering
-  \caption{\textbf{Accuracy and inference cost on two WAM backbones.}
-  S/O/G: LIBERO-Spatial/Object/Goal; Avg.: mean success rate (\%).
-  Context targets count future tokens in (a), total tokens in (b).
-  $*$: measured mean context including dense calls, so these rows are not equal-token.
-  $\dagger$: point estimate above Native; bold: best available per budget.
-  Summary boxes compare with Native using the displayed values: Avg. SR changes in percentage points and latency reductions in percent.
-  External methods use decoder LoRA; CF-Prune's cost includes its extra dense probe.
-  TFLOPs include VAE/text in (a) and exclude them in (b).
-}
-  \label{tab:main_results}
+\caption{\textbf{Accuracy and inference cost on two WAM backbones.}
+S/O/G: LIBERO-Spatial/Object/Goal; Avg.: mean success rate (\%).
+Context targets count future tokens in (a) and total tokens in (b).
+$*$: mean context including dense calls, so token counts are unmatched.
+$\dagger$: point estimate above Native; bold: best per budget;
+lavender: \method.
+TFLOPs include VAE/text in (a) and exclude them in (b).}
+\label{tab:main_results}
   \renewcommand{\TODO}[1]{{\color{red}--}}
 
   % Layout follows the author-supplied reference; table entries remain editable.

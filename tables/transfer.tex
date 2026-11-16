@@ -3,11 +3,12 @@
 % Bridge 11,400: user-confirmed separate-seed/machine run, 2026-11-04; paired CI pending.
 % Float-free component: paired with Table 3 in transfer_and_ablations.tex.
 \begingroup
-  \caption{\textbf{Transfer across backbones and benchmarks.}
-  Token reduction is relative to Native; success rates are percentages, and $\Delta$ is ours minus Native in points with paired 95\% CIs.
-  Bridge uses 96 episodes and spatial/temporal allocation; RoboCasa-GR1 uses 1,200 paired episodes, with spatial/temporal allocation at 466 tokens and temporal allocation at 490/539.
-  GR1 latency remains unmeasured; $\dagger$ follows Table~\ref{tab:main_results}.}
-  \label{tab:transfer}
+\caption{\textbf{Transfer across backbones and benchmarks.}
+Success rates are percentages; token removal is relative to Native.
+$\Delta$ is ours minus Native in percentage points,
+with paired 95\% confidence intervals.
+$\dagger$: point estimate above Native.}
+\label{tab:transfer}
   \footnotesize
   \setlength{\tabcolsep}{3pt}
   \renewcommand{\arraystretch}{1.04}
