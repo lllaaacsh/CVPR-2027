@@ -7,19 +7,18 @@
 % 待核对：router 结构与伪标签配方来自已有 KnowledgeRouter 实现，若出自已发表工作需引用。
 % ---------------------------------------------------------------------------
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\linewidth]{pipelinev2}
+  \includegraphics[width=\textwidth]{pipelinev2} % 根据需要调整宽度，通常用 \textwidth 或 0.9\textwidth
   \caption{ \ziquancomment{you may want to show this in the introduction}\textbf{Overview of \method.}
   After an early block of the frozen video DiT, an action-aware router scores the future tokens.
   Spatially, the highest-scoring $2{\times}2$ blocks keep full resolution and every other block is merged into a single tube;
   temporally, each tube is pooled into a number of segments set by its relevance, and the segments are re-indexed contiguously in time.
   The remaining blocks run on the compact sequence, whose output conditions the action decoder.
   \Cref{fig:allocation_detail} details the two allocation steps.
-  % \cj{XX I'd take out (a) and (b) as a separate figure for each subsection XX}
 }
   \label{fig:overview}
-\end{figure}
+\end{figure*}
 
 \method decides at which spatial and temporal resolution the video model computes each region of the predicted future, using a relevance score learned from the action decoder (\cref{fig:overview}).
 

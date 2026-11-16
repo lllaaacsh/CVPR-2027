@@ -1,32 +1,17 @@
 \section{Introduction}
 \label{sec:intro}
 
-Large video generation models~\cite{nvidia2025cosmos}, trained on vast amounts of video, capture how the visual world looks and how it changes over time. World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero} bring this knowledge to robot control by modeling the future of the scene together with the robot's actions:
-a pretrained video model predicts how the scene will evolve under an instruction, and the robot's actions are derived from this predicted future,
-typically by an action decoder that reads the internal representation of the video model.
+Large video generation models~\cite{nvidia2025cosmos}, pretrained on massive video data, capture both the appearance of the visual world and how it changes over time. While World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero}leverage this knowledge for robot control by jointly modeling future scene evolution and robot actions: given an instruction, a pretrained video model predicts the future scene, and an action decoder maps its internal representation of that future into robot actions.
 Such policies inherit visual and physical priors from video pretraining, rather than learning them from robot demonstrations alone.
 
-A video model, however, is built to generate video.
-Its representation of the future covers every region of every frame on a dense, uniform grid, because generation must render the entire scene.
-Acting in the scene asks for something narrower: the next actions depend mostly on the robot, the objects it interacts with~\cite{bendikas2025oatvla}, and the space it is about to move through. Yet the action decoder receives the full, generation-shaped representation, and the video model computes all of it at full resolution at every policy query, regardless of which parts the action actually uses; this computation accounts for most of the cost of acting.
+A video model is built to generate video, so its future representation densely covers every region of every frame, whereas acting depends mainly on the robot, the objects it interacts with~\cite{bendikas2025oatvla}, and the space it will move through. Yet the action decoder receives this full generation-shaped representation, which the video model computes at full resolution for every policy query regardless of what the action uses, accounting for most of the cost of acting. Recent work has asked whether the future must be generated at test time at all~\cite{yuan2026fastwam} or rolled out step by step~\cite{zhang2026rift}, but whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has received far less attention.
 
-Recent work has asked whether the future must be generated at test time at all~\cite{yuan2026fastwam} or rolled out step by step~\cite{zhang2026rift}, but whether a policy needs the predicted future at the resolution at which it would be generated, and which parts of it the action actually relies on, has received far less attention.
 
-% \input{figures/teaser}
+Token reduction is a natural way to make this representation more compact, typically by merging visually similar tokens~\cite{bolya2023tome} or discarding low-attention ones~\cite{chen2024fastv}. Existing criteria, however, are image-centric: they measure appearance redundancy or network salience rather than task relevance, they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it. Robot-specific cues such as recent end-effector motion~\cite{pei2026adp} help decide when to reduce tokens, but not which tokens the action relies on. Moreover, discarding tokens removes scene regions entirely, even though the policy may still need a coarse view of them.
 
-A natural tool for making such a representation more compact is token reduction, which merges tokens that look alike~\cite{bolya2023tome} or discards tokens that receive little attention~\cite{chen2024fastv}.
-These criteria, however, describe the image rather than the task: they measure whether a token is redundant in appearance or salient to the network, not whether the action depends on it.
-Cues specific to robots, such as recent end-effector motion~\cite{pei2026adp}, help decide when to reduce tokens but not which tokens the action depends on.
-However, discarding tokens also removes parts of the scene altogether, even though a policy may still need a coarse view of them. \ziquancomment{the first four paragraphs are too verbose and redundant, just describe the background using 2 sentences then introduce the status quo of token reduction.}
+The action decoder’s attention provides a natural clue for identifying important regions, but it is not an ideal criterion for token reduction. First, it becomes available only after the video model has processed future tokens at full resolution. Existing attention-based methods therefore reuse signals from earlier denoising~\cite{kim2026cfprune,xie2026sparsewam} or control steps~\cite{liu2025vlapruner}, still requiring full-resolution computation to obtain them. More fundamentally, where the decoder attends is not necessarily where visual detail matters for the predicted action~\cite{serrano2019attention}. A region may receive high attention even when representing it more coarsely barely changes the action. Consequently, existing methods either use image-centric criteria that ignore action relevance or rely on attention signals that are both delayed and indirect. We instead learn to allocate computation based on its impact on action prediction, using the decoder’s objective to supervise an early router that preserves fine-grained tokens where needed and coarse representations elsewhere.
 
-The action decoder's attention over the predicted future directly shows which regions it reads.
-\ziquancomment{the writing following is not quite intuitive to me, didn't quite get what it means}As a basis for deciding where the video model computes, however, it has two limitations.
-First, it arrives too late to guide the pass that produces it: the decoder attends to features that the video model produces late in its forward pass, so attention exists only after every token of the future has been computed at full resolution.
-Methods that select tokens by attention therefore take it from an earlier denoising step~\cite{kim2026cfprune,xie2026sparsewam} or earlier control steps~\cite{liu2025vlapruner}, and still pay for at least one full-resolution pass to obtain it.
-Second, attention shows where the decoder looks, which need not coincide with how much its prediction would change if a region were represented more coarsely~\cite{serrano2019attention}, and it is the latter that decides whether a region can be coarsened.
-The decoder's objective can instead supervise an early router to identify where coarsening least affects the predicted action. \ziquancomment{My understanding is that your contribution is you want to learn the token selection criterion end-to-end so that the resulting tokens are sufficient for downstream action decoder? the insight described in this paragraph is too opaque and hard to understand. and the contrast between your work and existing ones is not straightforward either.}
-
-Building on this idea \ziquancomment{which idea?}, we propose \method, an action-aware router for WAMs (\cref{fig:overview}).
+Building on this idea, we propose \method, an action-aware router for WAMs (\cref{fig:overview}).
 A lightweight router, placed after an early block of the frozen video model, scores every token of the predicted future by its relevance to the action.
 It is supervised only through the action decoder:
 its training signal is the gradient of the decoder's objective with respect to the scores, and no term depends on appearance or similarity (\cref{sec:router}).
@@ -40,7 +25,7 @@ Further analysis shows that the regions it keeps at full resolution are necessar
 In summary, our contributions are as follows.
 \begin{itemize}
   \item An action-aware router for WAMs, supervised only through the objective of the action decoder, which identifies the parts of the predicted future that the action relies on.
-  \item A spatial resolution allocation that keeps the most relevant regions at full resolution and merges the others instead of removing them, keeping every token at its original position. \ziquancomment{is this counted as a contribution? and it is unclear what this contribution is compared with existing work}
+  \item A spatial resolution allocation scheme that preserves fine-grained representations in action-critical regions while coarsening less relevant regions, maintaining spatial coverage rather than discarding potentially useful scene information.
   \item A temporal resolution allocation that gives each region a number of time segments set by its relevance, with consecutive temporal positions.
 \end{itemize}
 
