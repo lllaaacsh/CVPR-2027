@@ -40,18 +40,14 @@ Institution2\\
 %%%%%%%%% TITLE (+ OPTIONAL FULL-WIDTH TEASER)
 % Default: plain title. For a full-width teaser under the title, comment out
 % \maketitle and uncomment the block below (put the image in figures/).
-\maketitle
-% \twocolumn[{%
-%   \renewcommand\twocolumn[1][]{#1}%
-%   \maketitle
-%   \begin{center}
-%     \centering
-%     \includegraphics[width=\linewidth]{teaser}
-%     \captionof{figure}{Teaser caption.}
-%     \label{fig:teaser}
-%   \end{center}%
-%   \vspace{1em}
-% }]
+
+\twocolumn[{%
+  \renewcommand\twocolumn[1][]{#1}%
+  \maketitle
+  \begin{center}
+    \input{figures/teaser}
+  \end{center}%
+}]
 
 %%%%%%%%% MAIN PAPER (8 pages, references excluded)
 \input{sec/0_abstract}

@@ -24,9 +24,9 @@ in the frozen video backbone, producing compact features for the action decoder.
 \subsection{Problem Formulation}
 \label{sec:problem}
 
-Generally in WAM, Video backbones process dense future representations at uniform spatiotemporal resolution, although their relevance to action prediction can vary across regions and time intervals.
+In WAM, video backbones process dense future representations at uniform spatiotemporal resolution, although their relevance to action prediction can vary across regions and time intervals.
 At every policy query, the video model receives an instruction, observed frames, and noisy future latents.
-Let $Z$ denote the future tokens after an early block, and $f(Z)$ the action predicted by the remaining backbone and decoder.
+Let $Z$ denote the future tokens after a shallow block of the video backbone, and $f(Z)$ the action predicted by the remaining backbone and decoder.
 We seek an allocation $A$ that represents $Z$ with a fixed budget of $N$ future tokens while minimizing deviation from the full-context action prediction:
 \begin{equation}
   \min_{A,\,\phi}\ \mathbb{E}\,\big\| f_\phi\big(A(Z)\big) - f(Z) \big\|^2
@@ -34,34 +34,34 @@ We seek an allocation $A$ that represents $Z$ with a fixed budget of $N$ future 
   \label{eq:problem}
 \end{equation}
 where $|A(Z)|$ is the number of tokens after allocation, $N\leq THW$ is the retained future-token budget, and $f_\phi$ augments $f$ with a low-rank decoder adapter.
-The pretrained backbone and decoder weights remain frozen.
-The observation tokens are always kept, and the video model and the decoder stay frozen.
-$A$ may only average neighboring tokens, in space or over consecutive frames; it never removes a region, so every part of the scene remains represented at some resolution.
+The pretrained video backbone and decoder remain frozen, and the observation tokens are always kept.
+$A$ only averages neighboring tokens spatially or over consecutive frames, and hence every part of the scene remains represented at different resolutions.
 
 \subsection{Action-Aware Router}
 \label{sec:router}
-Early resolution allocation requires action-relevance estimates before the full video forward pass is complete.
-We introduce a lightweight router supervised by the action decoder to provide this signal.
-Given early future features, each token attends to the instruction through one cross-attention layer, followed by an MLP and sigmoid that output $s_{t,p}\in[0,1]$.
-Here $t$ and $p$ index future time and spatial position.(\cref{sec:spatial,sec:temporal}).
+Resolution allocation is performed after a shallow block of the frozen video backbone and thus requires action-relevance estimates before the full video forward pass is processed.
+We introduce a lightweight router supervised by the action decoder to provide these estimates.
+Given early future tokens, each token attends to the instruction through one cross-attention layer, followed by an MLP and sigmoid that output $s_{t,p}\in[0,1]$.
+Here $t$ and $p$ are indices of future time steps and spatial positions, respectively.
+% (\cref{sec:spatial,sec:temporal}).
 
-The router is trained on the demonstrations of the target task suite, the same data used to train the policy.
+The router is trained on the demonstrations of the target task suite, i.e. the same data used to train the policy.
 Video features are computed as at inference, with the future frames at the inference noise level and the compression applied,
 so the router learns on the inputs it will see when deployed.
-The router is trained together with a LoRA adapter~\cite{hu2022lora} on the cross-attention layers of the action decoder, which lets the decoder adjust to the compressed input.
+The router is jointly trained with a LoRA adapter~\cite{hu2022lora} on the cross-attention layers of the action decoder, which allows the decoder adjust to the compressed input.
 
-The action decoder is a flow-matching model~\cite{lipman2023flow} that predicts a velocity for a noised action chunk.
-The adapter is trained on the compressed context to match the output of the same decoder evaluated on the full context, with a small ground-truth term:
+We use a flow matching policy~\cite{lipman2023flow} as the action decoder, which predicts a velocity for a noised action chunk.
+The adapter is trained on the compressed context to match the output of the same decoder evaluated on the full context, with a lightly weighted ground-truth loss:
 \begin{equation}
   \mathcal{L}_{\text{task}} =
   \underbrace{\norm{v - v_{\text{full}}}^2}_{\mathcal{L}_{\text{distill}}}
-  + \, 0.02 \underbrace{\norm{v - v_{\text{gt}}}^2}_{\mathcal{L}_{\text{GT}}} ,
+  + \, \lambda_{\text{GT}} \underbrace{\norm{v - v_{\text{gt}}}^2}_{\mathcal{L}_{\text{GT}}} ,
   \label{eq:task_loss}
 \end{equation}
 where $v$ is the velocity predicted by the adapted decoder from the compressed context,
 $v_{\text{full}}$ is the velocity predicted by the original decoder from the full context for the same noised action and robot state,
-and $v_{\text{gt}}$ is the ground-truth velocity.
-$\mathcal{L}_{\text{distill}}$ makes the adapted decoder reproduce the original decoder's full-context prediction, and $\mathcal{L}_{\text{GT}}$ weakly anchors it to the demonstrated ground-truth velocity.
+and $v_{\text{gt}}$ is the ground-truth velocity. We set $\lambda_{\text{GT}}=0.02$ to keep the ground-truth supervision weak relative to distillation.
+$\mathcal{L}_{\text{distill}}$ makes the adapted decoder reproduce the original decoder's full-context prediction, while $\mathcal{L}_{\text{GT}}$ anchors it to the demonstrated ground-truth velocity.
 
 The router learns which groups of tokens (\cref{sec:spatial}) should keep full resolution under a fixed token budget.
 Its supervision is the gradient saliency of the decoder objective with respect to the group scores:
@@ -94,8 +94,8 @@ Segment boundaries are schematic.}
 \label{fig:allocation_detail}
 \end{figure}
 
-A region may tolerate spatial coarsening while still providing useful information for control, such as the approximate location of a nearby object.
-Deleting that region also removes its contribution to this spatial context.
+A region may tolerate spatial coarsening while still providing useful context for control, such as the approximate location of a nearby object.
+Discarding the region's tokens also removes its spatial context.
 We therefore retain high-relevance regions at full resolution and locally average the remaining regions, preserving a coarse representation of every region.
 A tube contains the $T$ tokens at one spatial position.
 We partition the spatial grid into $G=HW/4$ non-overlapping $2\times2$ groups.
@@ -123,15 +123,14 @@ the observation frames stay on the original grid, so a future tube at position $
 \subsection{Temporal Resolution Allocation}
 \label{sec:temporal}
 
-
-Since redundancy exists along both spatial and temporal dimensions, spatial allocation alone cannot fully fix the gap. To further reduce temporal redundancy, we divide each tube into \(K_p\) contiguous segments based on action relevance and feature variation, and average the tokens within each segment.
+Spatial resolution allocation reduces redundancy within each frame, while substantial redundancy remains across future frames. To further reduce temporal redundancy, we divide each tube into \(K_p\) contiguous segments based on action relevance and feature variation, and average the tokens within each segment.
 
 Each tube $p$ receives a priority
 \begin{equation}
   u_p = S_{g(p)} \cdot \Delta_p ,
   \label{eq:priority}
 \end{equation}
-where $S_{g(p)}$ is the score (\cref{eq:group_score}) of the group $g(p)$ that contains position $p$,
+where $S_{g(p)}$ is the score of the group $g(p)$ that contains position $p$,
 and $\Delta_p$ is the average change of the features of tube $p$ between consecutive frames, measured as one minus their cosine similarity.
 A tube thus ranks high when it is relevant to the action and its features change across frames.
 We give the most segments to the tubes with the highest priority, with a fixed number of tubes at each level (\cref{fig:allocation_detail}b).

@@ -5,7 +5,7 @@
 S/O/G: LIBERO-Spatial/Object/Goal; Avg.: mean success rate (\%).
 Context targets count future tokens in (a) and total tokens in (b).
 $*$: mean context including dense calls, so token counts are unmatched.
-$\dagger$: point estimate above Native \cj{ xx Native $\rightarrow$ Baseline (or Vanilla?)  xx}; bold: best per budget;
+$\dagger$: point estimate above Full-context; bold: best per budget;
 lavender: \method.
 TFLOPs include VAE/text in (a) and exclude them in (b).}
 \label{tab:main_results}
@@ -63,8 +63,8 @@ TFLOPs include VAE/text in (a) and exclude them in (b).}
       \toprule
       Method & Tokens & \mbox{TFLOPs$\downarrow$} & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & \mbox{Avg.$\uparrow$} \\
       \midrule
-      Native & 19,200 & 98.0 & 701.7 & 90.4 & 94.0 & 90.2 & 91.5 \\
-      Native + LoRA & 19,200 & 98.0 & 704.0 & 91.6$\dagger$ & 93.2 & 89.8 & 91.5 \\
+      Full-context & 19,200 & 98.0 & 701.7 & 90.4 & 94.0 & 90.2 & 91.5 \\
+      \mbox{Full-context + LoRA} & 19,200 & 98.0 & 704.0 & 91.6$\dagger$ & 93.2 & 89.8 & 91.5 \\
       \midrule
       \rowcolor{ArrowBudget}[0pt][0pt]
       \multicolumn{8}{@{}p{\linewidth}@{}}{\hspace*{3pt}{\rmfamily\itshape 10\% context}} \\
@@ -136,7 +136,7 @@ TFLOPs include VAE/text in (a) and exclude them in (b).}
       Selected regions are outlined in gray for the baselines
       and purple for ARROW; unselected regions are faded.
       The maps compare spatial selection components at a matched
-      group budget, rather than complete adaptive execution policies.
+      group budget, rather than complete adaptive execution policies. \cj{ xx leave one row and move other rows to supp (and then expand in supp) xx}
     }
     \label{fig:qualitative_selection}
   \end{minipage}

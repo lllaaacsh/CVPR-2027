@@ -1,8 +1,6 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-\method uses supervision from the action decoder to allocate spatiotemporal resolution in WAMs.
-Its router guides spatial merging and temporal aggregation, while velocity distillation adapts the decoder to compressed context with the video backbone frozen.
-Experiments on two WAM backbones show lower inference cost, including a $1.59\times$ speedup on mimic-video at 20\% future context.
-On six real-robot tasks, \method achieves 77.8\% success with a $1.84\times$ speedup over Native.
-Real-robot evaluation remains limited to one platform; extending the approach to longer-horizon tasks and additional platforms is future work.
+We introduced ARROW, a framework that reduces the cost of world action models by allocating spatiotemporal resolution according to action relevance. An early router learns from the action decoder to guide spatial merging and temporal aggregation while retaining scene coverage. Velocity distillation adapts the decoder to the compressed context with the video backbone frozen. Experiments on two WAM backbones demonstrate lower inference cost, including a \(1.59\times\) speedup on mimic-video with 20\% of its future tokens. On six real-robot tasks, ARROW achieves 77.8\% success and a \(1.84\times\) speedup over the native policy.
+
+Our current formulation uses a predefined total token budget, and real-robot evaluation is limited to one platform. Future work will explore scene-dependent budgets and broader validation on longer-horizon tasks and additional platforms.

@@ -1,45 +1,55 @@
 \section{Introduction}
 \label{sec:intro}
     \ji{
-    World action models (WAMs)~\cite{pai2025mimicvideo,hu2025vpp,ma2026dit4dit,ye2026dreamzero} leverage pre-trained video foundation models~\cite{nvidia2025cosmos,wan2025wan} to transfer visual and physical priors to robotic manipulation.
-    At each control step, a video diffusion transformer (DiT) processes observed frames and noisy future tokens through a stack of transformer blocks, and an action decoder cross-attends to the resulting future features to predict robot actions~\cite{pai2025mimicvideo,ma2026dit4dit}.
-    Because video DiTs are designed for full-scene pixel synthesis, they represent future frames on a dense, uniform spatiotemporal token grid.
-    Even in single-pass WAMs that avoid iterative denoising~\cite{pai2025mimicvideo,zhang2026rift}, processing this dense future grid across all DiT blocks incurs substantial inference latency.
-    However, robotic control relies unevenly on the predicted future: accurate manipulation requires fine detail around the robot arm, target objects~\cite{bendikas2025oatvla}, and motion trajectories, whereas static surroundings only provide coarse spatial layout.
+    Unlike policies built on static vision-language backbones~\cite{brohan2023rt2,kim2024openvla,black2025pi0}, world action models (WAMs)~\cite{pai2025mimicvideo,hu2025vpp,ma2026dit4dit,ye2026dreamzero} jointly model future visual dynamics and robot actions.
+    Transferring WAMs to robotic manipulation has become practical with large-scale video foundation models~\cite{nvidia2025cosmos,wan2025wan}, which provide strong visual and physical priors beyond scarce robot demonstrations.
+    In particular, recent future-conditioned WAMs~\cite{hu2025vpp,pai2025mimicvideo,ma2026dit4dit} extract internal features from a video diffusion transformer (DiT) in a single forward pass and decode actions without pixel synthesis.
+    However, video DiTs are pre-trained for full-frame generation and represent every region of every future frame on a dense, uniform spatiotemporal grid.
+    Robotic control instead requires uneven detail across the scene: upcoming actions depend mainly on the robot arm, target objects~\cite{bendikas2025oatvla}, and motion trajectories, while static surroundings only supply coarse spatial layout.
+    Computing all future tokens at uniform full resolution across deep DiT blocks therefore creates a major latency bottleneck during deployment.
     }
 
     \ji{
-    With a frozen video DiT, token reduction must occur after a shallow block so that all remaining blocks process fewer future tokens.
-    However, existing token reduction methods face three key limitations in single-pass WAMs.
-    First, visual token merging and pruning methods~\cite{bolya2023tome,li2024vidtome,chen2024fastv,hyun2025sttm} score tokens using feature similarity or shallow self-attention, which reflect appearance redundancy rather than action relevance.
-    Second, action-guided pruning methods~\cite{liu2025vlapruner,pei2026adp,xie2026sparsewam,kim2026cfprune} score tokens via action-decoder cross-attention or robot motion gates, yet the action decoder operates only after all video DiT blocks complete.
-    Such methods therefore require an extra full-resolution pass or dense fallback queries~\cite{liu2025vlapruner,pei2026adp,kim2026cfprune} that offset single-pass speedups, and attention weights do not directly measure action sensitivity to coarsening~\cite{serrano2019attention}.
-    Meanwhile, end-to-end differentiable selectors~\cite{brohan2023rt1,jiang2025lightvla} avoid extra passes during inference, but require updating the visual backbone.
-    Third, pruning-based approaches~\cite{chen2024fastv,yang2025efficientvla,liu2025vlapruner,kim2026cfprune} delete unselected tokens entirely, erasing coarse workspace layout and creating gapped temporal indices incompatible with pre-trained positional priors.
+    To accelerate a frozen video DiT, a natural strategy compresses future tokens after a shallow block so deeper blocks process a shorter sequence.
+    Existing token reduction methods offer two straightforward ways to implement this compression.
+    The first approach applies visual token reduction, which merges visually similar tokens~\cite{bolya2023tome,li2024vidtome,hyun2025sttm} or drops tokens with low self-attention~\cite{chen2024fastv} from shallow features.
+    The second approach applies task-guided token pruning, which scores tokens via trainable selectors~\cite{rao2021dynamicvit,brohan2023rt1,jiang2025lightvla}, motion gates~\cite{pei2026adp}, or action-decoder cross-attention~\cite{liu2025vlapruner,xie2026sparsewam,kim2026cfprune} and removes low-scoring tokens.
     }
 
     \ji{
-    To overcome these limitations, we propose \textbf{A}ction-aware \textbf{R}esolution \textbf{RO}uting for \textbf{W}orld action models (\method), a multi-resolution framework for single-pass WAMs with frozen video backbones (\cref{fig:teaser}c).
-    \method inserts a lightweight, instruction-conditioned router after a shallow block of the frozen video DiT to predict per-token action relevance in a single forward pass.
-    During training, the router is supervised solely by the gradient of the action decoder's objective, directly identifying regions where coarsening would perturb the predicted action.
-    Under a fixed token budget, these relevance scores guide two-stage spatiotemporal resolution allocation without discarding any region of the scene.
-    In the spatial stage, \method retains high-scoring patch groups at full resolution and locally averages remaining groups on native grid coordinates, preserving spatial alignment with observed frames.
-    In the temporal stage, \method pools each spatial tubelet into contiguous segments weighted by action relevance and feature dynamics, and assigns consecutive temporal indices for the frozen DiT.
-    Finally, we adapt the flow-matching action decoder~\cite{lipman2023flow} to compressed representations via velocity distillation~\cite{hinton2015distilling} using a low-rank adapter (LoRA)~\cite{hu2022lora}, which merges into the decoder weights after training with zero inference overhead. 
+    However, these straightforward approaches exhibit three critical limitations in single-pass WAMs with frozen backbones.
+    First, visual token reduction~\cite{bolya2023tome,chen2024fastv,hyun2025sttm} measures appearance redundancy rather than control dependency.
+    Small target objects or subtle gripper motions often carry low visual saliency yet remain decisive for manipulation, leading to severe task failure under high compression.
+    Second, task-guided token pruning either requires backbone updates or relies on signals unavailable at a shallow DiT block.
+    Specifically, trainable selectors~\cite{brohan2023rt1,jiang2025lightvla} fine-tune the visual backbone, whereas action-decoder cross-attention~\cite{xie2026sparsewam,kim2026cfprune} is computed only after all video DiT blocks finish.
+    Methods based on decoder attention or motion gates~\cite{liu2025vlapruner,pei2026adp,kim2026cfprune} thus require extra full-resolution passes that offset single-pass speedups.
+    Furthermore, attention weights indicate where the decoder reads rather than how spatial coarsening affects action prediction~\cite{serrano2019attention}.
+    Third, removing low-scoring tokens~\cite{chen2024fastv,liu2025vlapruner,pei2026adp,kim2026cfprune} discards background workspace regions altogether.
+    Dropping these tokens removes coarse scene layout essential for spatial reasoning and leaves gapped temporal indices incompatible with pre-trained DiT positional priors.
     }
 
     \ji{
-    We evaluate \method on two WAM backbones (\texttt{mimic-video}~\cite{pai2025mimicvideo} and \texttt{DiT4DiT}~\cite{ma2026dit4dit}) across LIBERO~\cite{liu2023libero}, SIMPLER-Bridge, and RoboCasa-GR1.
-    On \texttt{mimic-video}, \method at a 20\% future-token budget achieves 90.5\% mean success on LIBERO (vs.\ 91.5\% full-context) with a 1.59$\times$ speedup (440.7\,ms vs.\ 701.7\,ms), and reaches 92.9\% success (1.47$\times$ speedup) at a 30\% budget.
-    Segmentation and distortion analyses confirm that full-resolution groups cover 90\% of task objects, 84\% of the robot arm, and 82\% of the future arm path, outperforming task-agnostic selection criteria.
-    In real-world evaluations across six Franka kitchen tasks, \method improves mean success from 60.0\% to 77.8\% while accelerating policy inference by 1.84$\times$.
+    We propose \textbf{A}ction-aware \textbf{R}esolution \textbf{RO}uting for \textbf{W}orld action models (\method), a single-pass multi-resolution framework for frozen WAMs.
+    After a shallow block of the frozen video DiT, \method applies a lightweight, instruction-conditioned router to predict per-token action relevance without extra test-time passes.
+    During training, the router receives supervision solely from the gradient of the action decoder's objective, capturing true action sensitivity to coarsening rather than visual redundancy or attention focus.
+    Instead of hard token deletion, these relevance scores guide two-stage spatiotemporal resolution allocation under a fixed token budget.
+    In the spatial stage, \method retains high-scoring patch groups at full resolution and locally averages remaining groups on native grid coordinates, preserving coarse workspace layout and alignment with observed frames.
+    In the temporal stage, \method pools each spatial tubelet into contiguous segments according to action relevance and feature dynamics, and assigns consecutive temporal indices for the frozen DiT.
+    Finally, with the video backbone frozen, we train a mergeable low-rank adapter (LoRA)~\cite{hu2022lora} in the flow-matching action decoder~\cite{lipman2023flow} via velocity distillation~\cite{hinton2015distilling} against the full-context policy.
+    }
+
+    \ji{
+    We evaluate \method across two WAM backbones (\texttt{mimic-video}~\cite{pai2025mimicvideo} and \texttt{DiT4DiT}~\cite{ma2026dit4dit}) on LIBERO~\cite{liu2023libero}, SIMPLER-Bridge, and RoboCasa-GR1.
+    On \texttt{mimic-video}, retaining 20\% of future tokens achieves 90.5\% mean success on LIBERO (vs.\ 91.5\% full-context) with a 1.59$\times$ speedup (440.7\,ms vs.\ 701.7\,ms), while 30\% reaches 92.9\% success (1.47$\times$ speedup).
+    Diagnostic analyses confirm that full-resolution groups cover 90\% of task objects, 84\% of the robot arm, and 82\% of the future arm path, yielding lower action distortion than task-agnostic criteria.
+    On six real-world Franka manipulation tasks, \method improves mean success from 60.0\% to 77.8\% while accelerating inference by 1.84$\times$.
     }
 
     Our main contributions are summarized as follows:
     \begin{itemize}
-        \item We propose \method, an action-aware resolution routing framework for frozen single-pass WAMs, supervised directly by action-decoder gradients and paired with velocity-distilled decoder adaptation.
-        \item We introduce a context-preserving spatiotemporal allocator that locally merges low-relevance spatial groups on native coordinates and aggregates dynamics-aware temporal tubelets with consecutive indices.
-        \item We demonstrate consistent speedups and strong control performance across two WAM backbones, three simulation benchmarks, and six real-world robotic manipulation tasks.
+        \item We propose \method, an action-aware resolution routing framework for frozen single-pass WAMs that supervises a shallow router with action-decoder gradients alongside velocity-distilled decoder adaptation.
+        \item We design a two-stage spatiotemporal allocator that preserves coarse scene context on native spatial coordinates and pools dynamics-aware temporal tubelets with consecutive indices.
+        \item We validate \method across two WAM backbones, three simulation benchmarks, and six real-world robot tasks, reducing future tokens by up to 90\% with substantial speedups and strong control performance.
     \end{itemize}
 
 % Large video generation models~\cite{nvidia2025cosmos}, pretrained on massive video data, capture both the appearance of the visual world and how it changes over time. While World action models (WAMs)~\cite{pai2025mimicvideo,ye2026dreamzero}leverage this knowledge for robot control by jointly modeling future scene evolution and robot actions: given an instruction, a pretrained video model predicts the future scene, and an action decoder maps its internal representation of that future into robot actions.
