@@ -4,7 +4,7 @@
   \includegraphics[width=0.7\textwidth]{robot_tasks_layout_cropped.pdf}
 \caption{\textbf{Real-robot environment and tasks.}
 A Franka arm and side-view camera (left),
-and the six kitchen manipulation tasks (right). \cj{xx left-right image height xx}}
+and the six kitchen manipulation tasks (right). }
 \label{fig:real_robot}
   \label{fig:real_robot}
 
@@ -18,9 +18,9 @@ FLOPs include text encoding and VAE.
 Bold: best per column; lavender: \method.}
 \label{tab:real_robot}
   \footnotesize
-  \setlength{\tabcolsep}{2.5pt}
+  \setlength{\tabcolsep}{2pt}
   \renewcommand{\arraystretch}{1.1}
-  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{1.9cm}*{10}{>{\centering\arraybackslash}X}@{}}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.5cm}*{10}{>{\centering\arraybackslash}X}@{}}
     \toprule[1pt]
     & \multicolumn{7}{c}{SR (\%) $\uparrow$} & \multicolumn{3}{c}{Efficiency} \\
     \cmidrule(lr){2-8}\cmidrule(l){9-11}
@@ -29,10 +29,10 @@ Bold: best per column; lavender: \method.}
       & \makecell{Open\\Microwave} & \makecell{Cup out\\Microwave} & \makecell{Open\\Lid} & Avg.
       & \makecell{Freq.\\(Hz) $\uparrow$} & \makecell{Lat.\\(ms) $\downarrow$} & \makecell{FLOPs\\(T) $\downarrow$} \\
     \midrule
-    Native
+    Full-context
       & 66.7 & 80.0 & 73.3 & 33.3 & 66.7 & 40.0 & 60.0
       & 0.71 & 1402.1 & 97.60 \\
-    Native + LoRA
+    \mbox{Full-context + LoRA}
       & 66.7 & 80.0 & \textbf{80.0} & 46.7 & 60.0 & 46.7 & 63.3
       & 0.71 & 1406.7 & 97.60 \\
     \rowcolor{ArrowOurs}

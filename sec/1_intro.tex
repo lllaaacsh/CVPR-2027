@@ -1,22 +1,18 @@
 \section{Introduction}
-\label{sec:intro}
-    \ji{
+\label{sec:intro}    
     Unlike policies built on static vision-language backbones~\cite{brohan2023rt2,kim2024openvla,black2025pi0}, world action models (WAMs)~\cite{pai2025mimicvideo,hu2025vpp,ma2026dit4dit,ye2026dreamzero} jointly model future visual dynamics and robot actions.
     Transferring WAMs to robotic manipulation has become practical with large-scale video foundation models~\cite{nvidia2025cosmos,wan2025wan}, which provide strong visual and physical priors beyond scarce robot demonstrations.
     In particular, recent future-conditioned WAMs~\cite{hu2025vpp,pai2025mimicvideo,ma2026dit4dit} extract internal features from a video diffusion transformer (DiT) in a single forward pass and decode actions without pixel synthesis.
     However, video DiTs are pre-trained for full-frame generation and represent every region of every future frame on a dense, uniform spatiotemporal grid.
     Robotic control instead requires uneven detail across the scene: upcoming actions depend mainly on the robot arm, target objects~\cite{bendikas2025oatvla}, and motion trajectories, while static surroundings only supply coarse spatial layout.
     Computing all future tokens at uniform full resolution across deep DiT blocks therefore creates a major latency bottleneck during deployment.
-    }
-
-    \ji{
+    
+    
     To accelerate a frozen video DiT, a natural strategy compresses future tokens after a shallow block so deeper blocks process a shorter sequence.
     Existing token reduction methods offer two straightforward ways to implement this compression.
     The first approach applies visual token reduction, which merges visually similar tokens~\cite{bolya2023tome,li2024vidtome,hyun2025sttm} or drops tokens with low self-attention~\cite{chen2024fastv} from shallow features.
     The second approach applies task-guided token pruning, which scores tokens via trainable selectors~\cite{rao2021dynamicvit,brohan2023rt1,jiang2025lightvla}, motion gates~\cite{pei2026adp}, or action-decoder cross-attention~\cite{liu2025vlapruner,xie2026sparsewam,kim2026cfprune} and removes low-scoring tokens.
-    }
-
-    \ji{
+    
     However, these straightforward approaches exhibit three critical limitations in single-pass WAMs with frozen backbones.
     First, visual token reduction~\cite{bolya2023tome,chen2024fastv,hyun2025sttm} measures appearance redundancy rather than control dependency.
     Small target objects or subtle gripper motions often carry low visual saliency yet remain decisive for manipulation, leading to severe task failure under high compression.
@@ -26,9 +22,7 @@
     Furthermore, attention weights indicate where the decoder reads rather than how spatial coarsening affects action prediction~\cite{serrano2019attention}.
     Third, removing low-scoring tokens~\cite{chen2024fastv,liu2025vlapruner,pei2026adp,kim2026cfprune} discards background workspace regions altogether.
     Dropping these tokens removes coarse scene layout essential for spatial reasoning and leaves gapped temporal indices incompatible with pre-trained DiT positional priors.
-    }
-
-    \ji{
+        
     We propose \textbf{A}ction-aware \textbf{R}esolution \textbf{RO}uting for \textbf{W}orld action models (\method), a single-pass multi-resolution framework for frozen WAMs.
     After a shallow block of the frozen video DiT, \method applies a lightweight, instruction-conditioned router to predict per-token action relevance without extra test-time passes.
     During training, the router receives supervision solely from the gradient of the action decoder's objective, capturing true action sensitivity to coarsening rather than visual redundancy or attention focus.
@@ -36,15 +30,12 @@
     In the spatial stage, \method retains high-scoring patch groups at full resolution and locally averages remaining groups on native grid coordinates, preserving coarse workspace layout and alignment with observed frames.
     In the temporal stage, \method pools each spatial tubelet into contiguous segments according to action relevance and feature dynamics, and assigns consecutive temporal indices for the frozen DiT.
     Finally, with the video backbone frozen, we train a mergeable low-rank adapter (LoRA)~\cite{hu2022lora} in the flow-matching action decoder~\cite{lipman2023flow} via velocity distillation~\cite{hinton2015distilling} against the full-context policy.
-    }
-
-    \ji{
+        
     We evaluate \method across two WAM backbones (\texttt{mimic-video}~\cite{pai2025mimicvideo} and \texttt{DiT4DiT}~\cite{ma2026dit4dit}) on LIBERO~\cite{liu2023libero}, SIMPLER-Bridge, and RoboCasa-GR1.
     On \texttt{mimic-video}, retaining 20\% of future tokens achieves 90.5\% mean success on LIBERO (vs.\ 91.5\% full-context) with a 1.59$\times$ speedup (440.7\,ms vs.\ 701.7\,ms), while 30\% reaches 92.9\% success (1.47$\times$ speedup).
     Diagnostic analyses confirm that full-resolution groups cover 90\% of task objects, 84\% of the robot arm, and 82\% of the future arm path, yielding lower action distortion than task-agnostic criteria.
     On six real-world Franka manipulation tasks, \method improves mean success from 60.0\% to 77.8\% while accelerating inference by 1.84$\times$.
-    }
-
+    
     Our main contributions are summarized as follows:
     \begin{itemize}
         \item We propose \method, an action-aware resolution routing framework for frozen single-pass WAMs that supervises a shallow router with action-decoder gradients alongside velocity-distilled decoder adaptation.

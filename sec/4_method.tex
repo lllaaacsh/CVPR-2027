@@ -1,11 +1,6 @@
 \section{Method}
 \label{sec:method}
 
-% ---- 草稿说明（改完删除）----------------------------------------------------
-% Claude 起草的粗稿，供修改。目前只有 4.1--4.3，不引用尚未写的 Sec. 3 / Sec. 5。
-% 所有设置取自已采用格（contiguous-t，2x2 分组、前 100 组满分辨率）。
-% 待核对：router 结构与伪标签配方来自已有 KnowledgeRouter 实现，若出自已发表工作需引用。
-% ---------------------------------------------------------------------------
 
 \begin{figure*}[t]
   \centering
@@ -16,10 +11,10 @@ in the frozen video backbone, producing compact features for the action decoder.
    \label{fig:overview}
 \end{figure*}
 
-\method decides at which spatial and temporal resolution the video model computes each region of the predicted future, using a relevance score learned from the action decoder (\cref{fig:overview}).
 
-% \cj{XX write Coarse-to-fine ! XX the readers should be able to understand our work from coarse to fine. E.g. formulate the problem and give motivation first as Section 3.1. and then dive into details  }
-% ---------------------------------------------------------------------------
+The overview of \method is shown in~\cref{fig:overview}. \method processes future regions at different spatial and temporal resolutions within a single forward pass of the frozen video DiT. An instruction-conditioned router uses features from an early block to predict per-token action relevance and guide resolution allocation under a fixed token budget. We train the router solely through the action decoder's objective and adapt the decoder through distillation from the full-context policy.
+
+
 
 \subsection{Problem Formulation}
 \label{sec:problem}
@@ -90,7 +85,7 @@ $\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b 
 \caption{\textbf{Spatial and temporal allocation.}
 (a) Full-resolution and merged $2{\times}2$ spatial groups.
 (b) Temporal segmentations at the 20\% future-token budget.
-Segment boundaries are schematic.}
+Segment boundaries are schematic. }
 \label{fig:allocation_detail}
 \end{figure}
 
@@ -150,7 +145,3 @@ Source-frame indices (source-t) and consecutive segment indices
 
 The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers, so the temporal positions stay consecutive as in the original sequence.
 Unlike spatial coordinates, which preserve alignment with the observations (\cref{sec:spatial}), consecutive temporal indices preserve segment order and match the position pattern used during pretraining; source-frame indices would leave gaps (\cref{fig:temporal_positions}).
-% 实验依据（写 Sec. 5 时用，正文暂不引用）：
-%   空间：2x1 池化后改为紧凑重编号 4/100 vs 保留原坐标 83/100（LIBERO-Spatial 7200 tok，n=100）。
-%   时间：contiguous vs source 354 vs 275、441 vs 396、460 vs 437（10/20/30%，n=500，配对 McNemar 均 p<0.005）。
-%   "时间位置是槽位"是解释，只能写"一致于"，不能写"证明"。

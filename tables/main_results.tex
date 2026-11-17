@@ -1,4 +1,3 @@
-
 \begin{table*}[t]
   \centering
 \caption{\textbf{Accuracy and inference cost on two WAM backbones.}
@@ -108,37 +107,37 @@ TFLOPs include VAE/text in (a) and exclude them in (b).}
     \input{tables/main_results_dit4dit}
   \end{subtable}
 
-  % ===== 调整参数，只需修改这里 =====
-  \def\QualFigScale{1.00}    % 图宽：1.00=满宽；0.95、0.90=缩小
-  \def\QualTableGap{8pt}     % 主表与图之间的距离
-  \def\QualCaptionGap{3pt}   % 图与图注之间的距离
-  % ================================
+  % % ===== 调整参数，只需修改这里 =====
+  % \def\QualFigScale{1.00}    % 图宽：1.00=满宽；0.95、0.90=缩小
+  % \def\QualTableGap{8pt}     % 主表与图之间的距离
+  % \def\QualCaptionGap{3pt}   % 图与图注之间的距离
+  % % ================================
 
-  \par\vspace{\QualTableGap}
-  \begin{minipage}{\textwidth}
-    \centering
-    \captionsetup{
-      type=figure,
-      font=small,
-      skip=\QualCaptionGap
-    }
+  % \par\vspace{\QualTableGap}
+  % \begin{minipage}{\textwidth}
+  %   \centering
+  %   \captionsetup{
+  %     type=figure,
+  %     font=small,
+  %     skip=\QualCaptionGap
+  %   }
 
-    \includegraphics[
-      width=\QualFigScale\linewidth
-    ]{qualitative.pdf}
+  %   \includegraphics[
+  %     width=\QualFigScale\linewidth
+  %   ]{qualitative.pdf}
 
-    \caption{
-      \textbf{Qualitative comparison of spatial selection.}
-      Rows show observations from LIBERO-Spatial, LIBERO-Goal,
-      and LIBERO-Object.
-      All methods select 100 of the same 300 non-overlapping
-      $2\times2$ spatial groups.
-      Selected regions are outlined in gray for the baselines
-      and purple for ARROW; unselected regions are faded.
-      The maps compare spatial selection components at a matched
-      group budget, rather than complete adaptive execution policies. \cj{ xx leave one row and move other rows to supp (and then expand in supp) xx}
-    }
-    \label{fig:qualitative_selection}
-  \end{minipage}
+  %   \caption{
+  %     \textbf{Qualitative comparison of spatial selection.}
+  %     Rows show observations from LIBERO-Spatial, LIBERO-Goal,
+  %     and LIBERO-Object.
+  %     All methods select 100 of the same 300 non-overlapping
+  %     $2\times2$ spatial groups.
+  %     Selected regions are outlined in gray for the baselines
+  %     and purple for ARROW; unselected regions are faded.
+  %     The maps compare spatial selection components at a matched
+  %     group budget, rather than complete adaptive execution policies. \cj{ xx leave one row and move other rows to supp (and then expand in supp) xx}
+  %   }
+  %   \label{fig:qualitative_selection}
+  % \end{minipage}
 
 \end{table*}

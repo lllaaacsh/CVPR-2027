@@ -16,6 +16,8 @@
 % 表格放在 tables/ 下，用 \input{tables/<name>} 引入；label 用 tab:<name>。
 % ---------------------------------------------------------------------------
 
+\input{tables/main_results}
+
 \subsection{Experimental Setup}
 \label{sec:exp_setup}
 
@@ -24,21 +26,27 @@ Each suite contains ten tasks with 50 evaluation episodes per task.
 Methods share task-specific initial states and three evaluation seeds for episode-wise paired comparisons.
 For mimic-video, we use the released suite-specific checkpoints; LIBERO-Long is excluded because our reproduction lacks a corresponding checkpoint and evaluation configuration.
 
-Beyond LIBERO, we evaluate mimic-video on SIMPLER-Bridge over four tasks and 96 episodes, and DiT4DiT on RoboCasa-GR1 over 24 tasks and 1,200 paired episodes.
+
+
+Beyond LIBERO, we further evaluate mimic-video on SIMPLER-Bridge over four tasks and 96 episodes, and DiT4DiT on RoboCasa-GR1 over 24 tasks and 1,200 paired episodes.
 These experiments assess allocation in additional manipulation environments.
 Real-robot evaluations are described in \cref{sec:exp_real_robot}.
 Full-context denotes the original policy evaluated using all future tokens.
+
+
 
 For LIBERO, the mimic-video budgets of 10\%, 20\% and 30\% count retained future tokens after video block 2, while the DiT4DiT budgets of 50\%, 55\% and 75\% count total context tokens.
 For each configuration and budget, we freeze the router and train a fresh rank-16 decoder cross-attention LoRA using \cref{eq:task_loss}.
 Allocation and training details for each benchmark are provided in the supplementary material.
 
-LIBERO inference efficiency is measured per policy query at batch size one on an exclusively allocated H100, reporting median wall-clock latency after warmup. mimic-video uses single-step video inference and executes five actions before replanning while the CF-Prune adaptation additionally requires a full-context probe before compressed inference.
+
+
+Inference efficiency on LIBERO is measured per policy query at batch size one on an exclusively allocated H100, reporting median wall-clock latency after warmup. mimic-video uses single-step video inference and executes five actions before replanning while the CF-Prune adaptation additionally requires a full-context probe before compressed inference.
 
 \subsection{Main Results}
 \label{sec:exp_main}
 
-\input{tables/main_results}
+
 
 \Cref{tab:main_mimic} shows that \method improves the trade-off between control success and inference latency.
 At 20\% future context, \method shows close to full-context performance while achieving a $1.59\times$ speedup, compared with $1.47\times$ for VLA-Pruner, the fastest competing adaptation at this nominal budget.
@@ -72,19 +80,6 @@ On RoboCasa-GR1, temporal allocation alone reduces context with success close to
 All tested configurations have slightly higher success point estimates than the full-context models.
 
 
-\subsection{Real Robot Experiment}
-\label{sec:exp_real_robot}
-
-\input{tables/real_robot}
-
-We evaluate mimic-video on six kitchen manipulation tasks with a Franka arm and a single RGB camera (\cref{fig:real_robot}).
-Using task-specific action decoders and a frozen video backbone, we compare \method with Full-context and Full-context + LoRA over 15 trials per task and method.
-Each query predicts 15 actions from five RGB frames and the robot state, executing five before replanning.
-\method uses the 30\% future-token budget.
-
-\Cref{tab:real_robot} shows that \method improves mean success over Full-context by 17.8 percentage points and matches or exceeds both baselines on every task, with the largest gain on opening the microwave.
-Its advantage over Full-context + LoRA suggests that context allocation provides benefits beyond decoder adaptation alone.
-These gains accompany a $1.84\times$ inference speedup and a 49.5\% FLOPs reduction on an RTX 4090 at batch size one, including text encoding.
 
 \subsection{Allocation and Adaptation Ablations}
 \label{sec:exp_ablation}
@@ -126,6 +121,8 @@ consecutively; its benefit is consistent with reducing
 this positional mismatch
 (\cref{fig:temporal_positions}; \cref{tab:ablations}).
 
+\input{tables/real_robot}
+
 Offline spatial coarsening gives lower action distortion with router scores than with similarity, motion, block-2 self-attention, edge energy or random selection (Holm-corrected $p\leq4.2\times10^{-4}$).
 The respective router-to-criterion distortion ratios are 0.495, 0.478, 0.785, 0.838 and 0.598.
 This comparison concerns these five task-agnostic criteria, not full-context decoder attention; the latter has lower distortion but requires the full forward pass.
@@ -134,3 +131,17 @@ The detailed insertion curves and ranking-reversal plot are in the supplementary
 Simulator segmentation in \cref{fig:ground_truth} shows that full-resolution groups cover 90\% of Spatial task-object pixels, 84\% of robot pixels and 82\% of the robot's future path, versus 26\% of background pixels.
 The Object and Goal coverage results are reported in the supplementary material.
 
+
+
+\subsection{Real Robot Experiment}
+\label{sec:exp_real_robot}
+
+We further evaluate \method in a real-world robotic manipulation environment as shown in \cref{fig:real_robot}. We use a Franka Emika Panda arm with a Robotiq-2F-85 gripper and a single RGB camera to perform six manipulation tasks in a toy kitchen environment.
+Using mimic-video~\cite{pai2025mimicvideo} as the full-context baseline, we compare \method with Full-context and Full-context + LoRA over 15 trials per task and method.
+All the methods use task-specific action decoders with a frozen video backbone.
+At each query, the model predicts 15 actions from five RGB frames and the robot state, executing five before replanning \cj{``executing five before replanning'' write more clear}. We set 
+\method to retain 30\% of the future tokens.
+
+\Cref{tab:real_robot} shows that \method improves mean success over Full-context by 17.8 percentage points and matches or exceeds both baselines on every task, with the largest gain on opening the microwave.
+Its advantage over Full-context + LoRA suggests that context allocation provides benefits beyond decoder adaptation alone.
+These gains accompany a $1.84\times$ inference speedup and a 49.5\% FLOPs reduction on an RTX 4090 at batch size one, including text encoding. \cj{Further qualitative comparison is provided in the supplementary material.}
