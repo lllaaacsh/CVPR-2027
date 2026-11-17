@@ -136,12 +136,30 @@ The Object and Goal coverage results are reported in the supplementary material.
 \subsection{Real Robot Experiment}
 \label{sec:exp_real_robot}
 
-We further evaluate \method in a real-world robotic manipulation environment as shown in \cref{fig:real_robot}. We use a Franka Emika Panda arm with a Robotiq-2F-85 gripper and a single RGB camera to perform six manipulation tasks in a toy kitchen environment.
+We further evaluate \method in a real-world robotic manipulation environment as shown in \cref{fig:real_robot}. We use a 7-DoF Franka Emika Panda arm with a Robotiq-2F-85 gripper and a single RGB camera to perform six manipulation tasks in a toy kitchen environment.
 Using mimic-video~\cite{pai2025mimicvideo} as the full-context baseline, we compare \method with Full-context and Full-context + LoRA over 15 trials per task and method.
 All the methods use task-specific action decoders with a frozen video backbone.
-At each query, the model predicts 15 actions from five RGB frames and the robot state, executing five before replanning \cj{``executing five before replanning'' write more clear}. We set 
-\method to retain 30\% of the future tokens.
+At each policy query, the model predicts a sequence of
+15 actions from five RGB frames and the robot state.
+The robot executes the first five actions in sequence,
+then updates its observations and replans.
+We set \method to retain 30\% of the future tokens.
 
-\Cref{tab:real_robot} shows that \method improves mean success over Full-context by 17.8 percentage points and matches or exceeds both baselines on every task, with the largest gain on opening the microwave.
-Its advantage over Full-context + LoRA suggests that context allocation provides benefits beyond decoder adaptation alone.
-These gains accompany a $1.84\times$ inference speedup and a 49.5\% FLOPs reduction on an RTX 4090 at batch size one, including text encoding. \cj{Further qualitative comparison is provided in the supplementary material.}
+\Cref{tab:real_robot} shows that \method achieves a mean
+success rate of 77.8\%, compared with 60.0\% for Full-context
+and 63.3\% for Full-context + LoRA.
+Relative to Full-context + LoRA, \method improves success
+on five of the six tasks and matches its performance on
+pouring water.
+The improvements include opening the microwave
+(46.7\% to 66.7\%) and taking a cup out of the microwave
+(60.0\% to 86.7\%), showing that the aggregate gain extends
+across multiple manipulation tasks.
+
+These gains accompany a $1.84\times$ inference speedup
+and a 49.5\% FLOPs reduction on an RTX 4090 at batch size one,
+including text encoding.
+Because all methods execute five actions before replanning,
+the speedup reduces the computation time per replanning
+update while preserving the same action-execution protocol.
+Further qualitative comparisons are provided in the supplementary material.

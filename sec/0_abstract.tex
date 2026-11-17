@@ -3,10 +3,10 @@
     In single-pass WAMs, visual token reduction captures appearance redundancy rather than action relevance, whereas task-guided pruning requires backbone updates or extra full-resolution passes and discards scene context.
     We propose \textbf{A}ction-aware \textbf{R}esolution \textbf{RO}uting for \textbf{W}orld action models (\method), which allocates spatiotemporal resolution inside a \emph{frozen} video backbone according to control sensitivity.
     After a shallow video block, a lightweight instruction-conditioned router predicts per-token action relevance from action-decoder gradients.
-    Instead of token deletion, \method keeps high-scoring spatial groups at full resolution and locally averages other groups on native grid coordinates.
-    A temporal stage then pools spatial tubelets into dynamics-aware segments with consecutive indices.
+    Instead of token deletion, \method keeps high-scoring spatial groups at full resolution and locally averages the rest on native grid coordinates.
+    A temporal stage then pools spatial tubelets into dynamics-aware contiguous segments.
     We further train a mergeable low-rank decoder adapter via velocity distillation against the full-context policy without backbone updates.
-    Across two WAM backbones (\texttt{mimic-video} and \texttt{DiT4DiT}) and three simulation benchmarks, \method reduces future tokens by up to 90\%.
+    Across two WAM backbones and three simulation benchmarks, \method reduces future tokens up to 90\%.
     On LIBERO, our method achieves 90.5\% mean success (vs.\ 91.5\% full-context) at a 1.59$\times$ speedup with 20\% future tokens, and 92.9\% (1.47$\times$ speedup) with 30\%.
     On six real-robot manipulation tasks, \method improves mean success from 60.0\% to 77.8\% with a 1.84$\times$ speedup.
 \end{abstract}

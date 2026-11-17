@@ -6,8 +6,7 @@
   \centering
   \includegraphics[width=\textwidth]{pipelinev2}
    \caption{\textbf{Overview of \method.}
-An early action-aware router allocates spatial and temporal resolution
-in the frozen video backbone, producing compact features for the action decoder.}
+(a) Overal pipeline. An early action-aware router allocates spatiotemporal resolution within the frozen video backbone before decoding actions. (b) In ARROW, the router predicts token action relevance, which guides spatial resolution allocation and dynamics-aware temporal allocation.}
    \label{fig:overview}
 \end{figure*}
 
@@ -28,9 +27,7 @@ We seek an allocation $A$ that represents $Z$ with a fixed budget of $N$ future 
   \quad \text{s.t.} \quad |A(Z)| = N ,
   \label{eq:problem}
 \end{equation}
-where $|A(Z)|$ is the number of tokens after allocation, $N\leq THW$ is the retained future-token budget, and $f_\phi$ augments $f$ with a low-rank decoder adapter.
-The pretrained video backbone and decoder remain frozen, and the observation tokens are always kept.
-$A$ only averages neighboring tokens spatially or over consecutive frames, and hence every part of the scene remains represented at different resolutions.
+where $|A(Z)|$ is the number of tokens after allocation, $N\leq THW$ is the retained future-token budget, $f_\phi$ augments $f$ with a low-rank decoder adapter, and ``s.t.'' stands for ``subject to''. $A$ only averages neighboring tokens spatially or over consecutive frames, and hence every part of the scene remains represented at different resolutions.
 
 \subsection{Action-Aware Router}
 \label{sec:router}
@@ -73,7 +70,11 @@ We smooth $r_g$ with an exponential moving average over training steps, label th
 \end{equation}
 where $\mathcal{L}_{\text{focal}}$ is a focal binary cross-entropy~\cite{lin2017focal} between the scores and the labels,
 $\mathcal{L}_{\text{budget}}$ keeps the mean score at the fraction of groups kept at full resolution,
-$\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b = \lambda_e = 0.1$.
+$\mathcal{L}_{\text{entropy}}$ pushes the scores towards 0 or 1, and $\lambda_b = \lambda_e = 0.1$. We jointly train the router and decoder LoRA by minimizing
+$\mathcal{L}_{\text{task}}+\mathcal{L}_{\text{router}}$.
+The task loss trains the decoder LoRA and guides the router
+through the straight-through surrogate, while the router loss
+provides additional pseudo-label supervision and regularization.
 
 % ---------------------------------------------------------------------------
 \subsection{Spatial Resolution Allocation}
@@ -91,11 +92,7 @@ Segment boundaries are schematic. }
 
 A region may tolerate spatial coarsening while still providing useful context for control, such as the approximate location of a nearby object.
 Discarding the region's tokens also removes its spatial context.
-We therefore retain high-relevance regions at full resolution and locally average the remaining regions, preserving a coarse representation of every region.
-A tube contains the $T$ tokens at one spatial position.
-We partition the spatial grid into $G=HW/4$ non-overlapping $2\times2$ groups.
-
-Each group receives one score from the router:
+We therefore retain high-relevance regions at full resolution and locally average the remaining regions, preserving a coarse representation. Specifically, we partition the spatial grid into $G=HW/4$ non-overlapping $2\times2$ groups, with each group receiving one score from the router:
 \begin{equation}
   S_g = \frac{1}{4} \sum_{p \in g} \max_t \, s_{t,p} ,
   \label{eq:group_score}
