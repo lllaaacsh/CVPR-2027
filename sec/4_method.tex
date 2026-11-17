@@ -102,7 +102,7 @@ Taking the maximum over the future frames means that a position counts as releva
 averaging over the group gives its overall relevance.
 During training, the router supervision of \cref{sec:router} is computed on these group scores.
 
-We rank the groups by $S_g$.
+We rank the groups by $S_g$. The $T$ tokens at one spatial position are considered as one tube.
 The $F$ highest-scoring groups retain their four tubes, while each remaining group is averaged frame by frame into one tube.
 This produces $P=G+3F$ tubes.
 
@@ -129,7 +129,8 @@ We give the most segments to the tubes with the highest priority, with a fixed n
 The segment counts satisfy $\sum_{p=1}^{P}K_p=N$, with $1\leq K_p\leq T$.
 Within a tube, segment boundaries are placed so that each segment covers a similar amount of feature change.
 
-Every tube retains at least one token, and pooling incorporates contributions from all $T$ future positions.
+Every tube retains at least one token, and pooling incorporates contributions from all $T$ future positions. The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers, so the temporal positions stay consecutive as in the original sequence.
+Unlike spatial coordinates, which preserve alignment with the observations (\cref{sec:spatial}), consecutive temporal indices preserve segment order and match the position pattern used during pretraining; source-frame indices would leave gaps (\cref{fig:temporal_positions}).
 
 \begin{figure}[t]
   \centering
@@ -140,5 +141,4 @@ Source-frame indices (source-t) and consecutive segment indices
 \label{fig:temporal_positions}
 \end{figure}
 
-The $k$-th segment of every tube takes the $k$-th future time position, whichever frames it covers, so the temporal positions stay consecutive as in the original sequence.
-Unlike spatial coordinates, which preserve alignment with the observations (\cref{sec:spatial}), consecutive temporal indices preserve segment order and match the position pattern used during pretraining; source-frame indices would leave gaps (\cref{fig:temporal_positions}).
+
