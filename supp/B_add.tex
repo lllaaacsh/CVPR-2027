@@ -1,0 +1,58 @@
+\section{Additional Analysis}
+\label{app:add_analysis}
+
+\subsection{Equal-token baseline comparisons}
+\label{app:supp_equal_token}
+
+\paragraph{Fixed-budget evaluation on mimic-video.}
+% Include Table B.1: strict equal-token comparison on LIBERO with dense bootstrap and
+% motion-gated fallback queries disabled for VLA-Pruner and ADP at 4,080 / 5,760 / 7,440 tokens.
+
+\paragraph{Fixed-budget evaluation on DiT4DiT.}
+% Include Table B.2: strict equal-token comparison on LIBERO at 391 / 442 / 589 tokens,
+% isolating single-pass selector accuracy from dense fallback calls.
+
+\subsection{Extended ablation studies}
+\label{app:supp_ablations}
+
+\paragraph{Routing layer depth.}
+% Include Table B.3a: varying the shallow DiT block index where ARROW is applied,
+% analyzing the trade-off between feature maturity and latency reduction.
+
+\paragraph{Router and distillation objectives.}
+% Include Table B.3b: ablating L_focal, L_budget, L_entropy, STE gradient supervision,
+% and velocity distillation vs. ground-truth-only LoRA supervision (\lambda_GT).
+
+\paragraph{Spatial and temporal budget allocation.}
+% Include Table B.3c: comparing spatial-only, temporal-only, and joint two-stage allocation,
+% as well as varying full-resolution group count F under a fixed budget N.
+
+\paragraph{Temporal priority and segment boundaries.}
+% Include Table B.3d: comparing u_p = S_{g(p)} * \Delta_p against relevance-only or
+% dynamics-only scoring, and equal-variation vs. uniform segment pooling.
+
+\subsection{Offline distortion and coverage analysis}
+\label{app:supp_diagnostics}
+
+\paragraph{Task-agnostic and oracle scoring criteria.}
+% Define the five task-agnostic criteria (similarity, motion, block-2 self-attention,
+% edge energy, random) and the full-context decoder-attention oracle from Sec. 4.3.
+
+\paragraph{Insertion and ranking-reversal curves.}
+% Include Figure B.1 (promised in Sec. 4.3): offline spatial coarsening insertion curves
+% and ranking-reversal plots corresponding to the distortion ratios (0.495--0.838).
+
+\paragraph{Semantic region coverage across suites.}
+% Include Figure B.2 (promised in Sec. 4.3) and Table B.4: simulator pixel coverage on
+% LIBERO-Object and LIBERO-Goal, plus region-wise selection breakdown on LIBERO and Bridge.
+
+\subsection{Per-task results and statistical tests}
+\label{app:supp_pertask}
+
+\paragraph{Per-task breakdown on simulation benchmarks.}
+% Include Tables B.5--B.6: task-by-task success rates across LIBERO (30 tasks),
+% SIMPLER-Bridge (4 tasks), and RoboCasa-GR1 (24 tasks).
+
+\paragraph{Detailed statistical significance results.}
+% Include Table B.7: paired differences, 95% CIs, and Holm-corrected paired McNemar p-values
+% for main comparisons (Tab. 1) and operator/adaptation ablations (Tabs. 3--4).

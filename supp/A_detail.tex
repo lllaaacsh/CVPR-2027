@@ -1,0 +1,74 @@
+\section{Experimental Details}
+\label{app:exp_details}
+
+\subsection{Architecture and training formulation}
+\label{app:supp_formulation}
+
+\paragraph{Router architecture and gradient saliency.}
+% Detail cross-attention head count, hidden dimension, MLP width, parameter/FLOPs overhead,
+% the multiplicative straight-through estimator gate, and the derivation of Eq. (3).
+
+\paragraph{Router objective and target smoothing.}
+% Write explicit equations for L_focal, L_budget, and L_entropy in Eq. (4),
+% along with the EMA decay rate used to smooth r_g and top-k (k = F) labeling.
+
+\paragraph{Temporal boundary placement and positional indexing.}
+% Formalize cumulative frame-to-frame cosine variation for placing K_p segment boundaries,
+% native-grid spatial alignment, and 3D RoPE behavior under contiguous-t vs. source-t.
+
+\paragraph{Velocity distillation and adapter merging.}
+% Detail shared action-noise sampling in Eq. (2), linear folding of rank-16 LoRA weights
+% at deployment, and training/inference pseudocode (Algorithms A.1--A.2).
+
+\subsection{Benchmarks and evaluation protocols}
+\label{app:supp_benchmarks}
+
+\paragraph{LIBERO.}
+% Detail LIBERO-Spatial, LIBERO-Object, and LIBERO-Goal (10 tasks each, 50 episodes,
+% 3 paired seeds, 5-step execution horizon, and exclusion of LIBERO-Long).
+
+\paragraph{SIMPLER-Bridge.}
+% Detail the 4 WidowX tasks, 96 paired evaluation episodes, observation/action horizons,
+% and released mimic-video checkpoint configuration.
+
+\paragraph{RoboCasa-GR1.}
+% Detail the 24 tabletop manipulation tasks, 1,200 paired evaluation episodes,
+% observation inputs, and DiT4DiT checkpoint configuration.
+
+\paragraph{Real-robot kitchen tasks.}
+% Detail the 7-DoF Franka Emika Panda arm, Robotiq-2F-85 gripper, side-view 480x640 RGB camera,
+% exact task definitions and success criteria for all 6 tasks in Fig. 6 / Tab. 5, and 15 trials per task.
+
+\subsection{Allocation schedules and hyperparameters}
+\label{app:supp_schedules}
+
+\paragraph{Token budgets and tier schedules.}
+% Include Table A.1: observation/future token counts, routing block index, spatial full-res groups F,
+% and priority-tier segment counts K_p for mimic-video and DiT4DiT across all benchmarks.
+
+\paragraph{Optimization hyperparameters.}
+% Include Table A.2 (modeled on BLIP-2 Tables 7--9): optimizer, learning rate, schedule,
+% batch size, training steps, LoRA rank/alpha/targets, and loss weights.
+
+\paragraph{Inference profiling and statistical testing.}
+% Detail H100 and RTX 4090 batch-1 latency/FLOPs measurement protocols, paired 95% CIs,
+% and Holm-corrected paired McNemar significance tests (including the degree symbol in Tab. 4).
+
+\subsection{Baseline adaptation protocols}
+\label{app:supp_baselines}
+
+\paragraph{FastV-style.}
+% Detail shallow block-2 visual self-attention ranking, matched-budget pruning,
+% and dedicated rank-16 decoder LoRA training.
+
+\paragraph{VLA-Pruner.}
+% Detail semantic instruction attention combined with historical action-decoder attention,
+% dense bootstrap queries per episode, and mean token accounting (*) in Tab. 1.
+
+\paragraph{ADP.}
+% Detail text-guided token selection, end-effector motion-gate thresholds triggering
+% full-context fallback queries, and mean token accounting (*) in Tab. 1.
+
+\paragraph{CF-Prune.}
+% Detail the two-pass single-step adaptation: initial full-context probe pass for instruction
+% and action attention followed by pruned prediction, and its latency/FLOPs accounting.

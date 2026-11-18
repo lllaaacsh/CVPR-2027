@@ -18,7 +18,7 @@
 
 \input{tables/main_results}
 
-\subsection{Experimental Setup}
+\subsection{Experimental setup}
 \label{sec:exp_setup}
 
 We evaluate \method using mimic-video~\cite{pai2025mimicvideo} and DiT4DiT~\cite{ma2026dit4dit}, with LIBERO-Spatial, LIBERO-Object and LIBERO-Goal~\cite{liu2023libero} as the main benchmark.
@@ -43,7 +43,7 @@ Allocation and training details for each benchmark are provided in the supplemen
 
 Inference efficiency on LIBERO is measured per policy query at batch size one on an exclusively allocated H100, reporting median wall-clock latency after warmup. mimic-video uses single-step video inference and executes five actions before replanning while the CF-Prune adaptation additionally requires a full-context probe before compressed inference.
 
-\subsection{Main Results}
+\subsection{Main results}
 \label{sec:exp_main}
 
 
@@ -81,7 +81,7 @@ All tested configurations have slightly higher success point estimates than the 
 
 
 
-\subsection{Allocation and Adaptation Ablations}
+\subsection{Allocation and adaptation ablations}
 \label{sec:exp_ablation}
 
 \input{tables/operator_comparison}
@@ -133,10 +133,10 @@ The Object and Goal coverage results are reported in the supplementary material.
 
 
 
-\subsection{Real Robot Experiment}
+\subsection{Real robot experiment}
 \label{sec:exp_real_robot}
 
-We further evaluate \method in a real-world robotic manipulation environment as shown in \cref{fig:real_robot}. We use a 7-DoF Franka Emika Panda arm with a Robotiq-2F-85 gripper and a single RGB camera to perform six manipulation tasks in a toy kitchen environment.
+We further evaluate \method in a real-world robotic manipulation setting, as shown in \cref{fig:real_robot}. Specifically, we use a 7-DoF Franka Emika Panda arm equipped with a Robotiq-2F-85 gripper and a single RGB camera to perform six manipulation tasks in a toy kitchen environment. The six tasks, illustrated in \cref{fig:real_robot}, are: (a) \textit{placing the pot in the sink}, (b) \textit{opening the microwave}, (c) \textit{taking down the fork}, (d) \textit{stacking the bowls}, (e) \textit{putting the block in the pan}, and (f) \textit{pouring water into the sink}.
 Using mimic-video~\cite{pai2025mimicvideo} as the full-context baseline, we compare \method with Full-context and Full-context + LoRA over 15 trials per task and method.
 All the methods use task-specific action decoders with a frozen video backbone.
 At each policy query, the model predicts a sequence of

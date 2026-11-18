@@ -34,5 +34,26 @@
 \def\supponly{}
 
 \begin{document}
-\input{sec/X_suppl}
+\maketitle
+\appendix
+
+% Section-prefixed numbering (e.g., Eq. A.1, Table B.1, Fig. D.1) following PCME
+\makeatletter
+\renewcommand{\theequation}{\Alph{section}.\arabic{equation}}
+\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+\@addtoreset{equation}{section}
+\@addtoreset{table}{section}
+\@addtoreset{figure}{section}
+\makeatother
+
+\section*{Appendix}
+    This document provides additional implementation details, quantitative analyses, and qualitative results to complement the main paper.
+    \cref{app:exp_details} describes the mathematical formulation, benchmark protocols, token allocation schedules, baseline adaptations, and training hyperparameters.
+    \cref{app:add_analysis} presents equal-token baseline comparisons, extended ablations, offline action-distortion curves, semantic region coverage, and per-task breakdowns.
+    \cref{app:qual_analysis} provides spatial and temporal routing visualizations, real-robot rollout comparisons, and failure case analyses.
+
+\input{supp/A_detail}
+\input{supp/B_add}
+\input{supp/C_qual}
 \end{document}

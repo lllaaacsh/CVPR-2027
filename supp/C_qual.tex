@@ -1,0 +1,35 @@
+\section{Qualitative Analysis}
+\label{app:qual_analysis}
+
+\subsection{Spatiotemporal routing visualizations}
+\label{app:supp_vis_routing}
+
+\paragraph{Spatial group selection across tasks.}
+% Include Figure C.1: matched-budget 2x2 spatial group selection maps comparing FastV-style,
+% VLA-Pruner, ADP, CF-Prune, and ARROW across LIBERO suites and SIMPLER-Bridge.
+
+\paragraph{Temporal tubelet segmentation.}
+% Include Figure C.2: 14-frame future tubelet visualizations illustrating fine segments (K=7)
+% on moving arm/object regions vs. coarse segments (K=3) on static background regions.
+
+\subsection{Real-robot rollout comparisons}
+\label{app:supp_vis_robot}
+
+\paragraph{Trajectory comparisons against baselines.}
+% Include Figure C.3 (promised in Sec. 4.4): closed-loop execution strips comparing Full-context,
+% Full-context + LoRA, and ARROW on Open Microwave, Cup out Microwave, and Stack Bowls.
+
+\paragraph{Action-relevance heatmaps on real scenes.}
+% Include Figure C.4: router score maps overlaid on real 480x640 side-view camera frames
+% across approach, grasp, transport, and placement stages.
+
+\subsection{Failure case analysis}
+\label{app:supp_failures}
+
+\paragraph{Over-compression in cluttered scenes.}
+% Include Figure C.5 (modeled on BLIP-2 Fig. 6): examples at the 10% future-token budget
+% where aggressive coarsening blurs closely spaced objects or thin container handles.
+
+\paragraph{Base policy execution errors.}
+% Show examples where ARROW assigns full resolution to the robot arm and target object,
+% but episodes fail due to grasp slip or occlusion inherited from the frozen WAM.

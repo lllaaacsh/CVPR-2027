@@ -32,9 +32,9 @@
     In the temporal stage, \method pools each spatial tubelet into contiguous segments according to action relevance and feature dynamics, and assigns consecutive temporal indices for the frozen DiT.
     Finally, with the video backbone frozen, we train a mergeable low-rank adapter (LoRA)~\cite{hu2022lora} in the flow-matching action decoder~\cite{lipman2023flow} via velocity distillation~\cite{hinton2015distilling} against the full-context policy.
         
-    We evaluate \method across two WAM backbones (\texttt{mimic-video}~\cite{pai2025mimicvideo} and \texttt{DiT4DiT}~\cite{ma2026dit4dit}) on LIBERO~\cite{liu2023libero}, SIMPLER-Bridge, and RoboCasa-GR1.
-    On \texttt{mimic-video}, retaining 20\% of future tokens achieves 90.5\% mean success on LIBERO (vs.\ 91.5\% full-context) with a 1.59$\times$ speedup (440.7\,ms vs.\ 701.7\,ms), while 30\% reaches 92.9\% success (1.47$\times$ speedup).
-    Diagnostic analyses confirm that full-resolution groups cover 90\% of task objects, 84\% of the robot arm, and 82\% of the future arm path, yielding lower action distortion than task-agnostic criteria.
+    We evaluate \method across two WAM backbones (\texttt{mimic-video}~\cite{pai2025mimicvideo} and \texttt{DiT4DiT}~\cite{ma2026dit4dit}) on LIBERO~\cite{liu2023libero}, SIMPLER-Bridge, and RoboCasa-GR1. We found that in both simulated and real environments, \method can preserve fine detail in all the action-relevant regions (\cref{fig:teaser} left).
+    On \texttt{mimic-video}, retaining 20\% of future tokens achieves 90.5\% mean success on LIBERO (vs.\ 91.5\% full-context) with a 1.59$\times$ speedup (440.7\,ms vs.\ 701.7\,ms), while 30\% reaches 92.9\% success and 1.47$\times$ speedup (\cref{fig:teaser} upper right).
+    Diagnostic analyses confirm that full-resolution groups cover 90\% of task objects, 84\% of the robot arm, and 82\% of the future arm path, yielding lower action distortion than task-agnostic criteria (\cref{fig:teaser} lower right).
     On six real-world Franka manipulation tasks, \method improves mean success from 60.0\% to 77.8\% while accelerating inference by 1.84$\times$.
     
     Our main contributions are summarized as follows:
