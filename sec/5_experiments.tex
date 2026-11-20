@@ -136,7 +136,7 @@ The Object and Goal coverage results are reported in the supplementary material.
 \subsection{Real robot experiment}
 \label{sec:exp_real_robot}
 
-We further evaluate \method in a real-world robotic manipulation setting, as shown in \cref{fig:real_robot}. Specifically, we use a 7-DoF Franka Emika Panda arm equipped with a Robotiq-2F-85 gripper and a single RGB camera to perform six manipulation tasks in a toy kitchen environment. The six tasks, illustrated in \cref{fig:real_robot}, are: (a) \textit{placing the pot in the sink}, (b) \textit{opening the microwave}, (c) \textit{taking down the fork}, (d) \textit{stacking the bowls}, (e) \textit{putting the block in the pan}, and (f) \textit{pouring water into the sink}.
+We further evaluate \method in a real-world robotic manipulation setting, as shown in \cref{fig:real_robot}. Specifically, we use a 7-DoF Franka Emika Panda arm equipped with a Robotiq-2F-85 gripper and a single RGB camera to perform six manipulation tasks in a toy kitchen environment. The six tasks, illustrated in \cref{fig:real_robot}, are: (a) \textit{pick the cup to the sink}, (b) \textit{opening the microwave}, (c) \textit{stacking the bowls}, (d) \textit{put the cup out of microwave}, (e) \textit{pouring water into the sink}, and (f) \textit{open the lid}.
 Using mimic-video~\cite{pai2025mimicvideo} as the full-context baseline, we compare \method with Full-context and Full-context + LoRA over 15 trials per task and method.
 All the methods use task-specific action decoders with a frozen video backbone.
 At each policy query, the model predicts a sequence of
