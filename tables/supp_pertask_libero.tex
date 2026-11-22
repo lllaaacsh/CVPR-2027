@@ -1,0 +1,54 @@
+\begingroup
+  \centering
+  \caption{\textbf{Per-task successful episodes on LIBERO (mimic-video).}
+  Task cells report successful episodes over $3$ evaluation seeds, with $50$ episodes per seed ($150$ episodes per task). Suite rows report the suite success rate (\%). Columns give the future-token budget of \method.
+  Suite rows repeat \mainref{tab:main_mimic}{Table~1(a)}.}
+  \label{tab:supp_pertask_libero}
+  \scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{0.98}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    Task & Full-context & 10\% & 20\% & 30\% \\
+    \midrule
+    \multicolumn{5}{@{}l}{\emph{LIBERO-Spatial}} \\
+    1. between plate and ramekin & 147 & 144 & 144 & 138 \\
+    2. next to ramekin & 132 & 141 & 144 & 138 \\
+    3. table center & 138 & 135 & 135 & 144 \\
+    4. on cookie box & 147 & 150 & 150 & 150 \\
+    5. in top drawer & 114 & 24 & 87 & 123 \\
+    6. on ramekin & 105 & 114 & 111 & 117 \\
+    7. next to cookie box & 147 & 63 & 138 & 135 \\
+    8. on stove & 141 & 108 & 141 & 147 \\
+    9. next to plate & 150 & 141 & 150 & 147 \\
+    10. on wooden cabinet & 135 & 42 & 123 & 141 \\
+    \textit{Suite rate (\%)} & \textit{90.4} & \textit{70.8} & \textit{88.2} & \textbf{\textit{92.0}} \\
+    \midrule
+    \multicolumn{5}{@{}l}{\emph{LIBERO-Object}} \\
+    1. alphabet soup & 141 & 147 & 144 & 150 \\
+    2. cream cheese & 147 & 126 & 138 & 147 \\
+    3. salad dressing & 144 & 141 & 141 & 144 \\
+    4. BBQ sauce & 111 & 126 & 120 & 132 \\
+    5. ketchup & 147 & 144 & 144 & 144 \\
+    6. tomato sauce & 120 & 126 & 132 & 138 \\
+    7. butter & 150 & 150 & 150 & 147 \\
+    8. milk & 150 & 150 & 141 & 147 \\
+    9. chocolate pudding & 150 & 150 & 150 & 147 \\
+    10. orange juice & 150 & 147 & 150 & 150 \\
+    \textit{Suite rate (\%)} & \textit{94.0} & \textit{93.8} & \textit{94.0} & \textbf{\textit{96.4}} \\
+    \midrule
+    \multicolumn{5}{@{}l}{\emph{LIBERO-Goal}} \\
+    1. open the middle drawer & 144 & 135 & 144 & 147 \\
+    2. bowl on the stove & 150 & 147 & 144 & 141 \\
+    3. wine bottle on the cabinet & 138 & 111 & 144 & 135 \\
+    4. open top drawer, bowl inside & 117 & 108 & 126 & 126 \\
+    5. bowl on the cabinet & 150 & 150 & 147 & 144 \\
+    6. push plate to the stove & 147 & 108 & 147 & 147 \\
+    7. cream cheese in the bowl & 114 & 45 & 87 & 120 \\
+    8. turn on the stove & 138 & 99 & 123 & 120 \\
+    9. bowl on the plate & 147 & 141 & 150 & 147 \\
+    10. wine bottle on the rack & 108 & 78 & 129 & 126 \\
+    \textit{Suite rate (\%)} & \textbf{\textit{90.2}} & \textit{74.8} & \textit{89.4} & \textbf{\textit{90.2}} \\
+    \bottomrule
+  \end{tabular}
+\endgroup

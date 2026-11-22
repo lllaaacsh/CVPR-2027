@@ -1,0 +1,65 @@
+\begingroup
+  \centering
+  \caption{\textbf{Per-task success beyond LIBERO.}
+  Columns give total context tokens.}
+  \label{tab:supp_pertask_transfer}
+  \label{tab:supp_pertask_gr1}
+  \label{tab:supp_pertask_bridge}
+  \scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{0.98}
+  \begin{subtable}[t]{\linewidth}
+    \centering
+    \caption{SIMPLER-Bridge (mimic-video): successes of 72 episodes per task, three seeds evaluated.}
+    \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    Task & Full & 11,400 & 12,300 & 13,200 \\
+    \midrule
+    Carrot on plate & 21 & 24 & 24 & 27 \\
+    Spoon on towel & 33 & 30 & 34 & 33 \\
+    Stack blocks & 12 & 9 & 12 & 12 \\
+    Eggplant in basket & 72 & 66 & 69 & 72 \\
+    \midrule
+    Total (\%) & 47.9 & 44.8 & 48.3 & 50.0 \\
+    \bottomrule
+  \end{tabular}
+  \end{subtable}
+
+  \vspace{4pt}
+  \begin{subtable}[t]{\linewidth}
+    \centering
+    \caption{RoboCasa-GR1 (DiT4DiT):150 episodes per task, three seeds evaluated.}
+    \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    Task & Full & 539 & 490 & 466 \\
+    \midrule
+1. bottle $\rightarrow$ cabinet, close & 99 & 87 & 84 & 81 \\
+2. can $\rightarrow$ drawer, close & 102 & 117 & 117 & 114 \\
+3. cup $\rightarrow$ drawer, close & 90 & 93 & 72 & 69 \\
+4. milk $\rightarrow$ microwave, close & 75 & 90 & 93 & 81 \\
+5. potato $\rightarrow$ microwave, close & 51 & 54 & 48 & 54 \\
+6. wine $\rightarrow$ cabinet, close & 99 & 84 & 81 & 99 \\
+7. placemat $\rightarrow$ bowl & 81 & 90 & 72 & 66 \\
+8. cutting board $\rightarrow$ tiered basket & 66 & 63 & 75 & 63 \\
+9. tray $\rightarrow$ tiered basket & 90 & 102 & 81 & 93 \\
+10. placemat $\rightarrow$ basket & 66 & 72 & 75 & 60 \\
+11. tray $\rightarrow$ tiered shelf & 72 & 63 & 75 & 66 \\
+12. placemat $\rightarrow$ plate & 102 & 78 & 102 & 81 \\
+13. placemat $\rightarrow$ tiered shelf & 45 & 57 & 45 & 48 \\
+14. plate $\rightarrow$ bowl & 96 & 81 & 87 & 102 \\
+15. plate $\rightarrow$ cardboard box & 78 & 81 & 72 & 81 \\
+16. plate $\rightarrow$ pan & 84 & 96 & 87 & 84 \\
+17. cutting board $\rightarrow$ basket & 93 & 96 & 102 & 93 \\
+18. plate $\rightarrow$ plate & 102 & 93 & 93 & 96 \\
+19. cutting board $\rightarrow$ cardboard box & 81 & 87 & 81 & 78 \\
+20. tray $\rightarrow$ cardboard box & 63 & 69 & 81 & 78 \\
+21. cutting board $\rightarrow$ pan & 87 & 108 & 99 & 108 \\
+22. tray $\rightarrow$ plate & 81 & 99 & 90 & 96 \\
+23. cutting board $\rightarrow$ pot & 81 & 90 & 93 & 96 \\
+24. tray $\rightarrow$ pot & 93 & 93 & 90 & 93 \\
+    \midrule
+    Total (\%) & 54.9 & 56.8 & 55.4 & 55.0 \\
+    \bottomrule
+  \end{tabular}
+  \end{subtable}
+\endgroup

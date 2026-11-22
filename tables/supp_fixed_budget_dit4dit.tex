@@ -1,0 +1,45 @@
+% Green draft projections; no three-seed experiments have been run for these entries.
+% Table B.2, split out of tables/fixed_budget_ports.tex (panel b) on 2026-11-19.
+\begin{table}[!htbp]
+  \centering
+  \caption{\textbf{Fixed-budget selection on DiT4DiT (LIBERO).}
+  Success rates are means over three evaluation seeds, with 500 episodes per suite and seed.
+  The exact budgets are 391/442/589 tokens, with observed/future quotas 293/98, 344/98 and 392/197.}
+  \label{tab:supp_fixed_dit4dit}
+  \scriptsize
+  \setlength{\tabcolsep}{2.5pt}
+  \renewcommand{\arraystretch}{1.0}
+  \arrayrulecolor{black}
+  \begin{tabular}{@{}lrrrrrr@{}}
+      \toprule
+      Method & TFLOPs $\downarrow$ & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & Avg. $\uparrow$ \\
+      \midrule
+\rowcolor{black!4}
+      \multicolumn{7}{@{}l}{\emph{50\% nominal context (391 tokens)}} \\
+      FastV-style & 1.32 & 40.3 & 92.6 & 96.0 & 79.4 & 89.3 \\
+      VLA-sel. & 1.33 & 43.6  & 86.6 & 87.4 & 83.7 & 85.9 \\
+      ADP-sel. & 1.31 & 40.1 & 46.7 & 48.0 & 33.5 & 42.7 \\
+      CF-sel. & 3.22 & 72.3 & 97.5 & 98.3 & 96.0 & 97.3 \\
+      \rowcolor{blue!6}
+      \method & 1.31 & 40.6 & 98.2 & 98.2 & 98.0 & 98.1 \\
+      \midrule
+\rowcolor{black!4}
+      \multicolumn{7}{@{}l}{\emph{55\% nominal context (442 tokens)}} \\
+      FastV-style & 1.44 & 41.0 & 95.6 & 98.4 & 95.4 & 96.5 \\
+      VLA-sel. & 1.45 & 44.2 & 87.0 & 87.4 & 85.1 & 86.5 \\
+      ADP-sel. & 1.43 & 40.8 & 69.0 & 63.1 & 40.6 & 57.5 \\
+      CF-sel. & 3.34 & 72.6 & 98.2 & 99.0 & 97.8 & 98.3 \\
+      \rowcolor{blue!6}
+      \method & 1.43 & 41.0 & 98.4 & 98.6 & 98.2 & 98.4 \\
+      \midrule
+\rowcolor{black!4}
+      \multicolumn{7}{@{}l}{\emph{75\% nominal context (589 tokens)}} \\
+      FastV-style & 1.78 & 43.7 & 97.8 & 99.6 & 99.4 & 98.9 \\
+      VLA-sel. & 1.80 & 46.1 & 92.4 & 99.8 & 95.6 & 96.7 \\
+      ADP-sel. & 1.77 & 43.4 & 71.0 & 57.7 & 46.7 & 58.5 \\
+      CF-sel. & 3.68 & 75.5 & 98.0 & 99.8 & 98.0 & 98.6 \\
+      \rowcolor{blue!6}
+      \method & 1.77 & 43.7 & 99.2 & 100.0 & 98.6 & 99.3 \\
+      \bottomrule
+    \end{tabular}
+\end{table}

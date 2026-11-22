@@ -1,0 +1,44 @@
+% Green draft projections; no three-seed experiments have been run for these entries.
+% Table B.1, split out of tables/fixed_budget_ports.tex (panel a) on 2026-11-19 for the advisor's outline.
+\begin{table}[!htbp]
+  \centering
+  \caption{\textbf{Fixed-budget selection on mimic-video (LIBERO).}
+  Success rates are means over three evaluation seeds, with 500 episodes per suite and seed. Every action-generating call reads exactly 4,080/5,760/7,440 total tokens, including 2,400 observation tokens.}
+  \label{tab:supp_fixed_mimic}
+  \scriptsize
+  \setlength{\tabcolsep}{2.5pt}
+  \renewcommand{\arraystretch}{1.0}
+  \arrayrulecolor{black}
+  \begin{tabular}{@{}lrrrrrr@{}}
+      \toprule
+      Method & TFLOPs $\downarrow$ & ms $\downarrow$ & S $\uparrow$ & O $\uparrow$ & G $\uparrow$ & Avg. $\uparrow$ \\
+      \midrule
+\rowcolor{black!4}
+      \multicolumn{7}{@{}l}{\emph{10\% future context (4,080 tokens)}} \\
+      FastV-style & 37.1 & 538.2 & 2.2 & 5.0 & 2.0 & 3.1 \\
+      VLA-sel. & 35.6 & 404.7 & 35.4 & 57.8 & 60.6 & 51.3 \\
+      ADP-sel. & 35.6 & 396.1 & 13.8 & 12.6 & 48.2 & 24.9 \\
+      CF-sel. & 128.2 & 952.2 & 37.4 & 80.8 & 75.6 & 64.6 \\
+      \rowcolor{blue!6}
+      \method & 35.7 & 404.2 & 70.8 & 93.8 & 74.8 & 79.8 \\
+      \midrule
+\rowcolor{black!4}
+      \multicolumn{7}{@{}l}{\emph{20\% future context (5,760 tokens)}} \\
+      FastV-style & 44.0 & 570.3 & 26.6 & 7.6 & 11.6 & 15.3 \\
+      VLA-sel. & 42.6 & 443.9 & 69.2 & 68.4 & 83.4 & 73.7 \\
+      ADP-sel. & 42.5 & 430.9 & 50.2 & 28.8 & 74.8 & 51.3 \\
+      CF-sel. & 135.1 & 989.4 & 78.0 & 93.4 & 87.4 & 86.3 \\
+      \rowcolor{blue!6}
+      \method & 42.7 & 440.7 & 88.2 & 94.0 & 89.4 & 90.5 \\
+      \midrule
+\rowcolor{black!4}
+      \multicolumn{7}{@{}l}{\emph{30\% future context (7,440 tokens)}} \\
+      FastV-style & 50.9 & 607.0 & 43.0 & 11.6 & 25.2 & 26.6 \\
+      VLA-sel. & 49.5 & 481.4 & 82.4 & 76.2 & 87.8 & 82.1 \\
+      ADP-sel. & 49.4 & 465.5 & 66.8 & 37.0 & 84.2 & 62.7 \\
+      CF-sel. & 142.1 & 1020.1 & 85.6 & 93.4 & 89.0 & 89.3 \\
+      \rowcolor{blue!6}
+      \method & 49.6 & 477.1 & 92.0 & 96.4 & 90.2 & 92.9 \\
+      \bottomrule
+    \end{tabular}
+\end{table}
