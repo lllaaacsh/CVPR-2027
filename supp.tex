@@ -1,21 +1,10 @@
-% Supplementary material as a stand-alone PDF (CVPR asks for it as a separate upload).
-%
-% How to build:
-%   Overleaf : open this file (supp.tex) and click Recompile, then download the PDF.
-%              If Overleaf still shows the full paper, set Menu -> Main document -> supp.tex,
-%              recompile, and set it back to main.tex afterwards.
-%   Locally  : pdflatex supp   (run it three times; no bibtex needed)
-%
-% The content lives in sec/X_suppl.tex, the same file that main.tex appends when it sets \suppltrue.
-% Keep the three items marked KEEP IN SYNC identical to main.tex.
+
 
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
-\usepackage[review]{cvpr}      % KEEP IN SYNC with main.tex (review / camera-ready)
+\usepackage[review]{cvpr}   
 
-% preamble.tex loads hyperref itself, so the link options are handed over before it is read.
-% Giving them in a second \usepackage[...]{hyperref} afterwards is an "Option clash" error and
-% leaves the links as boxes.
+
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 \PassOptionsToPackage{pagebackref,breaklinks,colorlinks,allcolors=cvprblue}{hyperref}
 \input{preamble}
@@ -30,9 +19,35 @@
 \title{ARROW: Action-Aware Resolution Routing for World Action Models \\
 -Supplementary Material-} % KEEP IN SYNC with main.tex
 
-% Tells sec/X_suppl.tex that the main paper is not part of this PDF, so references to its
-% tables are printed as fixed numbers ("Table 1 of the main paper") instead of cross-references.
+
 \def\supponly{}
+
+
+\DeclareRobustCommand{\mainref}[2]{#2 of the main paper}
+% Pending cells (experiments still running): red dash in draft mode, plain dash otherwise.
+\ifdraft\newcommand{\pend}{{\color{red}\textbf{--}}}\else\newcommand{\pend}{--}\fi
+\usepackage{algpseudocode}
+\usepackage{adjustbox}
+\definecolor{suppdraftgreen}{RGB}{0,120,60}
+\newcommand{\suppdraft}[1]{{\color{suppdraftgreen}#1}}
+\raggedbottom
+\captionsetup[table]{font=footnotesize,skip=4pt}
+\captionsetup[figure]{font=footnotesize,skip=4pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{10pt plus 2pt minus 2pt}
+\renewcommand{\floatpagefraction}{0.70}
+\renewcommand{\dblfloatpagefraction}{0.70}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{8pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\setlength{\@dblfptop}{0pt}
+\setlength{\@dblfpsep}{8pt}
+\setlength{\@dblfpbot}{0pt plus 1fil}
+\makeatother
 
 \begin{document}
 \maketitle
@@ -46,14 +61,18 @@
 \@addtoreset{equation}{section}
 \@addtoreset{table}{section}
 \@addtoreset{figure}{section}
+\renewcommand{\thealgorithm}{\Alph{section}.\arabic{algorithm}}
+\@addtoreset{algorithm}{section}
 \makeatother
 
 \section*{Appendix}
     This document provides additional implementation details, quantitative analyses, and qualitative results to complement the main paper.
     \cref{app:exp_details} describes the mathematical formulation, benchmark protocols, token allocation schedules, baseline adaptations, and training hyperparameters.
-    \cref{app:add_analysis} presents equal-token baseline comparisons, extended ablations, offline action-distortion curves, semantic region coverage, and per-task breakdowns.
-    \cref{app:qual_analysis} provides spatial and temporal routing visualizations, real-robot rollout comparisons, and failure case analyses.
+    \cref{app:add_analysis} presents equal-token baseline comparisons, extended ablations, semantic region coverage, and per-task breakdowns.
+    \cref{app:qual_analysis} provides spatial and temporal routing visualizations and failure case analyses.
 
+
+\input{supp/A_detail}
 \input{supp/B_add}
 \input{supp/C_qual}
 \end{document}

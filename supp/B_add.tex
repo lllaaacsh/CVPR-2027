@@ -4,55 +4,92 @@
 \subsection{Equal-token baseline comparisons}
 \label{app:supp_equal_token}
 
+
+
+
+
+VLA-Pruner and ADP exceed their compressed budgets because of dense calls in \mainref{tab:main_results}{Table~1}.
+Here we compare their selection components under strict fixed budgets, using three evaluation seeds and 500 episodes per suite and seed.
+
 \paragraph{Fixed-budget evaluation on mimic-video.}
-% Include Table B.1: strict equal-token comparison on LIBERO with dense bootstrap and
-% motion-gated fallback queries disabled for VLA-Pruner and ADP at 4,080 / 5,760 / 7,440 tokens.
+In \cref{tab:supp_fixed_mimic}, VLA-sel.\ replaces the three dense warm-start queries with compressed semantic-only queries and uses the resulting action attention to initialize its history.
+ADP-sel.\ removes the motion gate and dense fallback; CF-sel.\ retains its additional full-context probe.
+
+
+\input{tables/supp_fixed_budget_mimic}
 
 \paragraph{Fixed-budget evaluation on DiT4DiT.}
-% Include Table B.2: strict equal-token comparison on LIBERO at 391 / 442 / 589 tokens,
-% isolating single-pass selector accuracy from dense fallback calls.
+\Cref{tab:supp_fixed_dit4dit} fixes the action-generating context to 391, 442 and 589 tokens, with observed/future quotas of 293/98, 344/98 and 392/197.
+Every selection port uses a budget-specific decoder adapter.
+
+
+
+\input{tables/supp_fixed_budget_dit4dit}
 
 \subsection{Extended ablation studies}
 \label{app:supp_ablations}
 
-\paragraph{Routing layer depth.}
-% Include Table B.3a: varying the shallow DiT block index where ARROW is applied,
-% analyzing the trade-off between feature maturity and latency reduction.
+
+All ablations in \cref{tab:supp_ablations} run on LIBERO-Spatial with the deployed allocation, and each trained variant gets a fresh adapter with the Stage~2 budget-specific adaptation recipe (\cref{tab:supp_hparams}).
+Each is compared with a reference evaluated in the same campaign on the same GPU type.
+
+\input{tables/supp_ablations}
+
+\paragraph{Routing layer depth}
+Originally \method routes after the second of the 20 blocks that a query runs, so only two blocks process all 19,200 tokens. This ablation tests whether block 2 is a good place to route. It moves the routing point once in each direction and compares each arm with the block-2 cell it would compete with in deployment. Block 1 is the only earlier point where the router still reads the output of a transformer block; any earlier point would have to score the raw patch embeddings. Routing after block 1 runs one fewer block at full resolution , so it is compared with block 2 at the same 4,080 tokens. Block 6 is the deeper point whose estimated cost at 10\% (about 445 ms) matches block 2 at 20\% (440.7 ms). It asks whether the extra compute is better spent on four more full-resolution blocks or on keeping 1,680 more tokens. Points much deeper than block 6 fall outside the range that matters: beyond about block 9, routing at 10\% would cost more than block 2 at 30\% (477.1 ms), and that cell already exceeds the full-context policy on this suite (92.0 vs. 90.4\%). 
+
+
 
 \paragraph{Router and distillation objectives.}
-% Include Table B.3b: ablating L_focal, L_budget, L_entropy, STE gradient supervision,
-% and velocity distillation vs. ground-truth-only LoRA supervision (\lambda_GT).
+For the router objective (\cref{tab:supp_objectives}, top), the router is retrained from scratch during Stage~1 with one term changed in the joint training objective: binary cross-entropy instead of the focal loss ($\gamma=0$), $\lambda_b=0$, $\lambda_e=0$, or no pseudo-label term, in which case the router learns only from the task gradient through the straight-through gate (\cref{eq:supp_ste}) plus the budget and entropy terms.
+The reference is the full recipe retrained in the same campaign, since retraining itself changes the router; each router is then frozen and given a fresh 10\% adapter in Stage~2.
+
+
 
 \paragraph{Spatial and temporal budget allocation.}
-% Include Table B.3c: comparing spatial-only, temporal-only, and joint two-stage allocation,
-% as well as varying full-resolution group count F under a fixed budget N.
+
+\Cref{tab:supp_split} spends the same future-token budget in different ways.
+Temporal-only allocation keeps every group at full resolution ($F=300$, 1,200 tubes) and pools only in time; at 10\% this forces 720 tubes to a single segment and the rest to two.
+Spatial-only allocation keeps all 14 frames ($K=14$) and merges in space only; merging every group still leaves 4,200 future tokens, so it can only reach the 30\% budget, with $F=20$ (360 tubes).
+The two $F$ variants change the number of full-resolution groups at 20\% and rescale the tiers to keep the budget exact: $F=50$ (450 tubes) and $F=150$ (750 tubes).
+Their segment quotas are $(90,165,195)$ for $K=(5,7,9)$ at $F=50$, and $(150,270,330)$ for $K=(2,4,6)$ at $F=150$. Both sums equal 3,360 future tokens.
+
 
 \paragraph{Temporal priority and segment boundaries.}
-% Include Table B.3d: comparing u_p = S_{g(p)} * \Delta_p against relevance-only or
-% dynamics-only scoring, and equal-variation vs. uniform segment pooling.
 
-\subsection{Offline distortion and coverage analysis}
+\Cref{tab:supp_temporal} changes how segment counts are assigned, with the spatial selection unchanged.
+Feature change only ranks tubes by $\Delta_p$; reversed priority ranks them by $-u_p$; flat counts give nearly equal segment counts by a fixed spatial pattern; random tier assignment uses a fixed random ranking.
+
+
+\par\medskip\noindent\begin{minipage}{\linewidth}
+\subsection{Coverage analysis}
 \label{app:supp_diagnostics}
 
-\paragraph{Task-agnostic and oracle scoring criteria.}
-% Define the five task-agnostic criteria (similarity, motion, block-2 self-attention,
-% edge energy, random) and the full-context decoder-attention oracle from Sec. 4.3.
+\input{tables/supp_region_coverage}
+\end{minipage}\par\medskip
 
-\paragraph{Insertion and ranking-reversal curves.}
-% Include Figure B.1 (promised in Sec. 4.3): offline spatial coarsening insertion curves
-% and ranking-reversal plots corresponding to the distortion ratios (0.495--0.838).
+\begin{table*}[!t]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \input{tables/supp_pertask_libero}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \input{tables/supp_pertask_transfer}
+  \end{minipage}
+\end{table*}
 
 \paragraph{Semantic region coverage across suites.}
-% Include Figure B.2 (promised in Sec. 4.3) and Table B.4: simulator pixel coverage on
-% LIBERO-Object and LIBERO-Goal, plus region-wise selection breakdown on LIBERO and Bridge.
 
-\subsection{Per-task results and statistical tests}
+ We present the region coverage partition across all baseline methods as in \ref{tab:supp_region_coverage}. The matched-selector comparison excludes queries 0--2 because VLA-Pruner needs an attention history, and uses the registered completed Object recording set.
+
+\Cref{tab:supp_region_coverage} compares which regions the five selection rules keep when each keeps the same 100 groups of the same frame.
+
+
+
+\subsection{Per-task results}
 \label{app:supp_pertask}
 
-\paragraph{Per-task breakdown on simulation benchmarks.}
-% Include Tables B.5--B.6: task-by-task success rates across LIBERO (30 tasks),
-% SIMPLER-Bridge (4 tasks), and RoboCasa-GR1 (24 tasks).
 
-\paragraph{Detailed statistical significance results.}
-% Include Table B.7: paired differences, 95% CIs, and Holm-corrected paired McNemar p-values
-% for main comparisons (Tab. 1) and operator/adaptation ablations (Tabs. 3--4).
+\paragraph{Per-task breakdown on simulation benchmarks.} We demonstrate the breakdown details of success episodes distribution across three different becnmarks. As show in \Cref{tab:supp_pertask_libero} and \Cref{tab:supp_pertask_transfer}

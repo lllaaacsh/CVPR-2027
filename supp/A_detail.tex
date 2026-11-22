@@ -1,24 +1,283 @@
 \section{Experimental Details}
 \label{app:exp_details}
 
+% Written 2026-11-19 to the advisor's outline (the outline comments are kept above each paragraph).
+% Numbers come from the recipes, launchers and evaluation records cited in the comments; nothing here
+% changes a main-paper value. New source-based additions and explicitly labelled drafts are green.
+
+
 \subsection{Architecture and training formulation}
 \label{app:supp_formulation}
 
 \paragraph{Router architecture and gradient saliency.}
 % Detail cross-attention head count, hidden dimension, MLP width, parameter/FLOPs overhead,
 % the multiplicative straight-through estimator gate, and the derivation of Eq. (3).
+On mimic-video, the router reads the future tokens after video block 2 (2,048-d) and the instruction tokens that condition the video model (1,024-d T5 embeddings).
+A linear layer maps each future token to 1,024 dimensions and a rotary encoding of its position is applied.
+One 8-head cross-attention layer lets every future token attend to the instruction tokens, with padding masked; its output is added to the projected token, and an MLP (1,024--128--1, GELU) followed by a sigmoid gives $s_{t,p}$.
+The router has 6.4M parameters (2.1M projection, 4.2M attention, 0.13M MLP), against 2B in the video model.
+% Analytic count: projection 70.5 + query/output projections 70.5 + attention products 35.2 + key/value 2.1 + MLP 4.4 GFLOPs
+% for 16,800 tokens and 512 text tokens (MAC = 2 FLOPs). Not measured separately.
+Scoring all 16,800 future tokens costs about 0.18 TFLOPs by an analytic count (two operations per multiply--accumulate), \ie, 0.2\% of a full-context query (98.0 TFLOPs) and 0.4\% of a 20\% query (42.7 TFLOPs).
+
+Keeping a group at full resolution is a hard top-$F$ decision, whose locally constant ranking does not provide a usable derivative with respect to $S_g$.
+To obtain a gradient, every tube built from group $g$ (four tubes if the group is kept, one if it is merged) is multiplied by
+\begin{equation}
+  \gamma_g = 1 + S_g - \operatorname{sg}(S_g),
+  \label{eq:supp_ste}
+\end{equation}
+where $\operatorname{sg}$ stops the gradient.
+In the forward pass $\gamma_g=1$, so training and deployment run the same operator; in the backward pass $\partial\gamma_g/\partial S_g = 1$.
+Writing $\tilde z_i=\gamma_{g(i)}z_i$ for the tokens of these tubes, the chain rule gives
+\begin{equation}
+  \frac{\partial \mathcal{L}_{\text{task}}}{\partial S_g}
+  = \sum_{i:\,g(i)=g} \Big\langle \frac{\partial \mathcal{L}_{\text{task}}}{\partial \tilde z_i},\, z_i \Big\rangle ,
+  \label{eq:supp_saliency}
+\end{equation}
+the first-order change of the task loss when the group's tokens are scaled up by a small factor. It supplies decoder supervision without a test-time full-context probe; the allocation comparisons assess its effect on control.
+\mainref{eq:saliency}{Eq.~(3)} keeps its negative part, $r_g=\max(0,-\partial\mathcal{L}_{\text{task}}/\partial S_g)$: a group scores high when giving more weight to its representation would lower the task loss.
+The same path also passes $\partial\mathcal{L}_{\text{task}}/\partial S_g$ to the router parameters directly, so the router is trained by the task gradient and by the pseudo-labels below.
 
 \paragraph{Router objective and target smoothing.}
-% Write explicit equations for L_focal, L_budget, and L_entropy in Eq. (4),
-% along with the EMA decay rate used to smooth r_g and top-k (k = F) labeling.
+The router predicts input-conditioned relevance scores
+from the current visual features and task instruction.
+For each training sample $i$, we compute the
+gradient-derived saliency
+\begin{equation}
+r_g^{(i)} =
+\max\left(
+0,-\frac{\partial \mathcal{L}_{\mathrm{task}}^{(i)}}
+{\partial S_g^{(i)}}
+\right).
+\end{equation}
+
+To reduce the noise of gradient-based supervision,
+we maintain an exponential moving average of
+the batch-level saliency:
+\begin{equation}
+m_g^{(n)} =
+\mu m_g^{(n-1)}
++ (1-\mu)\bar{r}_g^{(n)},
+\end{equation}
+where $\bar{r}_g^{(n)}$ is the batch-averaged
+saliency at training step $n$ and $\mu=0.9$.
+
+The smoothed target for each sample combines
+the running statistic with its current saliency:
+\begin{equation}
+\tilde{r}_g^{(i,n)} =
+\mu m_g^{(n)}
++ (1-\mu)r_g^{(i,n)}.
+\end{equation}
+
+
+
+We independently select the top-$F$ groups
+for each sample to construct binary pseudo-labels:
+\begin{equation}
+y_g^{(i)} =
+\mathbb{I}\left[
+g \in \operatorname{TopF}(\tilde{r}^{(i,n)})
+\right].
+\end{equation}
+
+The pseudo-labels supervise the input-conditioned
+router through the focal classification loss,
+while the budget and entropy terms regularize
+its predicted scores.The EMA is used exclusively to stabilize the gradient-derived pseudo-labels during router training. The smoothed saliency combines a running group-level statistic with the current sample's task gradient, and the top-F pseudo-labels are constructed independently for each training sample. In addition to this pseudo-label supervision, the router receives direct gradients from the task objective through the straight-through gate in \ref{eq:supp_ste}. At inference, neither the EMA statistics nor the pseudo-labels are used: the router directly predicts relevance scores from the current visual features and task instruction, and these scores determine the spatial and temporal allocation.
+
+For completeness, let $q_g=S_g$ for $y_g=1$ and $q_g=1-S_g$ otherwise, and let $\rho=F/G$.
+The losses in \mainref{eq:router_loss}{Eq.~(4)} are
+\begingroup
+\begin{align}
+ \mathcal{L}_{\mathrm{focal}}&=-\frac1G\sum_g\alpha_{y_g}(1-q_g)^\gamma\log q_g,\\
+ \mathcal{L}_{\mathrm{budget}}&=\left|\frac1G\sum_g S_g-\rho\right|,\\
+ \mathcal{L}_{\mathrm{entropy}}&=-\frac1G\sum_g\big[S_g\log S_g+(1-S_g)\log(1-S_g)\big].
+\end{align}
+\endgroup
+The expressions are averaged over the batch, with $\gamma=2$, $\lambda_b=\lambda_e=0.1$ and $\beta=0.999$.
+Effective-number weights are $\hat\alpha_c=(1-\beta)/(1-\beta^{n_c})$, normalized to $\alpha_0+\alpha_1=1$, where $n_c$ counts the pseudo-labels of class $c$ in the batch.
+Probabilities are clipped to $[10^{-6},1-10^{-6}]$ for the logarithms.
+If a sample has no positive saliency, the implementation uses its detached current scores before target smoothing to avoid arbitrary all-zero targets.
 
 \paragraph{Temporal boundary placement and positional indexing.}
 % Formalize cumulative frame-to-frame cosine variation for placing K_p segment boundaries,
 % native-grid spatial alignment, and 3D RoPE behavior under contiguous-t vs. source-t.
+% Source: model/scripts/video_router/adaptive_temporal.py (cosine motion, equal-variation cuts, packing).
+Let $h_{t,p}$ be the router's projected (pre-rotary) feature of tube $p$ in future frame $t$, computed after spatial merging.
+The frame-to-frame variation is $\delta_{p,t}=1-\cos(h_{t,p},h_{t+1,p})$ and $\Delta_p=\frac{1}{T-1}\sum_t\delta_{p,t}$ enters the priority of \mainref{eq:priority}{Eq.~(6)}.
+Tubes are sorted by $u_p$ and the tiers of \cref{tab:supp_schedules} are filled from the top, so the token budget is met exactly.
+Within a tube with $K_p$ segments, let $c_t=\sum_{\tau<t}\delta_{p,\tau}$ be the cumulative variation, and place a candidate cut between frames $t$ and $t{+}1$ at $\bar c_t=(c_t+c_{t+1})/(2c_T)$.
+The $K_p-1$ cuts $b_1<\dots<b_{K_p-1}$ minimize
+\begin{equation}
+  \sum_{q=1}^{K_p-1} \Big(\bar c_{b_q} - \frac{q}{K_p}\Big)^2 ,
+  \label{eq:supp_cuts}
+\end{equation}
+so every segment covers about $1/K_p$ of the tube's total variation.
+The ordered minimization is solved exactly by dynamic programming, with a $10^{-6}$-weighted term favouring equal-length cuts when variation costs are nearly tied; a tube without variation receives equal-length segments.
+Each segment is replaced by the mean of its frames.
+
+The video DiT uses 3D rotary embeddings factorized over time, height and width.
+Spatially, every tube keeps the grid position of its top-left source position, so future tubes stay aligned with the observation tokens.
+Temporally, contiguous-t gives the $k$-th segment of every tube the $k$-th future time index, regardless of the frames it covers.
+Source-t instead gives a segment the index of its source frame closest to the segment's midpoint in cumulative variation; a tube with few segments then has large gaps between its indices, and tubes with different $K_p$ use different spacings (\mainref{fig:temporal_positions}{Figure~4}).
 
 \paragraph{Velocity distillation and adapter merging.}
 % Detail shared action-noise sampling in Eq. (2), linear folding of rank-16 LoRA weights
 % at deployment, and training/inference pseudocode (Algorithms A.1--A.2).
+% Source: run_action_decoder_lora_training.py (build_crossattn with shared video_noise; teacher with adapters disabled).
+For every training sample, the full-context teacher and the compressed student see the same inputs except for the allocation.
+One video noise draw $\epsilon_v$ is shared by both contexts, with the future latents at the deployment noise level $\sigma=80$, so the two contexts differ only by compression.
+The action decoder is a flow-matching model: with a demonstrated action chunk $a$, a flow time $\tau$ drawn per sample from the released trainer's Beta distribution, and one action noise $\epsilon_a\sim\mathcal{N}(0,I)$,
+\begin{equation}
+  x_\tau=(1-\tau)\,a+\tau\,\epsilon_a, \qquad v_{\text{gt}}=\epsilon_a-a .
+\end{equation}
+The teacher $v_{\text{full}}$ is the original decoder (adapter disabled) on the full context and the student $v$ is the adapted decoder on the compressed context, both evaluated at the same $(x_\tau,\tau)$ and robot state, so
+\begin{equation}
+  \mathcal{L}_{\text{task}} = \norm{v - v_{\text{full}}}^2 + \lambda_{\text{GT}}\norm{v - v_{\text{gt}}}^2 ,
+  \quad \lambda_{\text{GT}}=0.02 ,
+  \label{eq:supp_task}
+\end{equation}
+as in \mainref{eq:task_loss}{Eq.~(2)}; no gradient flows into the teacher.
+Sharing $\epsilon_v$, $\epsilon_a$ and $\tau$ prevents independent noise draws from confounding the comparison between full and compressed contexts.
+
+At deployment each adapted projection $W$ is replaced by $W+\frac{\alpha}{r}BA$ ($r=16$, $\alpha=8$), and the low-rank branch is removed; the folded decoder has the FLOPs of the original.
+\Cref{alg:supp_train,alg:supp_infer} summarize training and inference.
+
+
+\begin{algorithm}[t]
+  \caption{Training \method\ on mimic-video (one suite).}
+  \label{alg:supp_train}
+  \footnotesize
+  \begin{algorithmic}[1]
+    \Require Frozen video DiT $V$ and decoder $D$;
+    demonstrations; training and deployment
+    budget schedules (\cref{tab:supp_schedules})
+
+    \State Initialize router $R_\theta$,
+    temporary decoder LoRA $\phi$, and saliency
+    EMA state $m_g$
+
+    \For{each Stage-1 training step}
+      \Comment{Joint adaptation}
+
+      \State Sample a batch of instructions,
+      observations, actions $a$, and robot states;
+      draw $\epsilon_v,\tau,\epsilon_a$
+
+      \State $Z \gets
+      V_{1:2}(\text{observation},\sigma\epsilon_v)$
+
+      \State $s \gets
+      R_\theta(Z_{\mathrm{fut}},\text{instruction})$;
+      compute $S_g$ by
+      \mainref{eq:group_score}{Eq.~(5)}
+
+      \State Apply the Stage-1 spatial and temporal
+      allocation; gate tubes by $\gamma_g$
+      (\cref{eq:supp_ste})
+
+      \State $C \gets V_{3:20}(\text{allocated }Z)$
+
+      \State $C_{\mathrm{full}}
+      \gets V_{3:20}(Z)$ without gradient
+
+      \State $v \gets
+      D_\phi(x_\tau,\tau,\text{state},C)$
+
+      \State $v_{\mathrm{full}}\gets
+      D(x_\tau,\tau,\text{state},C_{\mathrm{full}})$
+
+      \State Compute per-sample
+      $\mathcal{L}_{\mathrm{task}}^{(i)}$
+      by \cref{eq:supp_task}
+
+      \State $r_g^{(i)} \gets
+      \max(0,
+      -\partial\mathcal{L}_{\mathrm{task}}^{(i)}
+      /\partial S_g^{(i)})$
+
+      \State $\bar r_g \gets
+      \operatorname{mean}_i r_g^{(i)}$
+
+      \State $m_g \gets
+      \mu m_g+(1-\mu)\bar r_g$
+      \Comment{EMA update}
+
+      \State $\tilde r_g^{(i)}
+      \gets \mu m_g+(1-\mu)r_g^{(i)}$
+
+      \State $y_g^{(i)}
+      \gets \mathbb{I}
+      [g\in\operatorname{TopF}(\tilde r^{(i)})]$
+
+      \State Detach pseudo-labels;
+      compute $\mathcal{L}_{\mathrm{router}}$
+      by \mainref{eq:router_loss}{Eq.~(4)}
+
+      \State Update $\theta,\phi$ using
+      $\nabla(\mathcal{L}_{\mathrm{task}}
+      +\mathcal{L}_{\mathrm{router}})$
+
+    \EndFor
+
+    \State Freeze the learned router $R_\theta$
+
+    \For{each target token budget $b$}
+      \Comment{Stage 2}
+
+      \State Initialize a fresh rank-16
+      decoder LoRA $\phi_b$
+
+      \For{each Stage-2 training step}
+
+        \State Sample demonstrations and
+        flow-matching noise
+
+        \State Compute early features $Z$
+        and input-conditioned router scores
+
+        \State Allocate future tokens using
+        the deployed schedule for budget $b$
+
+        \State Compute compressed context
+        $C_b$ and full-context teacher
+        features $C_{\mathrm{full}}$
+
+        \State Compute student velocity
+        $v_b$ and teacher velocity
+        $v_{\mathrm{full}}$
+
+        \State Compute $\mathcal{L}_{\mathrm{task}}$
+        by \cref{eq:supp_task}
+
+        \State Update only $\phi_b$
+        using $\nabla_{\phi_b}
+        \mathcal{L}_{\mathrm{task}}$
+
+      \EndFor
+    \EndFor
+
+    \State \Return $R_\theta$ and
+    budget-specific adapters $\{\phi_b\}$
+
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+  \caption{One mimic-video policy query of \method.}
+  \label{alg:supp_infer}
+  \footnotesize
+  \begin{algorithmic}[1]
+    \Require observation frames, instruction, robot state; folded adapter; budget schedule
+    \State $Z \gets V_{1:2}(\text{observation},\text{noisy future latents})$ \Comment{19,200 tokens}
+    \State $s \gets R(Z_{\text{fut}},\text{instruction})$; $S_g$; keep the top-$F$ groups, merge the rest
+    \State $u_p \gets S_{g(p)}\Delta_p$; assign $K_p$ by tier; cut tubes by \cref{eq:supp_cuts}; mean-pool segments
+    \State spatial positions from the source grid; temporal positions contiguous
+    \State $C \gets V_{3:20}([Z_{\text{obs}};\,\text{pooled future}])$ \Comment{$N$ + 2,400 tokens}
+    \State sample the action chunk on $C$ (10 flow steps); execute its first 5 actions
+  \end{algorithmic}
+\end{algorithm}
 
 \subsection{Benchmarks and evaluation protocols}
 \label{app:supp_benchmarks}
@@ -26,18 +285,74 @@
 \paragraph{LIBERO.}
 % Detail LIBERO-Spatial, LIBERO-Object, and LIBERO-Goal (10 tasks each, 50 episodes,
 % 3 paired seeds, 5-step execution horizon, and exclusion of LIBERO-Long).
+Each of LIBERO-Spatial, -Object and -Goal has ten tasks; we evaluate 50 initial states per task, 500 episodes per suite, with the benchmark's initial states and episode limits.
+Every method is evaluated on the same task-specific initial states within each evaluation seed, enabling paired comparisons. For each seed, we evaluate 50 episodes per task across 10 tasks, yielding 500 episodes per suite. We use three evaluation seeds, resulting in 1,500 evaluation episodes per method per suite. The reported success rates are averaged over the three seeds.
+
+mimic-video uses the released suite-specific checkpoints and conditions on five RGB frames (two latent observation frames) and the robot state. The video model runs a single step at the deployment noise level, and five actions of each predicted chunk are executed before replanning.
+
+LIBERO-Long is excluded because our reproduction lacks a corresponding checkpoint and evaluation configuration.
+LIBERO recordings use MuJoCo 3.3.4; SIMPLER-Bridge uses its SAPIEN-based simulator, and RoboCasa-GR1 uses the released RoboCasa-GR1 environment.
+Main-table runs used H100 GPUs. Additional ablations use A100 or H100 GPUs as identified in \cref{tab:supp_ablations}; paired ablation tests use references from the same GPU campaign.
 
 \paragraph{SIMPLER-Bridge.}
-% Detail the 4 WidowX tasks, 96 paired evaluation episodes, observation/action horizons,
-% and released mimic-video checkpoint configuration.
+
+We use the four WidowX tasks of SIMPLER-Bridge: put the carrot on the plate, put the spoon on the towel, stack the green block on the yellow block, and put the eggplant in the basket, with 24 fixed episodes per task and evaluation seed (96 per seed). The reported protocol uses three evaluation seeds.
+The released Bridge video model and action decoder are frozen; the observation and execution horizons match LIBERO (five frames, five executed actions).
+Bridge has its own router, trained on 1,024 BridgeDataV2 episodes (50 held out) with $F=200$, uniform pooling into 12, 10 or 8 segments during joint training.
 
 \paragraph{RoboCasa-GR1.}
-% Detail the 24 tabletop manipulation tasks, 1,200 paired evaluation episodes,
-% observation inputs, and DiT4DiT checkpoint configuration.
+RoboCasa-GR1 has 24 tabletop tasks for the GR1 humanoid: six place an object into an articulated container and close it, and 18 move a novel object between two receptacles (\cref{tab:supp_pertask_gr1}).
+We evaluate 50 episodes per task and seed (1,200 per seed), with three evaluation seeds in the reported protocol. Pairing is by (seed, task, episode) when seed-level records are available.
+DiT4DiT uses the released GR1 checkpoint with a single $224{\times}224$ egocentric view and the robot state; its video model sees one observed and two future latent frames of $14{\times}14$ tokens (588 tokens), and part of the view is letterbox padding.
+
+\input{tables/supp_schedules}
+\input{tables/supp_hyperparameters}
 
 \paragraph{Real-robot kitchen tasks.}
 % Detail the 7-DoF Franka Emika Panda arm, Robotiq-2F-85 gripper, side-view 480x640 RGB camera,
 % exact task definitions and success criteria for all 6 tasks in Fig. 6 / Tab. 5, and 15 trials per task.
+% Task names follow Table 5 of the main paper (authors' rename 'Pick Cup to Sink', 2026-11-19). The instruction strings are
+% the training strings of mimic repo docs/REAL_ROBOT_LAB_GUIDE.md section 8; the one for Pick Cup to Sink is left to the
+% authors because the lab-guide task 'pick_cup_in_pool' reads "pick up the cup in the sink".
+% Source of the interface: mimic repo docs/REAL_ROBOT_LAB_GUIDE.md sections 1 and 8.
+The robot is a 7-DoF Franka Emika Panda with a Robotiq 2F-85 gripper in a toy kitchen, observed by one side-view RGB camera whose $1280{\times}720$ frames are resized to $480{\times}640$.
+The observation and target-action streams use a 5\,Hz cadence: a query reads frames at $t-0.8,\dots,t$\,s and the end-effector state, predicts 15 end-effector targets at 0.2\,s spacing, executes the first five and replans.
+Predicted actions are pose increments in the current end-effector frame, tracked by a Cartesian impedance controller.
+All methods share the frozen Bridge video model and use task-specific action decoders fine-tuned on demonstrations of each task.
+\Cref{tab:supp_robot_tasks} lists task descriptions and reported success criteria; every method is run for 15 trials per task.
+\method retains 30\% of the future tokens (7,440 tokens in total).
+The real-robot policies in \mainref{tab:real_robot}{Table~5} start from the task-specific 5,000-step native decoder checkpoints.
+Router and adapter training use the corresponding demonstration splits, normalization statistics and instruction embeddings.
+The two adaptation stages comprise 1,500 steps of joint router/temporary-LoRA training followed by 1,500 steps for a fresh budget-specific LoRA with the router frozen.
+The two adaptation stages use AdamW, batch size one with eight accumulated samples, router/adapter learning rates $10^{-4}$/$4\times10^{-5}$, 100 warm-up steps and cosine decay to 5\%.
+LoRA has rank 16 and $\alpha=8$; the deployment allocation retains $F=100$ groups with $K=(5,8,10)$ and counts $(120,180,300)$, giving 5,040 future and 7,440 total tokens.
+
+
+
+
+
+\begin{table}[!htbp]
+  \centering
+  \caption{\textbf{Real-robot tasks.}
+  Natural-language task descriptions and reported success criteria; every method is run for 15 trials per task.}
+  \label{tab:supp_robot_tasks}
+  \scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Task & Description & Success criterion \\
+    \midrule
+    Pick Cup to Sink & pick the cup to the sink & Grasp the handle then let cup be dropped in the sink \\
+    Stack Bowls & stack the bowls & Stack one bowl on the top of another without falling \\
+    Pour Water & pour the water to the sink & Grasp the handle and then let cup rotate 90 degrees over the sink \\
+    Open Microwave & open the microwave & Grasp the handle tight then open the microwave \\
+    Cup out Microwave & take the cup out of the microwave & Take the cup out by handle then place it on the table \\
+    Open Lid & open the lid & Precisely grasp the lid then lift it to an open state \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\input{tables/dit4dit_deployment}
 
 \subsection{Allocation schedules and hyperparameters}
 \label{app:supp_schedules}
@@ -45,30 +360,83 @@
 \paragraph{Token budgets and tier schedules.}
 % Include Table A.1: observation/future token counts, routing block index, spatial full-res groups F,
 % and priority-tier segment counts K_p for mimic-video and DiT4DiT across all benchmarks.
+\Cref{tab:supp_schedules} lists every reported cell.
+
+On mimic-video, the 2,400 observation tokens are always kept and the budget counts future tokens: $F=100$ of the 300 groups per future frame stay at full resolution, which gives 600 tubes, and the three tiers hold 120, 180 and 300 tubes.
+The segment counts of the tiers grow with the budget, and their weighted sum equals the future budget exactly.
+Bridge keeps $F=200$ groups (900 tubes): with $F=100$ the operator cannot exceed 10,800 tokens,  its tier sizes keep the LIBERO proportions (20/30/50\%).
+On DiT4DiT/LIBERO, the single future frame limits allocation to space, so budgets below 490 tokens must also coarsen the observed frame.
+On RoboCasa-GR1, the two future frames allow one or two segments per tube; the 466-token cell combines spatial merging ($F=41$) with temporal merging of 74 tubes.
 
 \paragraph{Optimization hyperparameters.}
-% Include Table A.2 (modeled on BLIP-2 Tables 7--9): optimizer, learning rate, schedule,
-% batch size, training steps, LoRA rank/alpha/targets, and loss weights.
+ ARROW separates relevance learning from budget-specific decoder adaptation. In Stage 1, the router and a temporary decoder LoRA are jointly optimized using the task objective and router supervision. Spatial allocation uses 2 by 2 groups with F = 100, while the training-stage temporal operator employs uniform pooling. For LIBERO-Spatial and LIBERO-Goal, the temporal pooling configurations use 12, 10, or 8 segments; LIBERO-Object uses 8, 6, or 4 segments. The resulting compressed contexts provide task-gradient supervision for learning the router's relevance scores.
 
-\paragraph{Inference profiling and statistical testing.}
-% Detail H100 and RTX 4090 batch-1 latency/FLOPs measurement protocols, paired 95% CIs,
-% and Holm-corrected paired McNemar significance tests (including the degree symbol in Tab. 4).
+In Stage 2, the learned router is frozen, and the temporary decoder adapter is replaced by a freshly initialized, budget-specific LoRA. This adapter is trained using the actual deployment allocation schedule in Table \ref{tab:supp_schedules}, including relevance- and dynamics-aware temporal allocation. Thus, Stage 1 learns the routing scores, whereas Stage 2 adapts the action decoder to the final compressed context at each target budget. Both stages use the task objective in \ref{eq:supp_task}, with λGT = 0.02.
+
+
+
+\paragraph{Inference profiling.}
+% Detail H100 and RTX 4090 batch-1 latency/FLOPs measurement protocols.
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig10_latency_breakdown.pdf}
+  \caption{\textbf{Where the time of one query goes on mimic-video.}
+  Median stage times on an H100 at batch size one, with CUDA graphs and folded adapters.}
+  \label{fig:supp_latency_breakdown}
+\end{figure}
+
+
+\emph{Latency.}
+mimic-video is timed on an exclusively allocated H100 at batch size one with the Spatial checkpoints, including text encoding: three warm-up calls are followed by eight interleaved rounds of four calls per configuration, and we report the median of the 32 synchronized wall-clock times.
+All configurations use CUDA graphs and folded adapters; on fixed inputs the folded and graphed policies match the eager trained adapters.
+Text encoding takes about 150\,ms in every configuration (\cref{fig:supp_latency_breakdown}); at the 20\% budget the video DiT runs $1.87\times$ and the action decoder $1.98\times$ faster than in the full-context policy.
+DiT4DiT is timed with the same protocol, including the VAE, cached text retrieval, current router scores and allocation, the video forward and all four action-flow steps; \cref{tab:dit4dit_deployment} lists the effect of each deployment optimization, all of which also apply to the full-context reference.
+On the robot, an RTX 4090 shared with the control desktop runs the same protocol over 210 queries per method, including text encoding.
+
+\emph{FLOPs.}
+FLOPs are counted with PyTorch's FLOP counter on the same inputs.
+TFLOPs cover the linear and convolution layers, consistently for all methods; mimic-video counts include the VAE and text encoder.
+
+\emph{Statistics.}
+For the recorded simulator analyses, comparisons pair episodes with the same initial state.
+We report the paired difference in percentage points.
 
 \subsection{Baseline adaptation protocols}
 \label{app:supp_baselines}
 
+% Source: mimic repo docs/EXTERNAL_BASELINES_PREREG_2026-11-04.md and DIT4DIT_FIXED_CONTEXT_PREREG_2026-11-07.md.
+The external methods were designed for vision-language-action policies that prune observation tokens; we adapt their selection rules to a cascaded WAM.
+On mimic-video, every method keeps the 2,400 observation tokens, selects at video block 2, and keeps the original features and source positions of the selected tokens without rescaling.
+VLA-Pruner, ADP and CF-Prune rank the 1,200 positions of the last observed frame, keep 120/240/360 of them, and transfer this spatial mask to all 14 future frames, which gives the 1,680/3,360/5,040 future tokens of the three budgets.
+Each method and budget gets a fresh decoder adapter with the Stage~2 budget-specific adaptation recipe (\cref{tab:supp_hparams}) and no router.
+Semantic scores use the mean raw scaled query--key logit over instruction tokens and heads, because the video model's cross-attention has text keys only and its softmax averaged over keys would be constant.
+Action attention averages all action queries (excluding the state query) and all ten flow steps, in float32 over the actual context.
+
 \paragraph{FastV-style.}
-% Detail shallow block-2 visual self-attention ranking, matched-budget pruning,
-% and dedicated rank-16 decoder LoRA training.
+
+Future tokens are ranked by the self-attention they receive at video block 2, averaged over heads and over all visual queries, and the top tokens up to the budget are kept at their original positions.
+
 
 \paragraph{VLA-Pruner.}
-% Detail semantic instruction attention combined with historical action-decoder attention,
-% dense bootstrap queries per episode, and mean token accounting (*) in Tab. 1.
+
+VLA-Pruner keeps the union of the semantic top-$k$ and the top-$k$ of historical action attention, then reduces it to $k$ by max--min cosine diversity on the current block-2 features, starting from the candidate farthest from its nearest neighbour.
+Historical attention is the decoder's action-to-observation attention averaged over the latter half of the decoder layers, kept for the last three queries with decay 0.8.
+The first three queries of every episode run the full-context policy to initialize this history, which is reset at every episode; training uses chronological windows so that the history never crosses episodes.
+Because of these dense queries, the mean context per query exceeds the compressed budget: 5,535/7,240/8,788 tokens (marked $*$ in \mainref{tab:main_results}{Table~1}).
 
 \paragraph{ADP.}
 % Detail text-guided token selection, end-effector motion-gate thresholds triggering
 % full-context fallback queries, and mean token accounting (*) in Tab. 1.
+ADP keeps the semantic top-$k$ positions, gated by end-effector motion as in the released implementation.
+The current displacement is compared with the two preceding ones: a displacement at least as large as the previous maximum prunes, one below the previous minimum falls back to the full context, and values in between prune; after three consecutive pruned queries one full-context query is forced. The resulting mean context is 12,101/13,059/13,881 tokens per query.
 
 \paragraph{CF-Prune.}
 % Detail the two-pass single-step adaptation: initial full-context probe pass for instruction
 % and action attention followed by pruned prediction, and its latency/FLOPs accounting.
+CF-Prune reads instruction and action attention from an earlier denoising pass and prunes the later passes.
+With single-step video inference there is no earlier pass, so every query first runs a full-context probe (video to block 20 and the original decoder, adapter disabled) and then the compressed prediction.
+The two attention maps are smoothed and combined by complementary 50/50 selection; the probed layers are chosen at the first query of each episode by minimum normalized attention entropy and then held fixed, and the phase gate of the original method is omitted.
+Both passes count towards its cost, which is why its latency and FLOPs exceed those of the full-context policy in \mainref{tab:main_results}{Table~1}.
+
+\paragraph{DiT4DiT.}
+The DiT4DiT adaptations follow the same definitions with that backbone's quotas, 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 tokens, so they also select observation tokens at the two smaller budgets; each method and budget again gets a fresh adapter.
