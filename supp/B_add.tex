@@ -61,6 +61,22 @@ Their segment quotas are $(90,165,195)$ for $K=(5,7,9)$ at $F=50$, and $(150,270
 Feature change only ranks tubes by $\Delta_p$; reversed priority ranks them by $-u_p$; flat counts give nearly equal segment counts by a fixed spatial pattern; random tier assignment uses a fixed random ranking.
 
 
+\begin{figure*}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{Figure_B1.pdf}
+  \caption{\textbf{Insertion curves and ranking reversal on LIBERO-Spatial.}
+  (a) Geometric-mean normalized MSE of the first five decoded actions relative to full-context actions (200 held-out windows from 50 episodes; log scale).
+  The top-$n$ of 300 spatial groups retain full resolution and the rest are merged; all 14 future frames and the original decoder remain fixed.
+  (b) Closed-loop success rates from \mainref{tab:ablations}{Table~3}, with a separately trained decoder adapter for each ranking. Dashed: uncompressed full-context policy (90.4\%).}
+  \label{fig:supp_relevance}
+\end{figure*}
+
+\paragraph{Insertion curves and ranking reversal.}
+\Cref{fig:supp_relevance} examines how the learned ranking affects action preservation and closed-loop control.
+With 50--250 groups kept at full resolution, router-guided insertion gives the lowest action distortion among the compared criteria.
+Reversing the scores to $1-S_g$ increases distortion and reduces success at all three token budgets, even with a separately retrained decoder adapter.
+
+
 \par\medskip\noindent\begin{minipage}{\linewidth}
 \subsection{Coverage analysis}
 \label{app:supp_diagnostics}
