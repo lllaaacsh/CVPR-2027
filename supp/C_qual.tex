@@ -1,3 +1,4 @@
+\FloatBarrier
 \section{Qualitative Analysis}
 \label{app:qual_analysis}
 
@@ -40,7 +41,7 @@
   \raisebox{0.15ex}{\includegraphics[height=0.9ex]{supp/legend_path.pdf}}: future path of the end effector.
   LIBERO outlines and path come from simulator segmentation; 
   RoboCasa-GR1 (DiT4DiT) shows a demonstration frame with $7{\times}7$ groups, of which every rule keeps 16;  the black bars are letterbox padding.
-  These frames are illustrations; \cref{tab:supp_region_coverage} gives the averages over 50 episodes.}
+  These frames are illustrations; \suppdraft{\cref{tab:supp_region_coverage}} gives the averages over 50 episodes.}
   \label{fig:supp_selection_maps}
 \end{figure*}
 
@@ -49,13 +50,15 @@
 \paragraph{Spatial group selection across tasks.}
 % Include Figure C.1: matched-budget 2x2 spatial group selection maps comparing FastV-style,
 % VLA-Pruner, ADP, CF-Prune, and ARROW across LIBERO suites and SIMPLER-Bridge.
-\Cref{fig:supp_selection_maps} shows the groups that each rule keeps from the same frame.
+\suppdraft{\Cref{fig:supp_selection_maps}} shows the groups that each rule keeps from the same frame.
 On LIBERO, FastV-style spends much of its budget on the table and the dark cabinet and misses the bowl to be picked up, ADP keeps the arm and the cabinet but misses the plate and most of the path, and VLA-Pruner's selection is scattered over the scene.
-CF-Prune and \method both keep a compact region around the arm and objects however ignore arms future path in most cases. While \method covers more of the path between them. Besides, CF-Prune obtains its selection only after a full-context probe.
+\suppdraft{In the illustrated LIBERO-Spatial frame, CF-Prune and \method both keep compact regions around the arm and task objects, while \method also retains groups along the future path between them. CF-Prune obtains its selection after a full-context probe.}
 On Bridge, the baselines again select scattered regions or regions away from the target, while \method keeps the object, the path and the target pot, plus a few isolated groups along the top edge.
 
-On LIBERO-Goal, VLA-Pruner, CF-Prune and \method keep the arm, the bowl and the plate (\method 90\% of the plate) and \method keeps the fewest other-object pixels (43\% against 49\% and 59\%), while FastV-style misses both task objects and ADP the bowl.
-On LIBERO-Object, CF-Prune and VLA-Pruner keep nearly all of the sauce and the basket but also 99\% and 90\% of the other objects; \method keeps 84\% of the basket, 70\% of the sauce and the path between them with 20\% of the other objects, FastV-style keeps the basket but not the sauce, and ADP neither.
+\suppdraft{The following pixel shares are single-frame measurements from \suppdraft{\cref{fig:supp_selection_maps}}. In its LIBERO-Goal frame, VLA-Pruner, CF-Prune and \method keep the arm, bowl and plate (\method covers 90\% of the plate), and \method keeps 43\% of the other-object pixels, compared with 49\% and 59\% for VLA-Pruner and CF-Prune. FastV-style misses both task objects and ADP misses the bowl.}
+\suppdraft{In the single LIBERO-Object frame of \suppdraft{\cref{fig:supp_selection_maps}}, CF-Prune and VLA-Pruner keep nearly all of the sauce and basket, together with 99\% and 90\% of the other-object pixels. \method keeps 84\% of the basket, 70\% of the sauce and the path between them, with 20\% of the other-object pixels. FastV-style keeps the basket but not the sauce, and ADP keeps neither task object.}
+\suppdraft{Across the 50-episode recordings in \suppdraft{\cref{tab:supp_region_coverage}}, \method has the highest mean future-path coverage among the five selection rules on each LIBERO suite: 82.3\% on Spatial, 77.0\% on Goal and 96.7\% on Object. These episode-averaged values describe the multi-episode analysis, separately from the single-frame pixel shares above.}
+
 On RoboCasa-GR1, \method keeps the both pepper and the target basket in this frame.
 
 \begin{figure*}[!t]
@@ -74,23 +77,32 @@ On RoboCasa-GR1, \method keeps the both pepper and the target basket in this fra
 \paragraph{Temporal tubelet segmentation.}
 % Include Figure C.2: 14-frame future tubelet visualizations illustrating fine segments (K=7)
 % on moving arm/object regions vs. coarse segments (K=3) on static background regions.
-\Cref{fig:supp_allocation_steps} follows one recorded query through the allocation.
+\suppdraft{\Cref{fig:supp_allocation_steps}} follows one recorded query through the allocation.
 Tube A, on the gripper, is in the highest tier and receives 4, 7 and 10 segments at the three budgets; tube C, on the table background, is in the lowest tier and receives 1, 3 and 5.
 Tube B, on the arm base, is in the middle tier because its router score is lower than the gripper's, not because its features change less.
-Within each tube, the boundaries follow the cumulative feature change (\cref{eq:supp_cuts}), so segments are shorter where the features change faster, and contiguous-t gives the segments consecutive temporal positions (e).
+Within each tube, the boundaries follow the cumulative feature change (\suppdraft{\cref{eq:supp_cuts}}), so segments are shorter where the features change faster, and contiguous-t gives the segments consecutive temporal positions (e).
 
 \subsection{Real-robot rollout comparisons}
 \label{app:supp_vis_robot}
 
-Real-robot rollout videos are included in the supplementary video file submitted alongside this document.
+\suppdraft{\Cref{fig:supp_real_robot_rollouts} shows recorded Full-context and \method rollouts on Stack Bowls and Open Lid, together with \method router scores aligned to the saved camera observations. The columns compare task phases in separate runs. The supplementary video provides additional real-robot demonstrations.}
+
+\begin{figure*}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{supp_real_robot_rollouts.pdf}
+  \captionsetup{labelfont={color=suppdraftgreen}}
+  \caption{\suppdraft{\textbf{Real-robot rollouts and camera-aligned routing.}
+  (a) Stack Bowls; (b) Open Lid. Each task shows Full-context (19,200 tokens), \method (7,440 tokens, retaining 30\% of future tokens), and \method group scores $S_g$ over the corresponding observation.
+  White outlines mark the 100 groups kept at full spatial resolution; all heatmaps use the same $[0,1]$ scale.
+  Routing is reconstructed offline from the saved observation histories with the matching checkpoints; the replayed actions exactly match the recorded actions.
+  Columns align separate rollouts by task phase, with query index $q$ and elapsed video time $t$.}}
+  \label{fig:supp_real_robot_rollouts}
+\end{figure*}
 
 \subsection{Failure case analysis}
 \label{app:supp_failures}
 
-% Selection rule registered before the recording run (mimic repo ablations/failure_cases_20261119/README.md):
-% 100 Spatial episodes (10 trials per task, seed 0) of the adopted 10% cell, recorded with the E3 recorder (frames,
-% instance segmentation, allocation of every query). Records = BSC 49254201 shards 1,3,4 + QMUL 36705241 shards 0,2;
-% selection = select_failure_cases.py (selection_registered_bsc134_qmul02.json); figures = render_failure_figures.py.
+
 To avoid choosing failures by eye, we recorded 100 LIBERO-Spatial episodes of the 10\% policy (10 trials per task), with the frames, the simulator segmentation and the allocation of every query, and fixed the selection rule before the run.
 Because trial $t$ of a task uses the same initial state in every run, each episode pairs with the full-context episode of the same task and trial.
 
@@ -99,14 +111,15 @@ Because trial $t$ of a task uses the same initial state in every run, each episo
 \begin{figure*}[!t]
   \centering
   \includegraphics[width=\textwidth]{supp_failure_compression.pdf}
+  \captionsetup{labelfont={color=suppdraftgreen}}
   \caption{\textbf{Failures observed at the 10\% budget.}
   Episodes that fail with \method and succeed with the full-context policy, ranked by the share of task-object pixels in merged groups over the last five queries before failure.
   Per episode, from left to right: the allocation at the first query (merged groups darkened, target bowl outlined), then the frame at step 100 of the 10\% policy and of the full-context policy from the same initial state.
   Episodes 44, 50 and 47 (bowl in the top drawer) have the highest shares (52, 51 and 49\%); episode 100 (bowl on the wooden cabinet) is the median of the 29 episodes (36\%).}
   \label{fig:supp_failure_compression}
 \end{figure*}
-\Cref{fig:supp_failure_compression} shows episodes that fail with \method but succeed with the full-context policy, ranked by the share of task-object pixels in merged groups during the last five queries before the failure is decided; we show the three highest and the median.
-At 10\%, these failures concentrate on three Spatial tasks (\cref{tab:supp_pertask_libero}): picking the bowl from the top drawer, next to the cookie box, and from the wooden cabinet.
+\suppdraft{\Cref{fig:supp_failure_compression}} shows episodes that fail with \method but succeed with the full-context policy, ranked by the share of task-object pixels in merged groups during the last five queries before the failure is decided; we show the three highest and the median.
+At 10\%, these failures concentrate on three Spatial tasks (\suppdraft{\cref{tab:supp_pertask_libero}}): picking the bowl from the top drawer, next to the cookie box, and from the wooden cabinet.
 
 In all four shown episodes the arm never approaches the target bowl: it moves to the ramekin and the plate on the left of the table and stays there until the time limit, whereas the full-context policy, from the same initial state, lifts the bowl from the drawer or the cabinet top within 100 steps.
 Throughout these episodes the allocation keeps the ramekin and the plate at full resolution, but none of the target bowl in the three drawer episodes and 27\% of it in the fourth.
@@ -118,12 +131,13 @@ The videos do not show why the arm goes to the ramekin; we note only that the ra
 \begin{figure*}[!t]
   \centering
   \includegraphics[width=\textwidth]{supp_failure_shared.pdf}
+  \captionsetup{labelfont={color=suppdraftgreen}}
   \caption{\textbf{Failures shared with the full-context policy.}
   Episodes that fail with both policies although at least 90\% of the task-object and robot pixels are in full-resolution groups.
-  Layout as in \cref{fig:supp_failure_compression}, at the last step (219); the target bowl is entirely at full resolution in both episodes.}
+  Layout as in \suppdraft{\cref{fig:supp_failure_compression}}, at the last step (219); the target bowl is entirely at full resolution in both episodes.}
   \label{fig:supp_failure_shared}
 \end{figure*}
-\Cref{fig:supp_failure_shared} shows episodes that fail with both \method and the full-context policy although at least 90\% of the task-object and robot pixels are in full-resolution groups, ranked in the same way.
+\suppdraft{\Cref{fig:supp_failure_shared}} shows episodes that fail with both \method and the full-context policy although at least 90\% of the task-object and robot pixels are in full-resolution groups, ranked in the same way.
 The allocation keeps most target-object and robot pixels at full resolution, but shared failure alone does not identify a common cause or exclude temporal compression and decoder adaptation.
 Of the four episodes that fail with both policies, two meet this criterion.
 In episode 3 (bowl between the plate and the ramekin), the 10\% policy closes the gripper above the bowl without lifting it and moves to the plate empty; the full-context policy lifts the bowl but still holds it at the plate when the time limit is reached.

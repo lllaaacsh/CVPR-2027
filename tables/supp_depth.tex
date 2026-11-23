@@ -1,0 +1,19 @@
+% Split from the original tables/supp_ablations.tex; numerical rows are preserved unless explicitly audited below.
+\begin{table}[!tbp]
+  \centering
+  \captionsetup{labelfont={color=suppdraftgreen}}
+  \caption{\suppdraft{\textbf{Routing layer depth on LIBERO-Spatial.} \suppdraft{Success rates (SR, \%) average three evaluation seeds, with 500 paired A100 episodes per seed.} $\Delta$ is the variant minus the block-2 reference in percentage points. Each trained variant uses a fresh decoder adapter.}}
+  \label{tab:supp_depth}
+  \scriptsize
+  \setlength{\tabcolsep}{2.5pt}
+  \renewcommand{\arraystretch}{1.02}
+\begin{tabular}{@{}lrrrl@{}}
+  \toprule
+  Routing after & Tokens & ms & SR & $\Delta$ \\
+  \midrule
+  Block 1 & 4,080 & 394 & 56.8 & \suppdraft{$-12.4$} \\
+  Block 2 (\method) & 4,080 & 404.2 & 69.2 & -- \\
+  Block 6 & 4,080 & 445 & 78.2 & \suppdraft{$+9.0$} \\
+  \bottomrule
+\end{tabular}
+\end{table}

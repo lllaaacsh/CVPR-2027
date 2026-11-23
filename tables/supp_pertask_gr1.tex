@@ -1,37 +1,14 @@
-\begingroup
+\begin{table}[!tbp]
   \centering
-  \caption{\textbf{Per-task success beyond LIBERO.}
-  Columns give total context tokens.}
-  \label{tab:supp_pertask_transfer}
+  \captionsetup{labelfont={color=suppdraftgreen}}
+  \caption{\suppdraft{\textbf{Per-task successful episodes on RoboCasa-GR1 (DiT4DiT).} Task cells report successes over three evaluation seeds (150 episodes per task). Columns give total context tokens; the final row gives the overall SR (\%).}}
   \label{tab:supp_pertask_gr1}
-  \label{tab:supp_pertask_bridge}
   \scriptsize
   \setlength{\tabcolsep}{3pt}
   \renewcommand{\arraystretch}{0.98}
-  \begin{subtable}[t]{\linewidth}
-    \centering
-    \caption{SIMPLER-Bridge (mimic-video): successes of 72 episodes per task, three seeds evaluated.}
-    \begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}lrrrr@{}}
     \toprule
-    Task & Full & 11,400 & 12,300 & 13,200 \\
-    \midrule
-    Carrot on plate & 21 & 24 & 24 & 27 \\
-    Spoon on towel & 33 & 30 & 34 & 33 \\
-    Stack blocks & 12 & 9 & 12 & 12 \\
-    Eggplant in basket & 72 & 66 & 69 & 72 \\
-    \midrule
-    Total (\%) & 47.9 & 44.8 & 48.3 & 50.0 \\
-    \bottomrule
-  \end{tabular}
-  \end{subtable}
-
-  \vspace{4pt}
-  \begin{subtable}[t]{\linewidth}
-    \centering
-    \caption{RoboCasa-GR1 (DiT4DiT):150 episodes per task, three seeds evaluated.}
-    \begin{tabular}{@{}lrrrr@{}}
-    \toprule
-    Task & Full & 539 & 490 & 466 \\
+    Task & \suppdraft{Full-context} & 539 & 490 & 466 \\
     \midrule
 1. bottle $\rightarrow$ cabinet, close & 99 & 87 & 84 & 81 \\
 2. can $\rightarrow$ drawer, close & 102 & 117 & 117 & 114 \\
@@ -61,5 +38,4 @@
     Total (\%) & 54.9 & 56.8 & 55.4 & 55.0 \\
     \bottomrule
   \end{tabular}
-  \end{subtable}
-\endgroup
+\end{table}
