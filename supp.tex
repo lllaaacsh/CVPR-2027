@@ -65,7 +65,7 @@
 \@addtoreset{algorithm}{section}
 \makeatother
 
-\section*{Appendix}
+% \section*{Appendix}
     This document provides additional implementation details, quantitative analyses, and qualitative results to complement the main paper.
     \cref{app:exp_details} describes the mathematical formulation, benchmark protocols, token allocation schedules, baseline adaptations, and training hyperparameters.
     \cref{app:add_analysis} presents equal-token baseline comparisons, extended ablations, semantic region coverage, and per-task breakdowns.
@@ -75,4 +75,12 @@
 \input{supp/A_detail}
 \input{supp/B_add}
 \input{supp/C_qual}
+
+
+{
+    \small
+    \bibliographystyle{ieeenat_fullname}
+    \bibliography{main}
+}
+
 \end{document}

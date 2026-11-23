@@ -10,95 +10,161 @@
 \label{app:supp_formulation}
 
 \paragraph{Router architecture and gradient saliency.}
+    \ji{
+    On mimic-video~\cite{pai2025mimicvideo}, the router takes the future tokens after video block 2 (2048-d) and the instruction tokens that condition the video backbone (1024-d T5 embeddings).
+    A linear layer projects each future token to 1024 dimensions, followed by rotary positional encoding.
+    A single 8-head cross-attention layer allows every future token to attend to the instruction tokens with padding masked.
+    The cross-attention output is added residually to the projected token, and a two-layer MLP (1024 $\to$ 128 $\to$ 1 with GELU activation) followed by a sigmoid outputs $s_{t,p} \in [0, 1]$.
+    In total, the router contains 6.4M parameters (2.1M linear projection, 4.2M cross-attention, and 0.13M MLP), compared with 2B parameters in the frozen video DiT.
+    Analytically (counting two operations per multiply-accumulate), scoring all 16,800 future tokens requires approximately 0.18 TFLOPs, corresponding to 0.2\% of a full-context query (98.0 TFLOPs) and 0.4\% of a 20\%-budget query (42.7 TFLOPs).
+    On DiT4DiT~\cite{ma2026dit4dit}, the router follows the same architecture after video block [TODO: specify DiT4DiT routing block, input dimension, and parameter count].
+    }
 % Detail cross-attention head count, hidden dimension, MLP width, parameter/FLOPs overhead,
 % the multiplicative straight-through estimator gate, and the derivation of Eq. (3).
-On mimic-video, the router reads the future tokens after video block 2 (2,048-d) and the instruction tokens that condition the video model (1,024-d T5 embeddings).
-A linear layer maps each future token to 1,024 dimensions and a rotary encoding of its position is applied.
-One 8-head cross-attention layer lets every future token attend to the instruction tokens, with padding masked; its output is added to the projected token, and an MLP (1,024--128--1, GELU) followed by a sigmoid gives $s_{t,p}$.
-The router has 6.4M parameters (2.1M projection, 4.2M attention, 0.13M MLP), against 2B in the video model.
-% Analytic count: projection 70.5 + query/output projections 70.5 + attention products 35.2 + key/value 2.1 + MLP 4.4 GFLOPs
-% for 16,800 tokens and 512 text tokens (MAC = 2 FLOPs). Not measured separately.
-Scoring all 16,800 future tokens costs about 0.18 TFLOPs by an analytic count (two operations per multiply--accumulate), \ie, 0.2\% of a full-context query (98.0 TFLOPs) and 0.4\% of a 20\% query (42.7 TFLOPs).
+% On mimic-video, the router reads the future tokens after video block 2 (2,048-d) and the instruction tokens that condition the video model (1,024-d T5 embeddings).
+% A linear layer maps each future token to 1,024 dimensions and a rotary encoding of its position is applied.
+% One 8-head cross-attention layer lets every future token attend to the instruction tokens, with padding masked; its output is added to the projected token, and an MLP (1,024--128--1, GELU) followed by a sigmoid gives $s_{t,p}$.
+% The router has 6.4M parameters (2.1M projection, 4.2M attention, 0.13M MLP), against 2B in the video model.
+% % Analytic count: projection 70.5 + query/output projections 70.5 + attention products 35.2 + key/value 2.1 + MLP 4.4 GFLOPs
+% % for 16,800 tokens and 512 text tokens (MAC = 2 FLOPs). Not measured separately.
+% Scoring all 16,800 future tokens costs about 0.18 TFLOPs by an analytic count (two operations per multiply--accumulate), \ie, 0.2\% of a full-context query (98.0 TFLOPs) and 0.4\% of a 20\% query (42.7 TFLOPs).
 
-Keeping a group at full resolution is a hard top-$F$ decision, whose locally constant ranking does not provide a usable derivative with respect to $S_g$.
-To obtain a gradient, every tube built from group $g$ (four tubes if the group is kept, one if it is merged) is multiplied by
-\begin{equation}
-  \gamma_g = 1 + S_g - \operatorname{sg}(S_g),
-  \label{eq:supp_ste}
-\end{equation}
-where $\operatorname{sg}$ stops the gradient.
-In the forward pass $\gamma_g=1$, so training and deployment run the same operator; in the backward pass $\partial\gamma_g/\partial S_g = 1$.
-Writing $\tilde z_i=\gamma_{g(i)}z_i$ for the tokens of these tubes, the chain rule gives
-\begin{equation}
-  \frac{\partial \mathcal{L}_{\text{task}}}{\partial S_g}
-  = \sum_{i:\,g(i)=g} \Big\langle \frac{\partial \mathcal{L}_{\text{task}}}{\partial \tilde z_i},\, z_i \Big\rangle ,
-  \label{eq:supp_saliency}
-\end{equation}
-the first-order change of the task loss when the group's tokens are scaled up by a small factor. It supplies decoder supervision without a test-time full-context probe; the allocation comparisons assess its effect on control.
-\mainref{eq:saliency}{Eq.~(3)} keeps its negative part, $r_g=\max(0,-\partial\mathcal{L}_{\text{task}}/\partial S_g)$: a group scores high when giving more weight to its representation would lower the task loss.
-The same path also passes $\partial\mathcal{L}_{\text{task}}/\partial S_g$ to the router parameters directly, so the router is trained by the task gradient and by the pseudo-labels below.
+    \ji{
+    Selecting the top-$F$ spatial groups at full resolution is a discrete operation whose piecewise-constant ranking yields zero gradient with respect to $S_g$.
+    To enable gradient supervision without altering forward activations, every tube constructed from group $g$ (four tubes if kept at full resolution, or one merged tube otherwise) is scaled by a multiplicative straight-through estimator (STE)~\cite{bengio2013estimating}:
+    \begin{equation}
+        \gamma_g = 1 + S_g - \operatorname{sg}(S_g),
+        \label{eq:supp_ste}
+    \end{equation}
+    where $\operatorname{sg}(\cdot)$ denotes the stop-gradient operator.
+    In the forward pass, $\gamma_g = 1$, ensuring identical computation between training and deployment; in the backward pass, $\partial \gamma_g / \partial S_g = 1$.
+    Writing $\tilde{z}_i = \gamma_{g(i)} z_i$ for each token $i$ belonging to group $g(i)$, the chain rule yields
+    \begin{equation}
+        \frac{\partial \mathcal{L}_{\text{task}}}{\partial S_g} = \sum_{i : g(i) = g} \left\langle \frac{\partial \mathcal{L}_{\text{task}}}{\partial \tilde{z}_i},\, z_i \right\rangle,
+        \label{eq:supp_chain}
+    \end{equation}
+    which measures the first-order sensitivity of the task loss to scaling up group $g$'s representation.
+    Equation~(3) of the main paper retains the non-negative descent component, $r_g = \max(0, -\partial \mathcal{L}_{\text{task}} / \partial S_g)$, assigning a high saliency when emphasizing group $g$ reduces $\mathcal{L}_{\text{task}}$.
+    Through \cref{eq:supp_ste}, the router receives both direct task gradients $\partial \mathcal{L}_{\text{task}} / \partial S_g$ and stabilized pseudo-label supervision described below, without requiring a full-context probe at test time.
+    }
+
+% Keeping a group at full resolution is a hard top-$F$ decision, whose locally constant ranking does not provide a usable derivative with respect to $S_g$.
+% To obtain a gradient, every tube built from group $g$ (four tubes if the group is kept, one if it is merged) is multiplied by
+% \begin{equation}
+%   \gamma_g = 1 + S_g - \operatorname{sg}(S_g),
+%   \label{eq:supp_ste}
+% \end{equation}
+% where $\operatorname{sg}$ stops the gradient.
+% In the forward pass $\gamma_g=1$, so training and deployment run the same operator; in the backward pass $\partial\gamma_g/\partial S_g = 1$.
+% Writing $\tilde z_i=\gamma_{g(i)}z_i$ for the tokens of these tubes, the chain rule gives
+% \begin{equation}
+%   \frac{\partial \mathcal{L}_{\text{task}}}{\partial S_g}
+%   = \sum_{i:\,g(i)=g} \Big\langle \frac{\partial \mathcal{L}_{\text{task}}}{\partial \tilde z_i},\, z_i \Big\rangle ,
+%   \label{eq:supp_saliency}
+% \end{equation}
+% the first-order change of the task loss when the group's tokens are scaled up by a small factor. It supplies decoder supervision without a test-time full-context probe; the allocation comparisons assess its effect on control.
+% \mainref{eq:saliency}{Eq.~(3)} keeps its negative part, $r_g=\max(0,-\partial\mathcal{L}_{\text{task}}/\partial S_g)$: a group scores high when giving more weight to its representation would lower the task loss.
+% The same path also passes $\partial\mathcal{L}_{\text{task}}/\partial S_g$ to the router parameters directly, so the router is trained by the task gradient and by the pseudo-labels below.
 
 \paragraph{Router objective and target smoothing.}
-The router predicts input-conditioned relevance scores
-from the current visual features and task instruction.
-For each training sample $i$, we compute the
-gradient-derived saliency
-\begin{equation}
-r_g^{(i)} =
-\max\left(
-0,-\frac{\partial \mathcal{L}_{\mathrm{task}}^{(i)}}
-{\partial S_g^{(i)}}
-\right).
-\end{equation}
+    \ji{
+    For each sample $i$ at training step $n$, we compute the per-sample gradient saliency:
+    \begin{equation}
+        r_g^{(i,n)} = \max\!\left(0,\, -\frac{\partial \mathcal{L}_{\text{task}}^{(i)}}{\partial S_g^{(i)}}\right).
+        \label{eq:supp_saliency}
+    \end{equation}
+    To reduce gradient variance across stochastic flow-matching steps, we track an exponential moving average (EMA) of the batch-mean saliency $\bar{r}_g^{(n)}$ with momentum $\mu = 0.9$:
+    \begin{equation}
+        m_g^{(n)} = \mu m_g^{(n-1)} + (1 - \mu)\bar{r}_g^{(n)}.
+        \label{eq:supp_ema}
+    \end{equation}
+    Each sample's smoothed saliency blends this running group statistic with its instantaneous sample gradient:
+    \begin{equation}
+        \tilde{r}_g^{(i,n)} = \mu m_g^{(n)} + (1 - \mu) r_g^{(i,n)},
+        \label{eq:supp_smooth}
+    \end{equation}
+    from which we construct per-sample binary pseudo-labels by marking the top-$F$ groups:
+    \begin{equation}
+        y_g^{(i)} = \mathbb{I}\!\big[g \in \operatorname{Top-}F\big(\tilde{r}^{(i,n)}\big)\big].
+        \label{eq:supp_pseudolabel}
+    \end{equation}
+    If a sample yields zero positive saliency across all groups, we substitute its detached current scores $S_g^{(i)}$ prior to \cref{eq:supp_smooth} to avoid degenerate all-zero targets.
+    Both the EMA statistics and pseudo-labels are used strictly during training; at inference, the router predicts $s_{t,p}$ directly from shallow video features and instruction embeddings.
+    }
 
-To reduce the noise of gradient-based supervision,
-we maintain an exponential moving average of
-the batch-level saliency:
-\begin{equation}
-m_g^{(n)} =
-\mu m_g^{(n-1)}
-+ (1-\mu)\bar{r}_g^{(n)},
-\end{equation}
-where $\bar{r}_g^{(n)}$ is the batch-averaged
-saliency at training step $n$ and $\mu=0.9$.
+    \ji{
+    Let $q_g = S_g$ when $y_g = 1$ and $q_g = 1 - S_g$ when $y_g = 0$, and let $\rho = F / G$ denote the target fraction of full-resolution groups.
+    The router loss terms in Eq.~(4) of the main paper are defined as
+    \begin{align}
+        \mathcal{L}_{\text{focal}} &= -\frac{1}{G} \sum_{g=1}^{G} \alpha_{y_g} (1 - q_g)^{\gamma} \log q_g, \label{eq:supp_focal} \\
+        \mathcal{L}_{\text{budget}} &= \left| \frac{1}{G} \sum_{g=1}^{G} S_g - \rho \right|, \label{eq:supp_budget} \\
+        \mathcal{L}_{\text{entropy}} &= -\frac{1}{G} \sum_{g=1}^{G} \big[ S_g \log S_g + (1 - S_g) \log(1 - S_g) \big], \label{eq:supp_entropy}
+    \end{align}
+    averaged over the mini-batch with $\gamma = 2$ and $\lambda_b = \lambda_e = 0.1$.
+    Class-balance weights follow effective-number weighting $\hat{\alpha}_c = (1 - \beta)/(1 - \beta^{n_c})$ with $\beta = 0.999$, normalized so that $\alpha_0 + \alpha_1 = 1$, where $n_c$ counts pseudo-labels of class $c \in \{0, 1\}$ in the batch.
+    Scores are clipped to $[10^{-6}, 1 - 10^{-6}]$ inside logarithms for numerical stability.
+    }
+    
+% The router predicts input-conditioned relevance scores
+% from the current visual features and task instruction.
+% For each training sample $i$, we compute the
+% gradient-derived saliency
+% \begin{equation}
+% r_g^{(i)} =
+% \max\left(
+% 0,-\frac{\partial \mathcal{L}_{\mathrm{task}}^{(i)}}
+% {\partial S_g^{(i)}}
+% \right).
+% \end{equation}
 
-The smoothed target for each sample combines
-the running statistic with its current saliency:
-\begin{equation}
-\tilde{r}_g^{(i,n)} =
-\mu m_g^{(n)}
-+ (1-\mu)r_g^{(i,n)}.
-\end{equation}
+% To reduce the noise of gradient-based supervision,
+% we maintain an exponential moving average of
+% the batch-level saliency:
+% \begin{equation}
+% m_g^{(n)} =
+% \mu m_g^{(n-1)}
+% + (1-\mu)\bar{r}_g^{(n)},
+% \end{equation}
+% where $\bar{r}_g^{(n)}$ is the batch-averaged
+% saliency at training step $n$ and $\mu=0.9$.
+
+% The smoothed target for each sample combines
+% the running statistic with its current saliency:
+% \begin{equation}
+% \tilde{r}_g^{(i,n)} =
+% \mu m_g^{(n)}
+% + (1-\mu)r_g^{(i,n)}.
+% \end{equation}
 
 
 
-We independently select the top-$F$ groups
-for each sample to construct binary pseudo-labels:
-\begin{equation}
-y_g^{(i)} =
-\mathbb{I}\left[
-g \in \operatorname{TopF}(\tilde{r}^{(i,n)})
-\right].
-\end{equation}
+% We independently select the top-$F$ groups
+% for each sample to construct binary pseudo-labels:
+% \begin{equation}
+% y_g^{(i)} =
+% \mathbb{I}\left[
+% g \in \operatorname{TopF}(\tilde{r}^{(i,n)})
+% \right].
+% \end{equation}
 
-The pseudo-labels supervise the input-conditioned
-router through the focal classification loss,
-while the budget and entropy terms regularize
-its predicted scores.The EMA is used exclusively to stabilize the gradient-derived pseudo-labels during router training. The smoothed saliency combines a running group-level statistic with the current sample's task gradient, and the top-F pseudo-labels are constructed independently for each training sample. In addition to this pseudo-label supervision, the router receives direct gradients from the task objective through the straight-through gate in \ref{eq:supp_ste}. At inference, neither the EMA statistics nor the pseudo-labels are used: the router directly predicts relevance scores from the current visual features and task instruction, and these scores determine the spatial and temporal allocation.
+% The pseudo-labels supervise the input-conditioned
+% router through the focal classification loss,
+% while the budget and entropy terms regularize
+% its predicted scores.The EMA is used exclusively to stabilize the gradient-derived pseudo-labels during router training. The smoothed saliency combines a running group-level statistic with the current sample's task gradient, and the top-F pseudo-labels are constructed independently for each training sample. In addition to this pseudo-label supervision, the router receives direct gradients from the task objective through the straight-through gate in \ref{eq:supp_ste}. At inference, neither the EMA statistics nor the pseudo-labels are used: the router directly predicts relevance scores from the current visual features and task instruction, and these scores determine the spatial and temporal allocation.
 
-For completeness, let $q_g=S_g$ for $y_g=1$ and $q_g=1-S_g$ otherwise, and let $\rho=F/G$.
-The losses in \mainref{eq:router_loss}{Eq.~(4)} are
-\begingroup
-\begin{align}
- \mathcal{L}_{\mathrm{focal}}&=-\frac1G\sum_g\alpha_{y_g}(1-q_g)^\gamma\log q_g,\\
- \mathcal{L}_{\mathrm{budget}}&=\left|\frac1G\sum_g S_g-\rho\right|,\\
- \mathcal{L}_{\mathrm{entropy}}&=-\frac1G\sum_g\big[S_g\log S_g+(1-S_g)\log(1-S_g)\big].
-\end{align}
-\endgroup
-The expressions are averaged over the batch, with $\gamma=2$, $\lambda_b=\lambda_e=0.1$ and $\beta=0.999$.
-Effective-number weights are $\hat\alpha_c=(1-\beta)/(1-\beta^{n_c})$, normalized to $\alpha_0+\alpha_1=1$, where $n_c$ counts the pseudo-labels of class $c$ in the batch.
-Probabilities are clipped to $[10^{-6},1-10^{-6}]$ for the logarithms.
-If a sample has no positive saliency, the implementation uses its detached current scores before target smoothing to avoid arbitrary all-zero targets.
+% For completeness, let $q_g=S_g$ for $y_g=1$ and $q_g=1-S_g$ otherwise, and let $\rho=F/G$.
+% The losses in \mainref{eq:router_loss}{Eq.~(4)} are
+% \begingroup
+% \begin{align}
+%  \mathcal{L}_{\mathrm{focal}}&=-\frac1G\sum_g\alpha_{y_g}(1-q_g)^\gamma\log q_g,\\
+%  \mathcal{L}_{\mathrm{budget}}&=\left|\frac1G\sum_g S_g-\rho\right|,\\
+%  \mathcal{L}_{\mathrm{entropy}}&=-\frac1G\sum_g\big[S_g\log S_g+(1-S_g)\log(1-S_g)\big].
+% \end{align}
+% \endgroup
+% The expressions are averaged over the batch, with $\gamma=2$, $\lambda_b=\lambda_e=0.1$ and $\beta=0.999$.
+% Effective-number weights are $\hat\alpha_c=(1-\beta)/(1-\beta^{n_c})$, normalized to $\alpha_0+\alpha_1=1$, where $n_c$ counts the pseudo-labels of class $c$ in the batch.
+% Probabilities are clipped to $[10^{-6},1-10^{-6}]$ for the logarithms.
+% If a sample has no positive saliency, the implementation uses its detached current scores before target smoothing to avoid arbitrary all-zero targets.
 
 \paragraph{Temporal boundary placement and positional indexing.}
 % Formalize cumulative frame-to-frame cosine variation for placing K_p segment boundaries,
@@ -404,39 +470,65 @@ We report the paired difference in percentage points.
 \subsection{Baseline adaptation protocols}
 \label{app:supp_baselines}
 
+\ji{
+    As external token-reduction baselines were originally designed for observation pruning in VLAs or multi-step diffusion WAMs, we adapt their selection rules to single-pass future-conditioned WAMs under matched Stage-2 LoRA training (\cref{tab:hyperparams}).
+    On mimic-video, all baselines retain the 2,400 observation tokens, apply selection at video block 2, and preserve native source coordinates without feature rescaling.
+    VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp}, and CF-Prune~\cite{kim2026cfprune} score the 1,200 spatial positions of the final observed frame, retain 120 / 240 / 360 positions, and broadcast this spatial mask across all 14 future frames to yield 1,680 / 3,360 / 5,040 future tokens.
+    Semantic text-relevance scores use mean raw scaled query-key logits across instruction tokens and heads (since video DiT cross-attention uses text keys only, making softmax sums over keys constant), while action attention averages across all action queries (excluding the proprioceptive query) and all 10 flow steps in FP32.
+}
 % Source: mimic repo docs/EXTERNAL_BASELINES_PREREG_2026-11-04.md and DIT4DIT_FIXED_CONTEXT_PREREG_2026-11-07.md.
-The external methods were designed for vision-language-action policies that prune observation tokens; we adapt their selection rules to a cascaded WAM.
-On mimic-video, every method keeps the 2,400 observation tokens, selects at video block 2, and keeps the original features and source positions of the selected tokens without rescaling.
-VLA-Pruner, ADP and CF-Prune rank the 1,200 positions of the last observed frame, keep 120/240/360 of them, and transfer this spatial mask to all 14 future frames, which gives the 1,680/3,360/5,040 future tokens of the three budgets.
-Each method and budget gets a fresh decoder adapter with the Stage~2 budget-specific adaptation recipe (\cref{tab:supp_hparams}) and no router.
-Semantic scores use the mean raw scaled query--key logit over instruction tokens and heads, because the video model's cross-attention has text keys only and its softmax averaged over keys would be constant.
-Action attention averages all action queries (excluding the state query) and all ten flow steps, in float32 over the actual context.
+% The external methods were designed for vision-language-action policies that prune observation tokens; we adapt their selection rules to a cascaded WAM.
+% On mimic-video, every method keeps the 2,400 observation tokens, selects at video block 2, and keeps the original features and source positions of the selected tokens without rescaling.
+% VLA-Pruner, ADP and CF-Prune rank the 1,200 positions of the last observed frame, keep 120/240/360 of them, and transfer this spatial mask to all 14 future frames, which gives the 1,680/3,360/5,040 future tokens of the three budgets.
+% Each method and budget gets a fresh decoder adapter with the Stage~2 budget-specific adaptation recipe (\cref{tab:supp_hparams}) and no router.
+% Semantic scores use the mean raw scaled query--key logit over instruction tokens and heads, because the video model's cross-attention has text keys only and its softmax averaged over keys would be constant.
+% Action attention averages all action queries (excluding the state query) and all ten flow steps, in float32 over the actual context.
 
 \paragraph{FastV-style.}
-
-Future tokens are ranked by the self-attention they receive at video block 2, averaged over heads and over all visual queries, and the top tokens up to the budget are kept at their original positions.
+\ji{
+    Following FastV~\cite{chen2024fastv}, future tokens are ranked by received visual self-attention at video block 2 (averaged across attention heads and visual queries), retaining the top tokens up to the target budget at their native coordinates.
+}
+% Future tokens are ranked by the self-attention they receive at video block 2, averaged over heads and over all visual queries, and the top tokens up to the budget are kept at their original positions.
 
 
 \paragraph{VLA-Pruner.}
 
-VLA-Pruner keeps the union of the semantic top-$k$ and the top-$k$ of historical action attention, then reduces it to $k$ by max--min cosine diversity on the current block-2 features, starting from the candidate farthest from its nearest neighbour.
-Historical attention is the decoder's action-to-observation attention averaged over the latter half of the decoder layers, kept for the last three queries with decay 0.8.
-The first three queries of every episode run the full-context policy to initialize this history, which is reset at every episode; training uses chronological windows so that the history never crosses episodes.
-Because of these dense queries, the mean context per query exceeds the compressed budget: 5,535/7,240/8,788 tokens (marked $*$ in \mainref{tab:main_results}{Table~1}).
+\ji{
+    Following VLA-Pruner~\cite{liu2025vlapruner}, we take the union of the top-$k$ semantic positions and top-$k$ historical action-attention positions, then prune back to $k$ positions via greedy max-min cosine diversity on block-2 features.
+    Historical action attention averages action-to-observation cross-attention over the deeper half of the decoder layers across the preceding 3 queries with exponential decay 0.8.
+    To initialize this history without cross-episode leakage, the first 3 queries of every episode run at full context, raising measured mean token counts to 5,535 / 7,240 / 8,788 (marked with $^*$ in Tab.~1 of the main paper).
+}
+
+% VLA-Pruner keeps the union of the semantic top-$k$ and the top-$k$ of historical action attention, then reduces it to $k$ by max--min cosine diversity on the current block-2 features, starting from the candidate farthest from its nearest neighbour.
+% Historical attention is the decoder's action-to-observation attention averaged over the latter half of the decoder layers, kept for the last three queries with decay 0.8.
+% The first three queries of every episode run the full-context policy to initialize this history, which is reset at every episode; training uses chronological windows so that the history never crosses episodes.
+% Because of these dense queries, the mean context per query exceeds the compressed budget: 5,535/7,240/8,788 tokens (marked $*$ in \mainref{tab:main_results}{Table~1}).
 
 \paragraph{ADP.}
+\ji{
+    Following ADP~\cite{pei2026adp}, top-$k$ semantic token pruning is gated by end-effector displacement relative to the two preceding control steps: displacements below the prior two-step minimum trigger a full-context fallback, and at least one full-context query is forced after every three consecutive pruned queries.
+    These fallbacks yield measured mean contexts of 12,101 / 13,059 / 13,881 tokens per query.
+}
 % Detail text-guided token selection, end-effector motion-gate thresholds triggering
 % full-context fallback queries, and mean token accounting (*) in Tab. 1.
-ADP keeps the semantic top-$k$ positions, gated by end-effector motion as in the released implementation.
-The current displacement is compared with the two preceding ones: a displacement at least as large as the previous maximum prunes, one below the previous minimum falls back to the full context, and values in between prune; after three consecutive pruned queries one full-context query is forced. The resulting mean context is 12,101/13,059/13,881 tokens per query.
+% ADP keeps the semantic top-$k$ positions, gated by end-effector motion as in the released implementation.
+% The current displacement is compared with the two preceding ones: a displacement at least as large as the previous maximum prunes, one below the previous minimum falls back to the full context, and values in between prune; after three consecutive pruned queries one full-context query is forced. The resulting mean context is 12,101/13,059/13,881 tokens per query.
 
 \paragraph{CF-Prune.}
 % Detail the two-pass single-step adaptation: initial full-context probe pass for instruction
 % and action attention followed by pruned prediction, and its latency/FLOPs accounting.
-CF-Prune reads instruction and action attention from an earlier denoising pass and prunes the later passes.
-With single-step video inference there is no earlier pass, so every query first runs a full-context probe (video to block 20 and the original decoder, adapter disabled) and then the compressed prediction.
-The two attention maps are smoothed and combined by complementary 50/50 selection; the probed layers are chosen at the first query of each episode by minimum normalized attention entropy and then held fixed, and the phase gate of the original method is omitted.
-Both passes count towards its cost, which is why its latency and FLOPs exceed those of the full-context policy in \mainref{tab:main_results}{Table~1}.
+\ji{
+    CF-Prune~\cite{kim2026cfprune} extracts instruction and action attention from an initial denoising step to prune subsequent steps.
+    Under single-step WAM inference, no prior denoising step exists; each query therefore runs an unadapted full-context probe pass (through video block 20 and the base decoder) to compute smoothed 50/50 complementary instruction-action scores (selecting low-entropy layers on the first episode query without multi-step phase gating), followed by the compressed LoRA-adapted pass.
+    Charging both passes causes total FLOPs and latency to exceed single-pass Full-context inference (Tab.~1 of the main paper).
+}
+% CF-Prune reads instruction and action attention from an earlier denoising pass and prunes the later passes.
+% With single-step video inference there is no earlier pass, so every query first runs a full-context probe (video to block 20 and the original decoder, adapter disabled) and then the compressed prediction.
+% The two attention maps are smoothed and combined by complementary 50/50 selection; the probed layers are chosen at the first query of each episode by minimum normalized attention entropy and then held fixed, and the phase gate of the original method is omitted.
+% Both passes count towards its cost, which is why its latency and FLOPs exceed those of the full-context policy in \mainref{tab:main_results}{Table~1}.
 
 \paragraph{DiT4DiT.}
-The DiT4DiT adaptations follow the same definitions with that backbone's quotas, 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 tokens, so they also select observation tokens at the two smaller budgets; each method and budget again gets a fresh adapter.
+\ji{
+    All four baselines follow the identical selection rules on DiT4DiT using observed/future token quotas of 392/197, 344/98, and 293/98 at the 589-, 442-, and 391-token budgets (thus pruning observation tokens as well at the two smaller budgets), each paired with a dedicated Stage-2 decoder LoRA.
+}
+% The DiT4DiT adaptations follow the same definitions with that backbone's quotas, 392/197, 344/98 and 293/98 observed/future tokens at 589, 442 and 391 tokens, so they also select observation tokens at the two smaller budgets; each method and budget again gets a fresh adapter.
