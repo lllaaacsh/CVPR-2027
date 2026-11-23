@@ -23,13 +23,33 @@
 \def\supponly{}
 
 
-\DeclareRobustCommand{\mainref}[2]{#2 of the main paper}
+
 % Pending cells (experiments still running): red dash in draft mode, plain dash otherwise.
 \ifdraft\newcommand{\pend}{{\color{red}\textbf{--}}}\else\newcommand{\pend}{--}\fi
 \usepackage{algpseudocode}
 \usepackage{adjustbox}
 \definecolor{suppdraftgreen}{RGB}{0,120,60}
-\newcommand{\suppdraft}[1]{{\color{suppdraftgreen}#1}}
+\DeclareRobustCommand{\suppdraft}[1]{{\color{suppdraftgreen}\hypersetup{linkcolor=suppdraftgreen,citecolor=suppdraftgreen}#1}}
+\newcommand{\DeclareMainReference}[3]{%
+  \expandafter\gdef\csname suppmainlower@#1\endcsname{#2}%
+  \expandafter\gdef\csname suppmainupper@#1\endcsname{#3}}
+\DeclareRobustCommand{\mainref}[1]{\suppdraft{%
+  \ifcsname suppmainlower@#1\endcsname\csname suppmainlower@#1\endcsname
+  \else\PackageError{supp}{Unknown main-paper reference #1}{Refresh supp/main_references.tex}\fi
+  ~of the main paper}}
+\DeclareRobustCommand{\Mainref}[1]{\suppdraft{%
+  \ifcsname suppmainupper@#1\endcsname\csname suppmainupper@#1\endcsname
+  \else\PackageError{supp}{Unknown main-paper reference #1}{Refresh supp/main_references.tex}\fi
+  ~of the main paper}}
+\input{supp/main_references}
+\newcommand{\suppaddedbibliographykey}[1]{\expandafter\def\csname suppaddedbib@#1\endcsname{}}
+\suppaddedbibliographykey{lin2017focal}
+\suppaddedbibliographykey{lipman2023flow}
+\suppaddedbibliographykey{hu2022lora}
+\suppaddedbibliographykey{liu2023libero}
+\suppaddedbibliographykey{li2024simpler}
+\suppaddedbibliographykey{walke2023bridgedata}
+\suppaddedbibliographykey{nasiriany2024robocasa}
 \raggedbottom
 \captionsetup[table]{font=footnotesize,skip=4pt}
 \captionsetup[figure]{font=footnotesize,skip=4pt}
@@ -67,18 +87,27 @@
 
 % \section*{Appendix}
     This document provides additional implementation details, quantitative analyses, and qualitative results to complement the main paper.
-    \cref{app:exp_details} describes the mathematical formulation, benchmark protocols, token allocation schedules, baseline adaptations, and training hyperparameters.
-    \cref{app:add_analysis} presents equal-token baseline comparisons, extended ablations, semantic region coverage, and per-task breakdowns.
-    \cref{app:qual_analysis} provides spatial and temporal routing visualizations and failure case analyses.
+    \suppdraft{\Cref{app:exp_details}} describes the mathematical formulation, benchmark protocols, token allocation schedules, baseline adaptations, and training hyperparameters.
+    \suppdraft{\Cref{app:add_analysis}} presents equal-token baseline comparisons, extended ablations, semantic region coverage, and per-task breakdowns.
+    \suppdraft{\Cref{app:qual_analysis}} provides spatial and temporal routing visualizations and failure case analyses.
 
 
 \input{supp/A_detail}
 \input{supp/B_add}
 \input{supp/C_qual}
 
+\FloatBarrier
+
+
 
 {
     \small
+
+    % Keep the coauthor's existing references black; only newly added entries are green.
+    \let\supporiginalbibitem\bibitem
+    \renewcommand{\bibitem}[2][]{%
+      \ifcsname suppaddedbib@#2\endcsname\color{suppdraftgreen}\else\color{black}\fi
+      \supporiginalbibitem[#1]{#2}}
     \bibliographystyle{ieeenat_fullname}
     \bibliography{main}
 }

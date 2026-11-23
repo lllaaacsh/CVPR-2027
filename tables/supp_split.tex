@@ -1,0 +1,27 @@
+% Split from the original tables/supp_ablations.tex; numerical rows are preserved unless explicitly audited below.
+\begin{table}[!tbp]
+  \centering
+  \captionsetup{labelfont={color=suppdraftgreen}}
+  \caption{\suppdraft{\textbf{Spatial and temporal allocation on LIBERO-Spatial.} \suppdraft{SR (\%) averages three evaluation seeds, with 500 paired episodes per seed.} Ref. uses the deployed allocation at the same budget; $\Delta$ is the variant minus Ref. in percentage points. Each trained variant uses a fresh decoder adapter.}}
+  \label{tab:supp_split}
+  \scriptsize
+  \setlength{\tabcolsep}{2.5pt}
+  \renewcommand{\arraystretch}{1.02}
+\begin{tabular}{@{}lrrl@{}}
+  \toprule
+  Variant & Ref. & SR & $\Delta$ \\
+  \midrule
+  \multicolumn{4}{@{}l}{\emph{10\% budget; \method: $F{=}100$, $K$ 1/2/4}} \\
+  Temporal only ($F{=}300$; $K$ 1/2) & 70.8 & 68.2 & $-2.6$ \\
+  \midrule
+  \multicolumn{4}{@{}l}{\emph{20\% budget; \method: $F{=}100$, $K$ 3/5/7}} \\
+  Temporal only ($F{=}300$; $K$ 2/3) & 88.2 & 78.2 & $-10.0$ \\
+  $F{=}50$ ($K$ 5/7/9) & 88.2 & 87.6 & $-0.6$ \\
+  $F{=}150$ ($K$ 2/4/6) & 88.2 & 85.0 & $-3.2$ \\
+  \midrule
+  \multicolumn{4}{@{}l}{\emph{30\% budget; \method: $F{=}100$, $K$ 5/8/10}} \\
+  Temporal only ($F{=}300$; $K$ 3/4/5) & 92.0 & 89.4 & $-2.6$ \\
+  Spatial only ($F{=}20$; $K{=}14$) & 92.0 & 86.2 & $-5.8$ \\
+  \bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,43 @@
+{
+  "tasks": [
+    {
+      "task_id": "pick_cup_in_pool",
+      "display_name": "Pick Cup to Sink",
+      "training_instruction": "pick the cup to the pool",
+      "success_criterion": "Grasp the cup by its handle and release it into the sink."
+    },
+    {
+      "task_id": "stack_bowl",
+      "display_name": "Stack Bowls",
+      "training_instruction": "stack the bowl",
+      "success_criterion": "Stack one bowl on the other without falling."
+    },
+    {
+      "task_id": "pour_water",
+      "display_name": "Pour Water",
+      "training_instruction": "pour the water",
+      "success_criterion": "Grasp the cup by its handle and rotate it $90^\\circ$ over the sink."
+    },
+    {
+      "task_id": "open_microwave",
+      "display_name": "Open Microwave",
+      "training_instruction": "open the microwave",
+      "success_criterion": "Grasp the handle and open the microwave door."
+    },
+    {
+      "task_id": "put_cup_out_microwave",
+      "display_name": "Cup out Microwave",
+      "training_instruction": "take the cup out of the microwave",
+      "success_criterion": "Take the cup out by its handle and place it on the table."
+    },
+    {
+      "task_id": "open_lid",
+      "display_name": "Open Lid",
+      "training_instruction": "open the lid",
+      "success_criterion": "Grasp the lid and lift it to an open state."
+    }
+  ],
+  "display_name_authority": "Submitted main-paper Table 5; main paper is frozen.",
+  "training_instruction_source": "Cup-to-sink instruction confirmed by the author: pick the cup to the pool. Other instruction strings are retained from the saved embedding package.",
+  "cup_task_direction": "The evaluated task places the cup into the sink; the original training instruction is preserved verbatim."
+}

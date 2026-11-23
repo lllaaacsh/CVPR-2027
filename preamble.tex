@@ -102,3 +102,24 @@
 % Tighter underline:
 % \usepackage{soul}
 % \setuldepth{foobar}
+
+% Supplement-only compatibility for the verbatim copy-repository draft.
+% The original main-paper preamble above and its behavior are preserved.
+\AtEndPreamble{%
+  \ifdefined\supponly
+    \usepackage[T1]{fontenc}
+    \usepackage{placeins}
+    \AtBeginDocument{%
+    \crefname{figure}{figure}{figures}
+    \Crefname{figure}{Figure}{Figures}
+    \crefname{table}{table}{tables}
+    \Crefname{table}{Table}{Tables}
+    \crefname{section}{section}{sections}
+    \Crefname{section}{Section}{Sections}
+    \crefname{equation}{equation}{equations}
+    \Crefname{equation}{Equation}{Equations}
+    \crefname{algorithm}{algorithm}{algorithms}
+    \Crefname{algorithm}{Algorithm}{Algorithms}
+    }
+  \fi
+}
