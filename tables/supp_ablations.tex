@@ -1,0 +1,124 @@
+% Table B.3 (supplement, 2026-11-19): extended ablations on LIBERO-Spatial, panels (a)-(d) of the advisor's outline.
+% Sources (mimic repo):
+%  (a) ablations/insertion_depth (block 1/6, QMUL A100) paired with the main-table block-2 runs (BSC H100), as in the
+%      earlier supplement table (author rule 2026-11-12: main tables are authoritative).
+%  (b) router/decoder objective arms: ablations/supp_controls_20261119 (summarize_primary.py -> results_primary_20261121.json;
+%      rows marked dagger = BSC H100, the primary cluster by the README rule, against the main-table cells);
+%      group-score controls at 20%: ablations/scoring_controls_20261116 (QMUL: router 431, self-attn 413, random 436);
+%      training-mean map: eval/analysis/reviewer_ablations_qmul_20261111 (live 427/447/472, fixed map 421/440/473).
+%  (c) ablations/supp_controls_20261119 (results_primary_20261121.json; all rows BSC H100 vs main-table cells 354/441/460).
+%  (d) ablations/temporal_allocation (QMUL; deployed 346/432; flat 326/429; reversed 364/407; change 381/424);
+%      random-K: reviewer_ablations_qmul_20261111 (random_k 432/427/474); uniform boundaries: supp_controls (BSC H100).
+\begin{table}[!t]
+  \centering
+  \caption{\textbf{Extended ablations on LIBERO-Spatial.}
+  Success rate (SR, \%) over the same 500 paired episodes; $\Delta$ is the variant minus its reference in percentage points.
+  Every trained variant has its own fresh decoder adapter.}
+  \label{tab:supp_ablations}
+  \scriptsize
+  \captionsetup[subtable]{justification=raggedright,singlelinecheck=false}
+  \setlength{\tabcolsep}{2.5pt}
+  \renewcommand{\arraystretch}{1.02}
+    \begin{subtable}[t]{\linewidth}
+      \raggedright
+      \caption{Routing depth (A100 success rates).}
+      \label{tab:supp_depth}
+      \begin{tabular}{@{}lrrrl@{}}
+        \toprule
+        Routing after & Tokens & ms & SR & $\Delta$ \\
+        \midrule
+        Block 1 & 4,080 & 394 & 56.8 & $-12.4$$^{a}$ \\
+        Block 2 (\method) & 4,080 & 404.2 & 69.2 & -- \\
+        Block 6 & 4,080 & 445 & 78.2 & $+9.0$$^{a}$ \\
+        \bottomrule
+      \end{tabular}
+    \end{subtable}
+
+    \vspace{6pt}
+    \begin{subtable}[t]{\linewidth}
+      \raggedright
+      \caption{Router and decoder objectives, and the source of the group scores.}
+      \label{tab:supp_objectives}
+      \begin{tabular}{@{}lrrl@{}}
+        \toprule
+        Variant & Ref. & SR & $\Delta$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{Router objective, 10\%; router retrained in Stage~1}} \\
+        Full objective (reference) & -- & 69.4 & -- \\
+        BCE instead of focal ($\gamma{=}0$) & 69.4 & 60.2 & $-9.2$ \\
+        Without $\mathcal{L}_{\text{budget}}$ & 69.4 & 66.2 & $-3.2$ \\
+        Without $\mathcal{L}_{\text{entropy}}$ & 69.4 & 65.8 & $-3.6$ \\
+        Without pseudo-labels (task gradient only) & 69.4 & 48.8 & $-20.6$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{Decoder objective, 10\%; adopted router}} \\
+        Distillation only ($\lambda_{\text{GT}}{=}0$) & 70.8 & 69.6 & $-1.2$ \\
+        Ground truth only (flow matching) & 70.8 & 0.0 & $-70.8$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{Group scores $S_g$ replaced; same allocation rule}} \\
+        Block-2 self-attention, 10\% & 70.8 & 65.0 & $-5.8$ \\
+        Fixed random map, 10\% & 69.2 & 56.4 & $-12.8$ \\
+        Block-2 self-attention, 20\% & 86.2 & 82.6 & $-3.6$ \\
+        Fixed random map, 20\% & 86.2 & 69.4 & $-16.8$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{Training-mean map instead of live scores, 20\% NEED REVISION}} \\
+        LIBERO-Spatial & 85.4 & 80.8 & $-4.6$ \\
+        LIBERO-Goal & 89.4 & 81.6 & $-7.8$ \\
+        LIBERO-Object & 94.4 & 90.0 & $-4.4$ \\
+        \bottomrule
+      \end{tabular}
+    \end{subtable}
+    \vspace{6pt}
+    \begin{subtable}[t]{\linewidth}
+      \raggedright
+      \caption{Spatial versus temporal allocation and the number $F$ of full-resolution groups.}
+      \label{tab:supp_split}
+      \begin{tabular}{@{}lrrl@{}}
+        \toprule
+        Variant & Ref. & SR & $\Delta$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{10\% budget; \method: $F{=}100$, $K$ 1/2/4}} \\
+        Temporal only ($F{=}300$; $K$ 1/2) & 70.8 & 68.2 & $-2.6$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{20\% budget; \method: $F{=}100$, $K$ 3/5/7}} \\
+        Temporal only ($F{=}300$; $K$ 2/3) & 88.2 & 78.2 & $-10.0$ \\
+        $F{=}50$ ($K$ 5/7/9) & 88.2 & 87.6 & $-0.6$ \\
+        $F{=}150$ ($K$ 2/4/6) & 88.2 & 85.0 & $-3.2$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{30\% budget; \method: $F{=}100$, $K$ 5/8/10}} \\
+        Temporal only ($F{=}300$; $K$ 3/4/5) & 92.0 & 89.4 & $-2.6$ \\
+        Spatial only ($F{=}20$; $K{=}14$) & 92.0 & 86.2 & $-5.8$ \\
+        \bottomrule
+      \end{tabular}
+    \end{subtable}
+
+    \vspace{6pt}
+    \begin{subtable}[t]{\linewidth}
+      \raggedright
+      \caption{Temporal priority and segment boundaries.}
+      \label{tab:supp_temporal}
+      \begin{tabular}{@{}lrrl@{}}
+        \toprule
+        Variant & Ref. & SR & $\Delta$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{Segment counts, 10\%}} \\
+        Feature change only ($u_p{=}\Delta_p$) & 69.2 & 65.8 & $-3.4$ \\
+        Reversed priority & 69.2 & 63.8 & $-5.4$ \\
+        Flat counts ($K$ 2/3), fixed pattern & 69.2 & 65.2 & $-4.0$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{Segment counts, 20\%}} \\
+        Feature change only ($u_p{=}\Delta_p$) & 86.4 & 84.8 & $-1.6$ \\
+        Reversed priority & 86.4 & 81.4 & $-5.0$ \\
+        Flat counts ($K$ 5/6), fixed pattern & 86.4 & 85.8 & $-0.6$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{Random tier assignment, 20\%}} \\
+        LIBERO-Spatial & 85.4 & 83.0 & $-2.4$ \\
+        LIBERO-Goal & 89.4 & 85.4 & $-4.0$ \\
+        LIBERO-Object & 94.4 & 89.8 & $-4.6$ \\
+        \midrule
+        \multicolumn{4}{@{}l}{\emph{Segment boundaries}} \\
+        Equal-length segments, 10\% & 70.8 & 66.2 & $-4.6$ \\
+        Equal-length segments, 20\% & 88.2 & 83.8 & $-4.4$ \\
+        \bottomrule
+      \end{tabular}
+    \end{subtable}
+\end{table}
