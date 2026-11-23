@@ -39,8 +39,7 @@
   \raisebox{0.15ex}{\includegraphics[height=0.9ex]{supp/legend_object.pdf}}: task objects;
   \raisebox{0.15ex}{\includegraphics[height=0.9ex]{supp/legend_path.pdf}}: future path of the end effector.
   LIBERO outlines and path come from simulator segmentation; 
-  RoboCasa-GR1 (DiT4DiT) shows a demonstration frame with $7{\times}7$ groups, of which every rule keeps 16;  the black bars are letterbox padding.
-  These frames are illustrations; \cref{tab:supp_region_coverage} gives the averages over 50 episodes.}
+  RoboCasa-GR1 (DiT4DiT) shows a demonstration frame with $7{\times}7$ groups, of which every rule keeps 16;  the black bars are letterbox padding. \cref{tab:supp_region_coverage} gives the averages over 50 episodes.}
   \label{fig:supp_selection_maps}
 \end{figure*}
 
@@ -93,6 +92,7 @@ Real-robot rollout videos are included in the supplementary video file submitted
 % selection = select_failure_cases.py (selection_registered_bsc134_qmul02.json); figures = render_failure_figures.py.
 To avoid choosing failures by eye, we recorded 100 LIBERO-Spatial episodes of the 10\% policy (10 trials per task), with the frames, the simulator segmentation and the allocation of every query, and fixed the selection rule before the run.
 Because trial $t$ of a task uses the same initial state in every run, each episode pairs with the full-context episode of the same task and trial.
+    % \ji{Across the 100 LIBERO-Spatial episodes at the 10\% future token budget, over-compression primarily harms episodes where a small or partially occluded target object is coarsened into merged groups while distractor receptacles elsewhere on the table retain distinguish the commanded target }
 
 \paragraph{Over-compression in cluttered scenes.}
 
@@ -110,7 +110,7 @@ At 10\%, these failures concentrate on three Spatial tasks (\cref{tab:supp_perta
 
 In all four shown episodes the arm never approaches the target bowl: it moves to the ramekin and the plate on the left of the table and stays there until the time limit, whereas the full-context policy, from the same initial state, lifts the bowl from the drawer or the cabinet top within 100 steps.
 Throughout these episodes the allocation keeps the ramekin and the plate at full resolution, but none of the target bowl in the three drawer episodes and 27\% of it in the fourth.
-The videos do not show why the arm goes to the ramekin; we note only that the ramekin stands where the bowl is picked up in two other tasks of the suite (on the ramekin, and between the plate and the ramekin).
+The videos do not show why the arm goes to the ramekin; we note only that the ramekin stands where the bowl is picked up in two other tasks of the suite.
 
 \paragraph{Failures shared with the base policy.}
 % Show examples where ARROW assigns full resolution to the robot arm and target object,
