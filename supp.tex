@@ -29,28 +29,19 @@
 \usepackage{algpseudocode}
 \usepackage{adjustbox}
 \usepackage{multicol}
-\definecolor{suppdraftgreen}{RGB}{0,120,60}
-\DeclareRobustCommand{\suppdraft}[1]{{\color{suppdraftgreen}\hypersetup{linkcolor=suppdraftgreen,citecolor=suppdraftgreen}#1}}
+\hypersetup{hidelinks}
 \newcommand{\DeclareMainReference}[3]{%
   \expandafter\gdef\csname suppmainlower@#1\endcsname{#2}%
   \expandafter\gdef\csname suppmainupper@#1\endcsname{#3}}
-\DeclareRobustCommand{\mainref}[1]{\suppdraft{%
+\DeclareRobustCommand{\mainref}[1]{%
   \ifcsname suppmainlower@#1\endcsname\csname suppmainlower@#1\endcsname
   \else\PackageError{supp}{Unknown main-paper reference #1}{Refresh supp/main_references.tex}\fi
-  ~of the main paper}}
-\DeclareRobustCommand{\Mainref}[1]{\suppdraft{%
+  ~of the main paper}
+\DeclareRobustCommand{\Mainref}[1]{%
   \ifcsname suppmainupper@#1\endcsname\csname suppmainupper@#1\endcsname
   \else\PackageError{supp}{Unknown main-paper reference #1}{Refresh supp/main_references.tex}\fi
-  ~of the main paper}}
+  ~of the main paper}
 \input{supp/main_references}
-\newcommand{\suppaddedbibliographykey}[1]{\expandafter\def\csname suppaddedbib@#1\endcsname{}}
-\suppaddedbibliographykey{lin2017focal}
-\suppaddedbibliographykey{lipman2023flow}
-\suppaddedbibliographykey{hu2022lora}
-\suppaddedbibliographykey{liu2023libero}
-\suppaddedbibliographykey{li2024simpler}
-\suppaddedbibliographykey{walke2023bridgedata}
-\suppaddedbibliographykey{nasiriany2024robocasa}
 \raggedbottom
 \captionsetup[table]{font=footnotesize,skip=4pt}
 \captionsetup[figure]{font=footnotesize,skip=4pt}
@@ -74,7 +65,7 @@
 \maketitle
 \appendix
 
-% Section-prefixed numbering (e.g., Eq. A.1, Table B.1, Fig. D.1) following PCME
+% Section-prefixed numbering (e.g., Eq. A.1, Table B.1, Fig. C.1) following PCME
 \makeatletter
 \renewcommand{\theequation}{\Alph{section}.\arabic{equation}}
 \renewcommand{\thetable}{\Alph{section}.\arabic{table}}
@@ -108,11 +99,6 @@
 {
     \small
 
-    % Keep the coauthor's existing references black; only newly added entries are green.
-    \let\supporiginalbibitem\bibitem
-    \renewcommand{\bibitem}[2][]{%
-      \ifcsname suppaddedbib@#2\endcsname\color{suppdraftgreen}\else\color{black}\fi
-      \supporiginalbibitem[#1]{#2}}
     \bibliographystyle{ieeenat_fullname}
     \bibliography{supp/references}
 }

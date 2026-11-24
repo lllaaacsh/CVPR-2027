@@ -40,11 +40,11 @@ def main():
     assert validation['max_abs_action_diff'] == 0
     assert validation['provenance'] == 'offline_reconstruction_not_online_telemetry'
 
-    green = '#00783c'
+    text_color = '#000000'
     plt.rcParams.update({
         'font.family': 'DejaVu Sans', 'font.size': 7,
-        'text.color': green, 'axes.labelcolor': green,
-        'xtick.color': green, 'ytick.color': green,
+        'text.color': text_color, 'axes.labelcolor': text_color,
+        'xtick.color': text_color, 'ytick.color': text_color,
         'pdf.fonttype': 42, 'svg.fonttype': 'none',
         'savefig.facecolor': 'white',
     })
@@ -59,7 +59,7 @@ def main():
     selected = []
 
     def at_text(x, y, value, **kwargs):
-        return fig.text(x/width, 1-y/height, value, color=green, **kwargs)
+        return fig.text(x/width, 1-y/height, value, color=text_color, **kwargs)
 
     def image_axis(x, top, rgb):
         ax = fig.add_axes([x/width, 1-(top+cell_h)/height,

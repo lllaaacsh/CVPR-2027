@@ -33,7 +33,7 @@
         \label{eq:supp_chain}
     \end{equation}
     which measures the first-order sensitivity of the task loss to scaling up group $g$'s representation.
-    Equation~(3) of the main paper retains the non-negative descent component, $r_g = \max(0, -\partial \mathcal{L}_{\text{task}} / \partial S_g)$, assigning a high saliency when emphasizing group $g$ reduces $\mathcal{L}_{\text{task}}$.
+    \Mainref{eq:saliency} retains the non-negative descent component, $r_g = \max(0, -\partial \mathcal{L}_{\text{task}} / \partial S_g)$, assigning a high saliency when emphasizing group $g$ reduces $\mathcal{L}_{\text{task}}$.
     Through \cref{eq:supp_ste}, the router receives both direct task gradients $\partial \mathcal{L}_{\text{task}} / \partial S_g$ and stabilized pseudo-label supervision described below, without requiring a full-context probe at test time.
 
 
@@ -63,7 +63,7 @@
 
 
     Let $q_g = S_g$ when $y_g = 1$ and $q_g = 1 - S_g$ when $y_g = 0$, and let $\rho = F / G$ denote the target fraction of full-resolution groups.
-    The router loss terms in Eq.~(4) of the main paper are defined as
+    The router loss terms in \mainref{eq:router_loss}, including focal classification~\cite{lin2017focal}, are defined as
     \begin{align}
         \mathcal{L}_{\text{focal}} &= -\frac{1}{G} \sum_{g=1}^{G} \alpha_{y_g} (1 - q_g)^{\gamma} \log q_g, \label{eq:supp_focal} \\
         \mathcal{L}_{\text{budget}} &= \left| \frac{1}{G} \sum_{g=1}^{G} S_g - \rho \right|, \label{eq:supp_budget} \\
@@ -127,7 +127,7 @@ Evaluating the frozen base decoder on the full context gives $v_{\text{full}}$ (
     \mathcal{L}_{\text{task}} = \|v - v_{\text{full}}\|_2^2 + \lambda_{\text{GT}} \|v - v_{\text{gt}}\|_2^2, \qquad \lambda_{\text{GT}} = 0.02,
     \label{eq:supp_task}
 \end{equation}
-as in \mainref{eq:task_loss} of the main paper.
+as in \mainref{eq:task_loss}.
 Sharing $(\epsilon_v, \epsilon_a, \tau)$ prevents independent noise draws from confounding distillation between full and compressed contexts.
 At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac{\alpha}{r} B A$ ($r = 16, \alpha = 8$) and the low-rank branch is removed, incurring zero additional FLOPs or latency.
 \Cref{alg:supp_train,alg:supp_infer} summarize training and single-pass inference.
@@ -348,7 +348,7 @@ At deployment, \method retains the 30\% future-token budget with $F=100$ full-re
   \setlength{\tabcolsep}{3pt}
   \begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}X@{}}
     \toprule
-    Task & \Training instruction (verbatim) & Success criterion \\
+    Task & Training instruction (verbatim) & Success criterion \\
     \midrule
     Pick Cup to Sink & pick the cup to the pool & Grasp the cup by its handle and release it into the sink. \\
     Stack Bowls & stack the bowl & Stack one bowl on the other without falling. \\
@@ -361,7 +361,7 @@ At deployment, \method retains the 30\% future-token budget with $F=100$ full-re
 \end{table}
 
 \Cref{tab:supp_robot_tasks} pairs each task name with the verbatim training prompt and the evaluation success criterion. %
-The task labeled \textit{Pick Cup from Sink} in \mainref{tab:real_robot} and the real-robot task figure moves the cup into the sink, so \cref{tab:supp_robot_tasks} denotes this task as \textit{Pick Cup to Sink}.
+The task labeled \textit{Pick Cup from Sink} in \mainref{fig:real_robot} moves the cup into the sink; \mainref{tab:real_robot} and \cref{tab:supp_robot_tasks} use the name \textit{Pick Cup to Sink}.
 This task uses the verbatim prompt \texttt{pick the cup to the pool}, and success requires releasing the cup into the sink after a handle grasp.
 
 % \suppdraft{The display names in \suppdraft{\cref{tab:supp_robot_tasks}} follow \mainref{tab:real_robot}. Training instructions are listed separately from display names. For Pick Cup to Sink, the evaluated movement is into the sink, and success requires the cup to be released in the sink. The instruction for this task is \texttt{pick the cup to the pool}. In the submitted task figure, the label \textit{Pick Cup from Sink} refers to this same cup-to-sink task and should read \textit{Pick Cup to Sink}.}
@@ -483,7 +483,7 @@ Point differences $\Delta = \text{SR}_{\text{variant}} - \text{SR}_{\text{refere
 
     Following VLA-Pruner~\cite{liu2025vlapruner}, we take the union of the top-$k$ semantic positions and top-$k$ historical action-attention positions, then prune back to $k$ positions via greedy max-min cosine diversity on block-2 features.
     Historical action attention averages action-to-observation cross-attention over the deeper half of the decoder layers across the preceding 3 queries with exponential decay 0.8.
-    To initialize this history without cross-episode leakage, the first 3 queries of every episode run at full context, raising measured mean token counts to 5,535 / 7,240 / 8,788 (marked with $^*$ in Tab.~1 of the main paper).
+    To initialize this history without cross-episode leakage, the first 3 queries of every episode run at full context, raising measured mean token counts to 5,535 / 7,240 / 8,788 (marked with $^*$ in \mainref{tab:main_results}).
 
 
 
@@ -500,7 +500,7 @@ Point differences $\Delta = \text{SR}_{\text{variant}} - \text{SR}_{\text{refere
 
     CF-Prune~\cite{kim2026cfprune} extracts instruction and action attention from an initial denoising step to prune subsequent steps.
     Under single-step WAM inference, no prior denoising step exists; each query therefore runs an unadapted full-context probe pass (through video block 20 and the base decoder) to compute smoothed 50/50 complementary instruction-action scores (selecting low-entropy layers on the first episode query without multi-step phase gating), followed by the compressed LoRA-adapted pass.
-    Charging both passes causes total FLOPs and latency to exceed single-pass Full-context inference (Tab.~1 of the main paper).
+    Charging both passes causes total FLOPs and latency to exceed single-pass Full-context inference (\mainref{tab:main_results}).
 
 
 

@@ -56,12 +56,12 @@ We conduct component ablations on mimic-video using paired evaluation runs with 
   \caption{\textbf{Insertion curves and ranking reversal on LIBERO-Spatial.}
   (a) Geometric-mean normalized MSE of the first five decoded actions relative to full-context actions (200 held-out windows from 50 episodes; log scale).
   The top-$n$ of 300 spatial groups retain full resolution and the rest are merged; all 14 future frames and the original decoder remain fixed.
-  (b) Closed-loop success rates to extend the detailed results in main paper. Dashed: uncompressed full-context policy (90.4\%).}
+  (b) Closed-loop success rates extending \mainref{tab:ablations}. Dashed: uncompressed full-context policy (90.4\%).}
   \label{fig:supp_relevance}
 \end{figure*}
 
 \paragraph{Routing layer depth}
-Originally \method routes after the second of the 20 blocks that a query runs, so only two blocks process all 19,200 tokens. This ablation tests whether block 2 is a good place to route. It moves the routing point once in each direction and compares each arm with the block-2 cell it would compete with in deployment. Block 1 is the only earlier point where the router still reads the output of a transformer block; any earlier point would have to score the raw patch embeddings. Routing after block 1 runs one fewer block at full resolution , so it is compared with block 2 at the same 4,080 tokens. Block 6 is the deeper point whose estimated cost at 10\% (about 445 ms) matches block 2 at 20\% (440.7 ms). It asks whether the extra compute is better spent on four more full-resolution blocks or on keeping 1,680 more tokens. Points much deeper than block 6 fall outside the range that matters: beyond about block 9, routing at 10\% would cost more than block 2 at 30\% (477.1 ms), and that cell already exceeds the full-context policy on this suite (92.0 vs. 90.4\%). 
+Originally \method routes after the second of the 20 blocks that a query runs, so only two blocks process all 19,200 tokens. \Cref{tab:supp_depth} tests whether block 2 is a good place to route. It moves the routing point once in each direction and compares each arm with the block-2 cell it would compete with in deployment. Block 1 is the only earlier point where the router still reads the output of a transformer block; any earlier point would have to score the raw patch embeddings. Routing after block 1 runs one fewer block at full resolution , so it is compared with block 2 at the same 4,080 tokens. Block 6 is the deeper point whose estimated cost at 10\% (about 445 ms) matches block 2 at 20\% (440.7 ms). It asks whether the extra compute is better spent on four more full-resolution blocks or on keeping 1,680 more tokens. Points much deeper than block 6 fall outside the range that matters: beyond about block 9, routing at 10\% would cost more than block 2 at 30\% (477.1 ms), and that cell already exceeds the full-context policy on this suite (92.0 vs. 90.4\%).
 
 
 
@@ -141,10 +141,16 @@ Reversing the scores to $1-S_g$ increases distortion and reduces success at all 
 \subsection{Per-task results}
 \label{app:supp_pertask}
 
+% Declare each table before its discussion so it can use the preceding column space.
+\input{tables/supp_pertask_libero}
+
 \paragraph{LIBERO.}
 \Cref{tab:supp_pertask_libero} reports successful episode counts out of 150 trials per task across three evaluation seeds on LIBERO-Spatial, LIBERO-Object, and LIBERO-Goal.
 At the 20\% and 30\% future-token budgets, \method matches or surpasses Full-context on most tasks across all three suites, reaching 96.4\% versus 94.0\% overall on LIBERO-Object at 30\%.
 At the 10\% budget, LIBERO-Object remains close to Full-context at 93.8\%, whereas drops on LIBERO-Spatial and LIBERO-Goal concentrate on occluded container tasks such as \emph{in top drawer} and \emph{on wooden cabinet}.
+
+\input{tables/supp_pertask_bridge}
+\input{tables/supp_pertask_gr1}
 
 \paragraph{SIMPLER-Bridge and RoboCasa-GR1.}
 \Cref{tab:supp_pertask_bridge} reports successful episode counts out of 72 trials per task across three seeds on SIMPLER-Bridge.
@@ -156,7 +162,4 @@ At 12,300 tokens, 139 successes across 288 episodes correspond to 48.3\%, where 
 % \paragraph{\suppdraft{Per-task breakdown on simulation benchmarks.}}
 % \suppdraft{Per-task successful episode counts are reported in \suppdraft{\cref{tab:supp_pertask_libero,tab:supp_pertask_bridge,tab:supp_pertask_gr1}}.}
 
-\input{tables/supp_pertask_libero}
-\input{tables/supp_pertask_bridge}
-\input{tables/supp_pertask_gr1}
 \FloatBarrier
