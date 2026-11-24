@@ -5,7 +5,7 @@
 \label{app:supp_equal_token}
 
 
-In \mainref{tab:main}, VLA-Pruner~\cite{liu2025vlapruner} and ADP~\cite{pei2026adp} exceed the nominal compressed token budgets because of full-context warm-start or motion-gated fallback queries.
+In \mainref{tab:main_results}, VLA-Pruner~\cite{liu2025vlapruner} and ADP~\cite{pei2026adp} exceed the nominal compressed token budgets because of full-context warm-start or motion-gated fallback queries.
 Here we evaluate the selection rules of all baselines under strict fixed token budgets across three evaluation seeds with 500 episodes per suite and seed.
 
 
@@ -70,7 +70,7 @@ Originally \method routes after the second of the 20 blocks that a query runs, s
 \input{tables/supp_objectives}
 
 \paragraph{Router and distillation objectives.}
-For the router objective (\suppdraft{\cref{tab:supp_objectives}}, top), the router is retrained from scratch during Stage~1 with one term changed in the joint training objective: binary cross-entropy instead of the focal loss ($\gamma=0$), $\lambda_b=0$, $\lambda_e=0$, or no pseudo-label term, in which case the router learns only from the task gradient through the straight-through gate (\suppdraft{\cref{eq:supp_ste}}) plus the budget and entropy terms.
+For the router objective (\cref{tab:supp_objectives}, top), the router is retrained from scratch during Stage~1 with one term changed in the joint training objective: binary cross-entropy instead of the focal loss ($\gamma=0$), $\lambda_b=0$, $\lambda_e=0$, or no pseudo-label term, in which case the router learns only from the task gradient through the straight-through gate (\cref{eq:supp_ste}) plus the budget and entropy terms.
 The reference is the full recipe retrained in the same campaign, since retraining itself changes the router; each router is then frozen and given a fresh 10\% adapter in Stage~2.
 
 
@@ -79,7 +79,7 @@ The reference is the full recipe retrained in the same campaign, since retrainin
 
 \paragraph{Spatial and temporal budget allocation.}
 
-\suppdraft{\Cref{tab:supp_split}} spends the same future-token budget in different ways.
+\Cref{tab:supp_split} spends the same future-token budget in different ways.
 Temporal-only allocation keeps every group at full resolution ($F=300$, 1,200 tubes) and pools only in time; at 10\% this forces 720 tubes to a single segment and the rest to two.
 Spatial-only allocation keeps all 14 frames ($K=14$) and merges in space only; merging every group still leaves 4,200 future tokens, so it can only reach the 30\% budget, with $F=20$ (360 tubes).
 The two $F$ variants change the number of full-resolution groups at 20\% and rescale the tiers to keep the budget exact: $F=50$ (450 tubes) and $F=150$ (750 tubes).
@@ -90,14 +90,14 @@ Their segment quotas are $(90,165,195)$ for $K=(5,7,9)$ at $F=50$, and $(150,270
 
 \paragraph{Temporal priority and segment boundaries.}
 
-\suppdraft{\Cref{tab:supp_temporal}} changes how segment counts are assigned, with the spatial selection unchanged.
+\Cref{tab:supp_temporal} changes how segment counts are assigned, with the spatial selection unchanged.
 Feature change only ranks tubes by $\Delta_p$; reversed priority ranks them by $-u_p$; flat counts give nearly equal segment counts by a fixed spatial pattern; random tier assignment uses a fixed random ranking.
 
 
 
 
-\paragraph{\suppdraft{Task-agnostic spatial criteria.}}
-\suppdraft{\hypersetup{linkcolor=suppdraftgreen}The five task-agnostic criteria in \suppdraft{\cref{fig:supp_relevance}}(a) score the same 300 groups of $2\times2$ future-token positions.
+\paragraph{Task-agnostic spatial criteria.}
+The five task-agnostic criteria in \cref{fig:supp_relevance}(a) score the same 300 groups of $2\times2$ future-token positions.
 Let $z^{(2)}_{t,p}$ denote the full-context video feature after block~2 at future frame $t$ and spatial position $p$, before spatial coarsening.
 Each criterion produces one score per group; higher-scoring groups retain full resolution.
 
@@ -106,17 +106,17 @@ It therefore retains groups whose features are less redundant.
 \emph{Motion} averages $1-\cos(z^{(2)}_{t,p},z^{(2)}_{t+1,p})$ over adjacent future frames and the four positions of the group.
 \emph{Block-2 self-attention} averages the attention received from all visual queries over attention heads, then averages the scores of the group's four positions over the future frames.
 \emph{Edge energy} applies horizontal and vertical Sobel filters to the channel-mean grayscale image of the last RGB observation and averages the gradient magnitude over each group's image region.
-\emph{Random} assigns an independent uniform score in $[0,1]$ to each group using a reproducibly seeded draw for each held-out window.}
+\emph{Random} assigns an independent uniform score in $[0,1]$ to each group using a reproducibly seeded draw for each held-out window.
 
-\paragraph{\suppdraft{Offline coarsening protocol.}}
-\suppdraft{For each of the 200 held-out windows from 50 episodes, each criterion's ranking is computed once and its top-$n$ groups retain full resolution for $n\in\{25,50,100,150,200,250\}$.
+\paragraph{Offline coarsening protocol.}
+For each of the 200 held-out windows from 50 episodes, each criterion's ranking is computed once and its top-$n$ groups retain full resolution for $n\in\{25,50,100,150,200,250\}$.
 The remaining groups are replaced by their spatial means at their top-left source positions.
 All 14 future frames are retained, so these curves vary spatial coarsening alone.
 Every criterion uses the same observation, video-noise draw, action-noise seed, and original action decoder.
-The plotted distortion is the geometric mean, across windows, of the mean squared error between compressed-context and full-context normalized actions over the first five executed actions.}
+The plotted distortion is the geometric mean, across windows, of the mean squared error between compressed-context and full-context normalized actions over the first five executed actions.
 
 \paragraph{Insertion curves and ranking reversal.}
-\suppdraft{\Cref{fig:supp_relevance}} examines how the learned ranking affects action preservation and closed-loop control.
+\Cref{fig:supp_relevance} examines how the learned ranking affects action preservation and closed-loop control.
 With 50--250 groups kept at full resolution, router-guided insertion gives the lowest action distortion among the compared criteria.
 Reversing the scores to $1-S_g$ increases distortion and reduces success at all three token budgets, even with a separately retrained decoder adapter.
 
@@ -131,9 +131,9 @@ Reversing the scores to $1-S_g$ increases distortion and reduces success at all 
 
 \paragraph{Semantic region coverage across suites.}
 
- We present the region coverage partition across all baseline methods as in \suppdraft{\cref{tab:supp_region_coverage}}. The matched-selector comparison excludes queries 0--2 because VLA-Pruner needs an attention history, and uses the registered completed Object recording set.
+ We present the region coverage partition across all baseline methods as in \cref{tab:supp_region_coverage}. The matched-selector comparison excludes queries 0--2 because VLA-Pruner needs an attention history, and uses the registered completed Object recording set.
 
-\suppdraft{\Cref{tab:supp_region_coverage}} compares which regions the five selection rules keep when each keeps the same 100 groups of the same frame.
+\Cref{tab:supp_region_coverage} compares which regions the five selection rules keep when each keeps the same 100 groups of the same frame.
 
 
 

@@ -78,7 +78,7 @@
 
 Let $h_{t,p}$ denote the router's projected feature for tube $p$ at future frame $t$ prior to rotary positional encoding, computed after spatial merging.
 We define the frame-to-frame feature variation as $\delta_{p,t} = 1 - \cos(h_{t,p}, h_{t+1,p})$, whose temporal average $\Delta_p = \frac{1}{T-1}\sum_{t=1}^{T-1}\delta_{p,t}$ determines the tube priority $u_p$ in \mainref{eq:priority}.
-Sorting all tubes in descending order of $u_p$, we assign segment counts $K_p$ according to the priority tiers in \suppdraft{\cref{tab:supp_schedules}} to meet the target token budget exactly.
+Sorting all tubes in descending order of $u_p$, we assign segment counts $K_p$ according to the priority tiers in \cref{tab:supp_schedules} to meet the target token budget exactly.
 Within a tube assigned $K_p$ segments, let $c_t = \sum_{\tau < t} \delta_{p,\tau}$ denote the cumulative variation up to frame $t$, with normalized midpoint $\bar{c}_t = (c_t + c_{t+1})/(2c_T)$ for each candidate boundary between frames $t$ and $t+1$.
 We select $K_p - 1$ ordered segment boundaries $1 \le b_1 < \dots < b_{K_p-1} < T$ that minimize
 \begin{equation}
@@ -146,7 +146,7 @@ At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac
   \begin{algorithmic}[1]
     \Require Frozen video DiT $V$ and decoder $D$;
     demonstrations; training and deployment
-    budget schedules (\suppdraft{\cref{tab:supp_schedules}})
+    budget schedules (\cref{tab:supp_schedules})
 
     \State Initialize router $R_\theta$,
     temporary decoder LoRA $\phi$, and saliency
@@ -169,7 +169,7 @@ At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac
 
       \State Apply the Stage-1 spatial and temporal
       allocation; gate tubes by $\gamma_g$
-      (\suppdraft{\cref{eq:supp_ste}})
+      (\cref{eq:supp_ste})
 
       \State $C \gets V_{3:20}(\text{allocated }Z)$
 
@@ -184,7 +184,7 @@ At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac
 
       \State Compute per-sample
       $\mathcal{L}_{\mathrm{task}}^{(i)}$
-      by \suppdraft{\cref{eq:supp_task}}
+      by \cref{eq:supp_task}
 
       \State $r_g^{(i)} \gets
       \max(0,
@@ -243,7 +243,7 @@ At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac
         $v_{\mathrm{full}}$
 
         \State Compute $\mathcal{L}_{\mathrm{task}}$
-        by \suppdraft{\cref{eq:supp_task}}
+        by \cref{eq:supp_task}
 
         \State Update only $\phi_b$
         using $\nabla_{\phi_b}
@@ -266,7 +266,7 @@ At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac
     \Require observation frames, instruction, robot state; folded adapter; budget schedule
     \State $Z \gets V_{1:2}(\text{observation},\text{noisy future latents})$ \Comment{19,200 tokens}
     \State $s \gets R(Z_{\text{fut}},\text{instruction})$; $S_g$; keep the top-$F$ groups, merge the rest
-    \State $u_p \gets S_{g(p)}\Delta_p$; assign $K_p$ by tier; cut tubes by \suppdraft{\cref{eq:supp_cuts}}; mean-pool segments
+    \State $u_p \gets S_{g(p)}\Delta_p$; assign $K_p$ by tier; cut tubes by \cref{eq:supp_cuts}; mean-pool segments
     \State spatial positions from the source grid; temporal positions contiguous
     \State $C \gets V_{3:20}([Z_{\text{obs}};\,\text{pooled future}])$ \Comment{$N$ + 2,400 tokens}
     \State sample the action chunk on $C$ (10 flow steps); execute its first 5 actions
@@ -342,20 +342,20 @@ At deployment, \method retains the 30\% future-token budget with $F=100$ full-re
 \begin{table}[!htbp]
   \centering
   \caption{\textbf{Real-robot tasks.}
-  \suppdraft{Display names matched to the submitted main paper, original training instructions, and success criteria; every method is run for 15 trials per task.}}
+  Display names matched to the submitted main paper, original training instructions, and success criteria; every method is run for 15 trials per task.}
   \label{tab:supp_robot_tasks}
   \scriptsize
   \setlength{\tabcolsep}{3pt}
   \begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}X@{}}
     \toprule
-    \suppdraft{Task} & \suppdraft{Training instruction (verbatim)} & \suppdraft{Success criterion} \\
+    Task & \Training instruction (verbatim) & Success criterion \\
     \midrule
-    \suppdraft{Pick Cup to Sink} & \suppdraft{pick the cup to the pool} & \suppdraft{Grasp the cup by its handle and release it into the sink.} \\
-    \suppdraft{Stack Bowls} & \suppdraft{stack the bowl} & \suppdraft{Stack one bowl on the other without falling.} \\
-    \suppdraft{Pour Water} & \suppdraft{pour the water} & \suppdraft{Grasp the cup by its handle and rotate it $90^\circ$ over the sink.} \\
-    \suppdraft{Open Microwave} & \suppdraft{open the microwave} & \suppdraft{Grasp the handle and open the microwave door.} \\
-    \suppdraft{Cup out Microwave} & \suppdraft{take the cup out of the microwave} & \suppdraft{Take the cup out by its handle and place it on the table.} \\
-    \suppdraft{Open Lid} & \suppdraft{open the lid} & \suppdraft{Grasp the lid and lift it to an open state.} \\
+    Pick Cup to Sink & pick the cup to the pool & Grasp the cup by its handle and release it into the sink. \\
+    Stack Bowls & stack the bowl & Stack one bowl on the other without falling. \\
+    Pour Water & pour the water & Grasp the cup by its handle and rotate it $90^\circ$ over the sink. \\
+    Open Microwave & open the microwave& Grasp the handle and open the microwave door. \\
+    Cup out Microwave & take the cup out of the microwave & Take the cup out by its handle and place it on the table. \\
+    Open Lid & open the lid & Grasp the lid and lift it to an open state. \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -463,48 +463,48 @@ Point differences $\Delta = \text{SR}_{\text{variant}} - \text{SR}_{\text{refere
 \subsection{Baseline adaptation protocols}
 \label{app:supp_baselines}
 
-\ji{
+
     As external token-reduction baselines were originally designed for observation pruning in VLAs or multi-step diffusion WAMs, we adapt their selection rules to single-pass future-conditioned WAMs under matched Stage-2 LoRA training (\cref{tab:hyperparams}).
     On mimic-video, all baselines retain the 2,400 observation tokens, apply selection at video block 2, and preserve native source coordinates without feature rescaling.
     VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp}, and CF-Prune~\cite{kim2026cfprune} score the 1,200 spatial positions of the final observed frame, retain 120 / 240 / 360 positions, and broadcast this spatial mask across all 14 future frames to yield 1,680 / 3,360 / 5,040 future tokens.
     Semantic text-relevance scores use mean raw scaled query-key logits across instruction tokens and heads (since video DiT cross-attention uses text keys only, making softmax sums over keys constant), while action attention averages across all action queries (excluding the proprioceptive query) and all 10 flow steps in FP32.
-}
+
 
 
 \paragraph{FastV-style.}
-\ji{
+
     Following FastV~\cite{chen2024fastv}, future tokens are ranked by received visual self-attention at video block 2 (averaged across attention heads and visual queries), retaining the top tokens up to the target budget at their native coordinates.
-}
+
 
 
 
 \paragraph{VLA-Pruner.}
 
-\ji{
+
     Following VLA-Pruner~\cite{liu2025vlapruner}, we take the union of the top-$k$ semantic positions and top-$k$ historical action-attention positions, then prune back to $k$ positions via greedy max-min cosine diversity on block-2 features.
     Historical action attention averages action-to-observation cross-attention over the deeper half of the decoder layers across the preceding 3 queries with exponential decay 0.8.
     To initialize this history without cross-episode leakage, the first 3 queries of every episode run at full context, raising measured mean token counts to 5,535 / 7,240 / 8,788 (marked with $^*$ in Tab.~1 of the main paper).
-}
+
 
 
 
 \paragraph{ADP.}
-\ji{
+
     Following ADP~\cite{pei2026adp}, top-$k$ semantic token pruning is gated by end-effector displacement relative to the two preceding control steps: displacements below the prior two-step minimum trigger a full-context fallback, and at least one full-context query is forced after every three consecutive pruned queries.
     These fallbacks yield measured mean contexts of 12,101 / 13,059 / 13,881 tokens per query.
-}
+
 
 
 \paragraph{CF-Prune.}
 
-\ji{
+
     CF-Prune~\cite{kim2026cfprune} extracts instruction and action attention from an initial denoising step to prune subsequent steps.
     Under single-step WAM inference, no prior denoising step exists; each query therefore runs an unadapted full-context probe pass (through video block 20 and the base decoder) to compute smoothed 50/50 complementary instruction-action scores (selecting low-entropy layers on the first episode query without multi-step phase gating), followed by the compressed LoRA-adapted pass.
     Charging both passes causes total FLOPs and latency to exceed single-pass Full-context inference (Tab.~1 of the main paper).
-}
+
 
 
 \paragraph{DiT4DiT.}
-\ji{
+
     All four baselines follow the identical selection rules on DiT4DiT using observed/future token quotas of 392/197, 344/98, and 293/98 at the 589-, 442-, and 391-token budgets (thus pruning observation tokens as well at the two smaller budgets), each paired with a dedicated Stage-2 decoder LoRA.
-}
+
