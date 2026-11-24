@@ -27,6 +27,8 @@ def main():
         kind = re.match(r'\{\{\[([^]]+)\]', records[label + '@cref'])[1]
         kind = {'subtable': 'table'}.get(kind, kind)
         display = '(' + number + ')' if kind == 'equation' else number
+        if kind in {'equation', 'figure', 'table'}:
+            kind = kind.capitalize()
         lines.append('\\DeclareMainReference{' + label + '}{' + kind + '~' + display
                      + '}{' + kind.capitalize() + '~' + display + '}')
     snapshot.write_text('\n'.join(lines) + '\n')

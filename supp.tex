@@ -28,6 +28,7 @@
 \ifdraft\newcommand{\pend}{{\color{red}\textbf{--}}}\else\newcommand{\pend}{--}\fi
 \usepackage{algpseudocode}
 \usepackage{adjustbox}
+\usepackage{multicol}
 \definecolor{suppdraftgreen}{RGB}{0,120,60}
 \DeclareRobustCommand{\suppdraft}[1]{{\color{suppdraftgreen}\hypersetup{linkcolor=suppdraftgreen,citecolor=suppdraftgreen}#1}}
 \newcommand{\DeclareMainReference}[3]{%
@@ -96,7 +97,11 @@
 \input{supp/B_add}
 \input{supp/C_qual}
 
-\FloatBarrier
+% Start the bibliography after all qualitative figures and balance its columns.
+\clearpage
+\onecolumn
+\nolinenumbers
+\begin{multicols}{2}
 
 
 
@@ -109,7 +114,8 @@
       \ifcsname suppaddedbib@#2\endcsname\color{suppdraftgreen}\else\color{black}\fi
       \supporiginalbibitem[#1]{#2}}
     \bibliographystyle{ieeenat_fullname}
-    \bibliography{main}
+    \bibliography{supp/references}
 }
 
+\end{multicols}
 \end{document}
