@@ -47,8 +47,7 @@
 
 
 \paragraph{Spatial group selection across tasks.}
-% Include Figure C.1: matched-budget 2x2 spatial group selection maps comparing FastV-style,
-% VLA-Pruner, ADP, CF-Prune, and ARROW across LIBERO suites and SIMPLER-Bridge.
+
 \suppdraft{\Cref{fig:supp_selection_maps}} shows the groups that each rule keeps from the same frame.
 On LIBERO, FastV-style spends much of its budget on the table and the dark cabinet and misses the bowl to be picked up, ADP keeps the arm and the cabinet but misses the plate and most of the path, and VLA-Pruner's selection is scattered over the scene.
 \suppdraft{In the illustrated LIBERO-Spatial frame, CF-Prune and \method both keep compact regions around the arm and task objects, while \method also retains groups along the future path between them. CF-Prune obtains its selection after a full-context probe.}
@@ -74,8 +73,7 @@ On RoboCasa-GR1, \method keeps the both pepper and the target basket in this fra
 \end{figure*}
 
 \paragraph{Temporal tubelet segmentation.}
-% Include Figure C.2: 14-frame future tubelet visualizations illustrating fine segments (K=7)
-% on moving arm/object regions vs. coarse segments (K=3) on static background regions.
+
 \suppdraft{\Cref{fig:supp_allocation_steps}} follows one recorded query through the allocation.
 Tube A, on the gripper, is in the highest tier and receives 4, 7 and 10 segments at the three budgets; tube C, on the table background, is in the lowest tier and receives 1, 3 and 5.
 Tube B, on the arm base, is in the middle tier because its router score is lower than the gripper's, not because its features change less.
@@ -101,10 +99,7 @@ Within each tube, the boundaries follow the cumulative feature change (\suppdraf
 \subsection{Failure case analysis}
 \label{app:supp_failures}
 
-% Selection rule registered before the recording run (mimic repo ablations/failure_cases_20261119/README.md):
-% 100 Spatial episodes (10 trials per task, seed 0) of the adopted 10% cell, recorded with the E3 recorder (frames,
-% instance segmentation, allocation of every query). Records = BSC 49254201 shards 1,3,4 + QMUL 36705241 shards 0,2;
-% selection = select_failure_cases.py (selection_registered_bsc134_qmul02.json); figures = render_failure_figures.py.
+
 To avoid choosing failures by eye, we recorded 100 LIBERO-Spatial episodes of the 10\% policy (10 trials per task), with the frames, the simulator segmentation and the allocation of every query, and fixed the selection rule before the run.
 Because trial $t$ of a task uses the same initial state in every run, each episode pairs with the full-context episode of the same task and trial.
     % \ji{Across the 100 LIBERO-Spatial episodes at the 10\% future token budget, over-compression primarily harms episodes where a small or partially occluded target object is coarsened into merged groups while distractor receptacles elsewhere on the table retain distinguish the commanded target }
@@ -129,8 +124,7 @@ Throughout these episodes the allocation keeps the ramekin and the plate at full
 The videos do not show why the arm goes to the ramekin; we note only that the ramekin stands where the bowl is picked up in two other tasks of the suite.
 
 \paragraph{Failures shared with the base policy.}
-% Show examples where ARROW assigns full resolution to the robot arm and target object,
-% but episodes fail due to grasp slip or occlusion inherited from the frozen WAM.
+
 \begin{figure*}[!t]
   \centering
   \includegraphics[width=\textwidth]{supp_failure_shared.pdf}
