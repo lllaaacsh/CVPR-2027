@@ -264,7 +264,7 @@ At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac
   \label{alg:supp_infer}
   \footnotesize
   \begin{algorithmic}[1]
-    \Require observation frames, instruction, robot state; folded adapter; budget schedule
+    \Require observation frames, instruction, robot state; merged LoRA weights; budget schedule
     \State $Z \gets V_{1:2}(\text{observation},\text{noisy future latents})$ \Comment{19,200 tokens}
     \State $s \gets R(Z_{\text{fut}},\text{instruction})$; $S_g$; keep the top-$F$ groups, merge the rest
     \State $u_p \gets S_{g(p)}\Delta_p$; assign $K_p$ by tier; cut tubes by \cref{eq:supp_cuts}; mean-pool segments
@@ -374,7 +374,7 @@ Main evaluations use NVIDIA H100 GPUs, while the ablations in \Cref{tab:supp_dep
   \centering
   \includegraphics[width=\linewidth]{fig10_latency_breakdown.pdf}
   \caption{\textbf{Where the time of one query goes on mimic-video.}
-  Median stage times on an H100 at batch size one, with CUDA graphs and folded adapters.}
+  Median stage times on an H100 at batch size one, with CUDA graphs and merged LoRA weights.}
   \label{fig:supp_latency_breakdown}
 \end{figure}
 

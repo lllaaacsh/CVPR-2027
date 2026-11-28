@@ -19,8 +19,9 @@
 \paragraph{Fixed-budget evaluation on DiT4DiT.}
     \Cref{tab:supp_fixed_dit4dit} evaluates fixed budgets of 391, 442, and 589 total tokens on DiT4DiT, with observed/future token quotas of 293/98, 344/98, and 392/197.
     Each selection rule pairs with a dedicated Stage-2 decoder LoRA adapter trained at the target budget.
+    
     Across all three budgets, \method achieves the highest mean success at 98.1\%, 98.4\%, and 99.3\% while matching the lowest single-pass FLOPs and latency.
-    At the 391-token budget, \method outperforms VLA-sel.\ by 12.2\% and ADP-sel.\ by 55.4\%.
+    At the 391-token budget, \method outperforms VLA-sel.\ and ADP-sel.\ by 12.2 and 55.4 percentage points (pp), respectively.
     
 
 
@@ -57,7 +58,7 @@
 
 \paragraph{Router and distillation objectives.}
     The upper half of \Cref{tab:supp_objectives} ablates the Stage-1 router objective and Stage-2 decoder objective on LIBERO-Spatial at the 10\% budget.
-    Retraining the Stage-1 router with binary cross-entropy at $\gamma=0$ instead of focal loss lowers success rate by 9.2\% from 69.4\% to 60.2\%.
+    Retraining the Stage-1 router with binary cross-entropy at $\gamma=0$ instead of focal loss lowers success rate by 9.2 pp from 69.4\% to 60.2\%.
     Removing $\mathcal{L}_{\text{budget}}$ at $\lambda_b=0$ or $\mathcal{L}_{\text{entropy}}$ at $\lambda_e=0$ lowers success rate by 3.2\% and 3.6\%, respectively.
     Omitting pseudo-labels so the router trains solely on straight-through gradients from \Cref{eq:supp_ste} plus regularizers reduces success rate by 20.6\% to 48.8\%.
     For Stage-2 decoder adaptation, velocity distillation alone at $\lambda_{\text{GT}}=0$ reaches 69.6\%, closely matching 70.8\% under the full task objective.
@@ -67,7 +68,7 @@
     The lower half of \Cref{tab:supp_objectives} substitutes alternative spatial scores for the learned group scores $S_g$ under the identical two-stage allocation rule.
     On LIBERO-Spatial, ranking groups by block-2 visual self-attention lowers success rate by 5.8\% at the 10\% budget and 3.6\% at the 20\% budget.
     Using a fixed random spatial map causes larger drops of 12.8\% at 10\% and 16.8\% at 20\%.
-    Substituting a static score map averaged over training demonstrations at 20\% lowers success rate by 4.6\% on LIBERO-Spatial, 7.8\% on LIBERO-Goal, and 4.4\% on LIBERO-Object.
+    Substituting the \emph{Training-mean map} (scores averaged over training demonstrations) at 20\% lowers success rate by 4.6\% on LIBERO-Spatial, 7.8\% on LIBERO-Goal, and 4.4\% on LIBERO-Object.
     Input-conditioned per-query routing is therefore required across varying object layouts and instructions.
 
 
@@ -88,9 +89,9 @@
 
 \paragraph{Temporal priority and segment boundaries.}
     \Cref{tab:supp_temporal} fixes spatial group selection and ablates temporal tier assignment and segment partitioning.
-    On LIBERO-Spatial, ranking tubes by feature variation alone with $u_p=\Delta_p$ lowers success rate by 3.4\% at 10\% and 1.6\% at 20\%.
+    On LIBERO-Spatial, the \emph{Feature change only} variant ($u_p=\Delta_p$) lowers success rate by 3.4\% at 10\% and 1.6\% at 20\%.
     Reversing tube priority to $-u_p$ lowers success rate by 5.4\% at 10\% and 5.0\% at 20\%.
-    Assigning near-uniform segment counts via a fixed spatial pattern reduces success rate by 4.0\% at 10\% and 0.6\% at 20\%.
+    The \emph{Flat counts} variant, which assigns near-uniform segment counts via a fixed spatial pattern, reduces success rate by 4.0\% at 10\% and 0.6\% at 20\%.
     Randomizing tier assignments at the 20\% budget lowers success rate by 2.4\% on LIBERO-Spatial, 4.0\% on LIBERO-Goal, and 4.6\% on LIBERO-Object.
     Finally, substituting equal-length segments for the variation-balanced boundaries in \Cref{eq:supp_cuts} reduces success rate by 4.6\% at 10\% and 4.4\% at 20\%.
 

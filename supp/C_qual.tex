@@ -112,7 +112,10 @@ Within each tube, the variation-balanced boundaries from \Cref{eq:supp_cuts} ass
 \label{app:supp_vis_robot}
 \Cref{fig:supp_real_robot_rollouts} compares closed-loop rollouts of Full-context at 19,200 tokens and \method at 7,440 tokens (30\% future-token budget) across four task phases on \emph{Stack Bowls} and \emph{Open Lid}, paired with camera-aligned group relevance maps $S_g$.
 Across approach, contact, manipulation, and terminal states, \method concentrates the 100 full-resolution spatial groups on the Franka arm, grasped bowl or pot lid, and upcoming trajectory while coarsening background kitchen surfaces. %
-With faster per-query inference, \method completes \emph{Stack Bowls} in 32.8\,s at query $q=16$ versus 51.5\,s at $q=18$ for Full-context, and completes \emph{Open Lid} in 34.6\,s at $q=17$ versus 59.4\,s for Full-context. %[cite: 136]
+In the displayed rollouts, \method reaches the terminal state
+for \emph{Stack Bowls} at 32.8\,s ($q=16$), compared with
+51.5\,s ($q=18$) for Full-context, and for \emph{Open Lid}
+at 34.6\,s ($q=17$), compared with 59.4\,s for Full-context.
 Additional real-robot execution rollouts are provided in the supplementary video.
 
 % \suppdraft{\Cref{fig:supp_real_robot_rollouts} shows recorded Full-context and \method rollouts on Stack Bowls and Open Lid, together with \method router scores aligned to the saved camera observations. The columns compare task phases in separate runs. The supplementary video provides additional real-robot demonstrations.}
