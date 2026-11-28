@@ -94,7 +94,22 @@ On SIMPLER-Bridge and RoboCasa-GR1 in the bottom two rows of \cref{fig:supp_sele
   \label{fig:supp_real_robot_rollouts}
 \end{figure*}
 
-
+\begin{figure*}[!t]
+\centering
+  \includegraphics[width=0.89\textwidth]{supp_failure_compression.pdf}
+  \caption{\textbf{Failures observed at the 10\% budget.}
+  Episodes that fail with \method and succeed with the full-context policy, ranked by the share of task-object pixels in merged groups over the last five queries before failure.
+  Per episode, from left to right: the allocation at the first query (merged groups darkened, target bowl outlined), then the frame at step 100 of the 10\% policy and of the full-context policy from the same initial state.
+  Episodes 44, 50 and 47 (bowl in the top drawer) have the highest shares (52, 51 and 49\%); episode 100 (bowl on the wooden cabinet) is the median of the 29 episodes (36\%).}
+  \label{fig:supp_failure_compression}
+\par\vspace{6pt}
+\centering
+  \includegraphics[width=0.89\textwidth]{supp_failure_shared.pdf}
+  \caption{\textbf{Failures shared with the full-context policy.}
+  Episodes that fail with both policies although at least 90\% of the task-object and robot pixels are in full-resolution groups.
+  Layout as in \cref{fig:supp_failure_compression}, at the last step (219); the target bowl is entirely at full resolution in both episodes.}
+  \label{fig:supp_failure_shared}
+\end{figure*}
 
 \paragraph{Temporal tubelet segmentation.}
 
@@ -121,22 +136,7 @@ Additional real-robot execution rollouts are provided in the supplementary video
 % \suppdraft{\Cref{fig:supp_real_robot_rollouts} shows recorded Full-context and \method rollouts on Stack Bowls and Open Lid, together with \method router scores aligned to the saved camera observations. The columns compare task phases in separate runs. The supplementary video provides additional real-robot demonstrations.}
 
 
-\begin{figure*}[!tp]
-\centering
-  \includegraphics[width=\textwidth]{supp_failure_compression.pdf}
-  \caption{\textbf{Failures observed at the 10\% budget.}
-  Episodes that fail with \method and succeed with the full-context policy, ranked by the share of task-object pixels in merged groups over the last five queries before failure.
-  Per episode, from left to right: the allocation at the first query (merged groups darkened, target bowl outlined), then the frame at step 100 of the 10\% policy and of the full-context policy from the same initial state.
-  Episodes 44, 50 and 47 (bowl in the top drawer) have the highest shares (52, 51 and 49\%); episode 100 (bowl on the wooden cabinet) is the median of the 29 episodes (36\%).}
-  \label{fig:supp_failure_compression}
-\par\vspace{8pt}
-\centering
-  \includegraphics[width=\textwidth]{supp_failure_shared.pdf}
-  \caption{\textbf{Failures shared with the full-context policy.}
-  Episodes that fail with both policies although at least 90\% of the task-object and robot pixels are in full-resolution groups.
-  Layout as in \cref{fig:supp_failure_compression}, at the last step (219); the target bowl is entirely at full resolution in both episodes.}
-  \label{fig:supp_failure_shared}
-\end{figure*}
+
 
 \subsection{Failure case analysis}
 \label{app:supp_failures}
