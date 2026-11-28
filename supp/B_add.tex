@@ -3,34 +3,33 @@
 
 \subsection{Equal-token baseline comparisons}
 \label{app:supp_equal_token}
-
-In \mainref{tab:main_results}, VLA-Pruner~\cite{liu2025vlapruner} and ADP~\cite{pei2026adp} exceed the nominal compressed token budgets because of full-context warm-start or motion-gated fallback queries.
-Here we evaluate the selection rules of all baselines under strict fixed token budgets across three evaluation seeds with 500 episodes per suite and seed.
+    In \mainref{tab:main_results}, VLA-Pruner~\cite{liu2025vlapruner} and ADP~\cite{pei2026adp} exceed the nominal compressed token budgets due to full-context warm-start or motion-gated fallback queries.
+    Here we evaluate all baseline selection rules under strict fixed token budgets on LIBERO across three evaluation seeds.
 
 \paragraph{Fixed-budget evaluation on mimic-video.}
-\Cref{tab:supp_fixed_mimic} restricts every action-generating query on mimic-video to exactly 4,080, 5,760, or 7,440 total tokens, including the 2,400 observation tokens. %
-In this setting, VLA-sel.\ substitutes compressed semantic-only queries for the three full-context warm-start queries per episode and initializes the attention history from those compressed passes.
-ADP-sel.\ disables the end-effector motion gate and all full-context fallback queries, whereas CF-sel.\ retains the extra full-context probe pass before compressed prediction.
-Without dense fallback calls, ADP-sel.\ drops to 24.9\%, 51.3\%, and 62.7\% mean success across the 10\%, 20\%, and 30\% future-token budgets, and VLA-sel.\ drops to 51.3\%, 73.7\%, and 82.1\%.
-In contrast, \method reaches 79.8\%, 90.5\%, and 92.9\% mean success at matched single-pass FLOPs and latency, while CF-sel.\ trails \method in accuracy at more than twice the query latency.
+    \Cref{tab:supp_fixed_mimic} restricts every policy query on mimic-video to 4,080, 5,760, or 7,440 total tokens, including the 2,400 observation tokens.
+    VLA-sel.\ substitutes compressed instruction-relevance queries for the three full-context warm-start queries per episode to initialize the attention history.
+    ADP-sel.\ disables the end-effector motion gate and all full-context fallback queries, while CF-sel.\ retains the initial full-context probe pass.
+    Without full-context fallbacks, ADP-sel.\ drops to 24.9\%, 51.3\%, and 62.7\% mean success across the 10\%, 20\%, and 30\% budgets, and VLA-sel.\ drops to 51.3\%, 73.7\%, and 82.1\%.
+    In contrast, \method achieves 79.8\%, 90.5\%, and 92.9\% mean success at matched single-pass FLOPs and latency, whereas CF-sel.\ reaches lower accuracy at more than twice the latency.
 
 
 \input{tables/supp_fixed_budget_mimic}
 
 \paragraph{Fixed-budget evaluation on DiT4DiT.}
-\Cref{tab:supp_fixed_dit4dit} fixes the action-generating context on DiT4DiT to 391, 442, and 589 total tokens, corresponding to observed/future token quotas of 293/98, 344/98, and 392/197.
-Every selection rule uses a dedicated Stage-2 decoder LoRA adapter trained at the target budget.
-Across all three budgets, \method achieves the highest mean success at 98.1\%, 98.4\%, and 99.3\%, outperforming VLA-sel.\ by 12.2\% and ADP-sel.\ by 55.4\% at 391 tokens while matching the lowest single-pass latency and FLOPs.
-
+    \Cref{tab:supp_fixed_dit4dit} evaluates fixed budgets of 391, 442, and 589 total tokens on DiT4DiT, with observed/future token quotas of 293/98, 344/98, and 392/197.
+    Each selection rule pairs with a dedicated Stage-2 decoder LoRA adapter trained at the target budget.
+    Across all three budgets, \method achieves the highest mean success at 98.1\%, 98.4\%, and 99.3\% while matching the lowest single-pass FLOPs and latency.
+    At the 391-token budget, \method outperforms VLA-sel.\ by 12.2\% and ADP-sel.\ by 55.4\%.
+    
 
 
 \input{tables/supp_fixed_budget_dit4dit}
 
 \subsection{Additional ablation analyses}
 \label{app:supp_ablations}
-
-We conduct component ablations on mimic-video using paired evaluation runs with dedicated Stage-2 decoder adapters following \Cref{tab:supp_hparams}.
-
+    We conduct component ablations on mimic-video using paired evaluations and dedicated Stage-2 decoder adapters following \Cref{tab:supp_hparams}.
+    
 \input{tables/supp_depth}
 
 \begin{figure*}[!t]
@@ -44,60 +43,78 @@ We conduct component ablations on mimic-video using paired evaluation runs with 
 \end{figure*}
 
 \paragraph{Routing layer depth}
-Originally \method routes after the second of the 20 blocks that a query runs, so only two blocks process all 19,200 tokens. \Cref{tab:supp_depth} tests whether block 2 is a good place to route. It moves the routing point once in each direction and compares each arm with the block-2 cell it would compete with in deployment. Block 1 is the only earlier point where the router still reads the output of a transformer block; any earlier point would have to score the raw patch embeddings. Routing after block 1 runs one fewer block at full resolution , so it is compared with block 2 at the same 4,080 tokens. Block 6 is the deeper point whose estimated cost at 10\% (about 445 ms) matches block 2 at 20\% (440.7 ms). It asks whether the extra compute is better spent on four more full-resolution blocks or on keeping 1,680 more tokens. Points much deeper than block 6 fall outside the range that matters: beyond about block 9, routing at 10\% would cost more than block 2 at 30\% (477.1 ms), and that cell already exceeds the full-context policy on this suite (92.0 vs. 90.4\%).
+    \Cref{tab:supp_depth} varies the video DiT block where routing occurs on LIBERO-Spatial at the 10\% future-token budget.
+    By default, \method routes after block 2 of the 20 DiT blocks, leaving 18 blocks to process the compressed 4,080-token sequence.
+    Block 1 is the earliest layer where the router observes transformer block features rather than raw patch embeddings.
+    Routing after block 1 reduces latency from 404.2\,ms to 394\,ms, but lowers success rate by 12.4\% from 69.2\% to 56.8\%.
+    A single DiT block therefore provides insufficient spatiotemporal context for action-relevance prediction.
+    Routing deeper after block 6 raises success rate to 78.2\% at 4,080 tokens while increasing latency to 445\,ms.
+    At a comparable latency of 440.7\,ms in \mainref{tab:main_results}, routing after block 2 at the 20\% budget achieves 88.2\% success.
+    Retaining 1,680 additional future tokens after block 2 is thus more effective than running four extra blocks at full resolution.
+    Routing beyond block 9 at the 10\% budget exceeds the 477.1\,ms latency of block 2 at 30\%, which already surpasses Full-context at 92.0\% versus 90.4\%.
 
 \input{tables/supp_objectives}
 
 \paragraph{Router and distillation objectives.}
-For the router objective (\cref{tab:supp_objectives}, top), the router is retrained from scratch during Stage~1 with one term changed in the joint training objective: binary cross-entropy instead of the focal loss ($\gamma=0$), $\lambda_b=0$, $\lambda_e=0$, or no pseudo-label term, in which case the router learns only from the task gradient through the straight-through gate (\cref{eq:supp_ste}) plus the budget and entropy terms.
-The reference is the full recipe retrained in the same campaign, since retraining itself changes the router; each router is then frozen and given a fresh 10\% adapter in Stage~2.
+    The upper half of \Cref{tab:supp_objectives} ablates the Stage-1 router objective and Stage-2 decoder objective on LIBERO-Spatial at the 10\% budget.
+    Retraining the Stage-1 router with binary cross-entropy at $\gamma=0$ instead of focal loss lowers success rate by 9.2\% from 69.4\% to 60.2\%.
+    Removing $\mathcal{L}_{\text{budget}}$ at $\lambda_b=0$ or $\mathcal{L}_{\text{entropy}}$ at $\lambda_e=0$ lowers success rate by 3.2\% and 3.6\%, respectively.
+    Omitting pseudo-labels so the router trains solely on straight-through gradients from \Cref{eq:supp_ste} plus regularizers reduces success rate by 20.6\% to 48.8\%.
+    For Stage-2 decoder adaptation, velocity distillation alone at $\lambda_{\text{GT}}=0$ reaches 69.6\%, closely matching 70.8\% under the full task objective.
+    In contrast, ground-truth flow matching without teacher distillation fails at 0.0\%, confirming that full-context distillation is essential for compressed-context adaptation.
+
+\paragraph{Relevance score sources.}
+    The lower half of \Cref{tab:supp_objectives} substitutes alternative spatial scores for the learned group scores $S_g$ under the identical two-stage allocation rule.
+    On LIBERO-Spatial, ranking groups by block-2 visual self-attention lowers success rate by 5.8\% at the 10\% budget and 3.6\% at the 20\% budget.
+    Using a fixed random spatial map causes larger drops of 12.8\% at 10\% and 16.8\% at 20\%.
+    Substituting a static score map averaged over training demonstrations at 20\% lowers success rate by 4.6\% on LIBERO-Spatial, 7.8\% on LIBERO-Goal, and 4.4\% on LIBERO-Object.
+    Input-conditioned per-query routing is therefore required across varying object layouts and instructions.
 
 
 
 \input{tables/supp_split}
 
 \paragraph{Spatial and temporal budget allocation.}
-
-\Cref{tab:supp_split} spends the same future-token budget in different ways.
-Temporal-only allocation keeps every group at full resolution ($F=300$, 1,200 tubes) and pools only in time; at 10\% this forces 720 tubes to a single segment and the rest to two.
-Spatial-only allocation keeps all 14 frames ($K=14$) and merges in space only; merging every group still leaves 4,200 future tokens, so it can only reach the 30\% budget, with $F=20$ (360 tubes).
-The two $F$ variants change the number of full-resolution groups at 20\% and rescale the tiers to keep the budget exact: $F=50$ (450 tubes) and $F=150$ (750 tubes).
-Their segment quotas are $(90,165,195)$ for $K=(5,7,9)$ at $F=50$, and $(150,270,330)$ for $K=(2,4,6)$ at $F=150$. Both sums equal 3,360 future tokens.
+    \Cref{tab:supp_split} evaluates how a fixed future-token budget is distributed between spatial merging and temporal pooling on LIBERO-Spatial.
+    Temporal-only pooling at $F=300$ retains all 1,200 spatial tubes and lowers success rate by 2.6\% at 10\%, 10.0\% at 20\%, and 2.6\% at 30\%.
+    Keeping all 1,200 spatial tubes restricts each tube to 1 or 2 segments at 10\% and 2 or 3 segments at 20\%, which over-compresses motion dynamics.
+    Conversely, spatial-only merging at $K=14$ leaves at least 4,200 future tokens when all 300 groups are merged.
+    This variant therefore applies only at the 30\% budget with $F=20$ for 360 tubes, lowering success rate by 5.8\% from 92.0\% to 86.2\%.
+    At the 20\% budget, rescaling temporal tiers to 90/165/195 tubes with $K=5/7/9$ at $F=50$ and 150/270/330 tubes with $K=2/4/6$ at $F=150$ preserves 3,360 future tokens.
+    These settings reach 87.6\% and 85.0\% success, compared with 88.2\% at our default $F=100$.
 
 
 \input{tables/supp_temporal}
 
 \paragraph{Temporal priority and segment boundaries.}
-
-\Cref{tab:supp_temporal} changes how segment counts are assigned, with the spatial selection unchanged.
-Feature change only ranks tubes by $\Delta_p$; reversed priority ranks them by $-u_p$; flat counts give nearly equal segment counts by a fixed spatial pattern; random tier assignment uses a fixed random ranking.
-
+    \Cref{tab:supp_temporal} fixes spatial group selection and ablates temporal tier assignment and segment partitioning.
+    On LIBERO-Spatial, ranking tubes by feature variation alone with $u_p=\Delta_p$ lowers success rate by 3.4\% at 10\% and 1.6\% at 20\%.
+    Reversing tube priority to $-u_p$ lowers success rate by 5.4\% at 10\% and 5.0\% at 20\%.
+    Assigning near-uniform segment counts via a fixed spatial pattern reduces success rate by 4.0\% at 10\% and 0.6\% at 20\%.
+    Randomizing tier assignments at the 20\% budget lowers success rate by 2.4\% on LIBERO-Spatial, 4.0\% on LIBERO-Goal, and 4.6\% on LIBERO-Object.
+    Finally, substituting equal-length segments for the variation-balanced boundaries in \Cref{eq:supp_cuts} reduces success rate by 4.6\% at 10\% and 4.4\% at 20\%.
 
 
 
 \paragraph{Task-agnostic spatial criteria.}
-The five task-agnostic criteria in \cref{fig:supp_relevance}(a) score the same 300 groups of $2\times2$ future-token positions.
-Let $z^{(2)}_{t,p}$ denote the full-context video feature after block~2 at future frame $t$ and spatial position $p$, before spatial coarsening.
-Each criterion produces one score per group; higher-scoring groups retain full resolution.
-
-\emph{Similarity} uses the negative mean pairwise cosine similarity among the four features within a group, averaged over the 14 future frames.
-It therefore retains groups whose features are less redundant.
-\emph{Motion} averages $1-\cos(z^{(2)}_{t,p},z^{(2)}_{t+1,p})$ over adjacent future frames and the four positions of the group.
-\emph{Block-2 self-attention} averages the attention received from all visual queries over attention heads, then averages the scores of the group's four positions over the future frames.
-\emph{Edge energy} applies horizontal and vertical Sobel filters to the channel-mean grayscale image of the last RGB observation and averages the gradient magnitude over each group's image region.
-\emph{Random} assigns an independent uniform score in $[0,1]$ to each group using a reproducibly seeded draw for each held-out window.
+    \Cref{fig:supp_relevance}a compares the \method router against five task-agnostic criteria over the 300 spatial $2\times 2$ groups.
+    Let $z^{(2)}_{t,p}$ denote the full-context feature after video block 2 at future frame $t$ and spatial position $p$ prior to coarsening, where higher group scores retain full resolution.
+    \emph{Similarity} computes the negative mean pairwise cosine similarity among the four tokens in a group across the 14 future frames to favor less redundant regions.
+    \emph{Motion} averages $1-\cos(z^{(2)}_{t,p},z^{(2)}_{t+1,p})$ across adjacent future frames and the four positions of each group.
+    \emph{Block-2 self-attention} averages the attention weights received from all visual queries across heads, the four group positions, and the 14 future frames.
+    \emph{Edge energy} applies horizontal and vertical Sobel filters to the channel-mean grayscale final RGB observation and averages gradient magnitudes within each group region.
+    \emph{Random} draws an independent, reproducibly seeded uniform score in $[0,1]$ per group for each window.
 
 \paragraph{Offline coarsening protocol.}
-For each of the 200 held-out windows from 50 episodes, each criterion's ranking is computed once and its top-$n$ groups retain full resolution for $n\in\{25,50,100,150,200,250\}$.
-The remaining groups are replaced by their spatial means at their top-left source positions.
-All 14 future frames are retained, so these curves vary spatial coarsening alone.
-Every criterion uses the same observation, video-noise draw, action-noise seed, and original action decoder.
-The plotted distortion is the geometric mean, across windows, of the mean squared error between compressed-context and full-context normalized actions over the first five executed actions.
+    Across 200 held-out windows from 50 LIBERO-Spatial episodes, each criterion ranks the 300 groups once and retains the top-$n$ groups at full resolution for $n\in\{25,50,100,150,200,250\}$.
+    Remaining groups are averaged spatially at top-left source coordinates across all 14 future frames to isolate spatial coarsening.
+    All criteria share identical observations, video and action noise draws, and the unadapted base action decoder.
+    Action distortion is computed as the geometric mean across windows of the normalized action MSE over the first five predicted steps relative to Full-context.
 
 \paragraph{Insertion curves and ranking reversal.}
-\Cref{fig:supp_relevance} examines how the learned ranking affects action preservation and closed-loop control.
-With 50--250 groups kept at full resolution, router-guided insertion gives the lowest action distortion among the compared criteria.
-Reversing the scores to $1-S_g$ increases distortion and reduces success at all three token budgets, even with a separately retrained decoder adapter.
+    As shown in \Cref{fig:supp_relevance}a, router-guided selection achieves the lowest action distortion across 50 to 250 full-resolution groups among all compared criteria.
+    Reversing the router scores to $1-S_g$ yields the highest offline action distortion across all group counts in \Cref{fig:supp_relevance}a.
+    In closed-loop evaluation in \Cref{fig:supp_relevance}b, score reversal reduces success rate from 70.8\% to 28.4\% at 10\%, from 88.2\% to 60.2\% at 20\%, and from 92.0\% to 73.2\% at 30\% even with a retrained LoRA adapter.
 
 
 \input{tables/supp_region_coverage}
@@ -108,10 +125,11 @@ Reversing the scores to $1-S_g$ increases distortion and reduces success at all 
 
 
 \paragraph{Semantic region coverage across suites.}
-
- We present the region coverage partition across all baseline methods as in \cref{tab:supp_region_coverage}. The matched-selector comparison excludes queries 0--2 because VLA-Pruner needs an attention history, and uses the registered completed Object recording set.
-
-\Cref{tab:supp_region_coverage} compares which regions the five selection rules keep when each keeps the same 100 groups of the same frame.
+    \Cref{tab:supp_region_coverage} reports the percentage of ground-truth simulator pixels per semantic category inside the top 100 of 300 spatial groups across LIBERO-Spatial, LIBERO-Goal, and LIBERO-Object.
+    All five selection rules score identical frames from 50 recorded episodes per suite under the 20\% \method policy, where uniform random selection gives 33.3\%.
+    Queries 0 to 2 of each episode are excluded so VLA-Pruner initializes a three-step attention history.
+    Across the three suites, \method covers 84.3\% to 99.9\% of robot pixels, 90.1\% to 97.1\% of task-object pixels, and 77.0\% to 96.7\% of future-path pixels.
+    Notably, \method achieves the highest future-path coverage on every suite while selecting far fewer distractor-object pixels than VLA-Pruner and CF-Prune, such as 37.7\% versus 90.9\% and 97.0\% on LIBERO-Object.
 
 \subsection{Per-task results}
 \label{app:supp_pertask}
@@ -119,15 +137,16 @@ Reversing the scores to $1-S_g$ increases distortion and reduces success at all 
 \input{tables/supp_pertask_libero}
 
 \paragraph{LIBERO.}
-\Cref{tab:supp_pertask_libero} reports successful episode counts out of 150 trials per task across three evaluation seeds on LIBERO-Spatial, LIBERO-Object, and LIBERO-Goal.
-At the 20\% and 30\% future-token budgets, \method matches or surpasses Full-context on most tasks across all three suites, reaching 96.4\% versus 94.0\% overall on LIBERO-Object at 30\%.
-At the 10\% budget, LIBERO-Object remains close to Full-context at 93.8\%, whereas drops on LIBERO-Spatial and LIBERO-Goal concentrate on occluded container tasks such as \emph{in top drawer} and \emph{on wooden cabinet}.
+    \Cref{tab:supp_pertask_libero} reports successful episode counts out of 150 trials per task across three evaluation seeds on LIBERO-Spatial, LIBERO-Object, and LIBERO-Goal.
+    At the 20\% and 30\% future-token budgets, \method equals or exceeds Full-context on most tasks across all three suites.
+    On LIBERO-Object at 30\%, \method reaches 96.4\% overall success compared with 94.0\% for Full-context.
+    At the 10\% budget, LIBERO-Object remains close to Full-context at 93.8\%, whereas drops on LIBERO-Spatial and LIBERO-Goal concentrate on occluded container tasks such as \texttt{in top drawer} and \texttt{on wooden cabinet}.
 
 \input{tables/supp_pertask_bridge}
 \input{tables/supp_pertask_gr1}
 
 \paragraph{SIMPLER-Bridge and RoboCasa-GR1.}
-\Cref{tab:supp_pertask_bridge} reports successful episode counts out of 72 trials per task across three seeds on SIMPLER-Bridge.
-\method matches or exceeds Full-context on all four tasks at 13,200 tokens, improving overall success rate from 47.9\% to 50.0\%.
-At 12,300 tokens, 139 successes across 288 episodes correspond to 48.3\%, where 48.4\% in \mainref{tab:transfer} reflects seed-level rounding.
-\Cref{tab:supp_pertask_gr1} reports successful episode counts out of 150 trials per task across the 24 tabletop tasks of RoboCasa-GR1, where \method maintains consistent task-level performance down to 466 tokens.
+    \Cref{tab:supp_pertask_bridge} reports successful episode counts out of 72 trials per task across three evaluation seeds on SIMPLER-Bridge.
+    At 13,200 tokens, \method improves overall success rate from 47.9\% to 50.0\% with gains or ties on all four tasks.
+    At 12,300 tokens, 139 successes across 288 episodes correspond to 48.3\%, while 48.4\% in \mainref{tab:transfer} reflects seed-level rounding.
+    \Cref{tab:supp_pertask_gr1} reports successful episode counts out of 150 trials per task across the 24 tabletop tasks of RoboCasa-GR1, where \method maintains consistent task-level performance down to 466 tokens.

@@ -1,4 +1,4 @@
-\FloatBarrier
+
 \section{Qualitative Analysis}
 \label{app:qual_analysis}
 
@@ -72,44 +72,7 @@ On SIMPLER-Bridge and RoboCasa-GR1 in the bottom two rows of \cref{fig:supp_sele
 % On RoboCasa-GR1, \method keeps the both pepper and the target basket in this frame.
 
 
-
-\paragraph{Temporal tubelet segmentation.}
-
-\Cref{fig:supp_allocation_steps} traces a single closed-loop query on the first task of LIBERO-Spatial through both allocation stages.
-High per-position router scores $\max_t s_{t,p}$ in \Cref{fig:supp_allocation_steps}a retain the top 100 groups around the manipulator and bowls as four full-resolution tubes each while averaging remaining groups into single tubes in \cref{fig:supp_allocation_steps}b.
-In \cref{fig:supp_allocation_steps}c and \cref{fig:supp_allocation_steps}d, tube A on the moving gripper enters the highest priority tier and receives 4, 7, and 10 temporal segments across the 10\%, 20\%, and 30\% budgets.
-Tube B on the arm base enters the middle tier with 2, 5, and 8 segments due to a lower router score $S_g$ rather than lower feature variation, and tube C on the static tabletop enters the lowest tier with 1, 3, and 5 segments.
-Within each tube, the variation-balanced boundaries from \Cref{eq:supp_cuts} assign shorter segments over intervals of rapid feature change in \cref{fig:supp_allocation_steps}d, and contiguous-t maps the four segments of tube A at the 10\% budget to consecutive indices 0, 1, 2, and 3 instead of the gapped source-t indices 1, 4, 8, and 11 in \cref{fig:supp_allocation_steps}e. 
-% \suppdraft{\Cref{fig:supp_allocation_steps}} follows one recorded query through the allocation.
-% Tube A, on the gripper, is in the highest tier and receives 4, 7 and 10 segments at the three budgets; tube C, on the table background, is in the lowest tier and receives 1, 3 and 5.
-% Tube B, on the arm base, is in the middle tier because its router score is lower than the gripper's, not because its features change less.
-% Within each tube, the boundaries follow the cumulative feature change (\suppdraft{\cref{eq:supp_cuts}}), so segments are shorter where the features change faster, and contiguous-t gives the segments consecutive temporal positions (e).
-
-\subsection{Real-robot rollout comparisons}
-\label{app:supp_vis_robot}
-\Cref{fig:supp_real_robot_rollouts} compares closed-loop rollouts of Full-context at 19,200 tokens and \method at 7,440 tokens (30\% future-token budget) across four task phases on \emph{Stack Bowls} and \emph{Open Lid}, paired with camera-aligned group relevance maps $S_g$.
-Across approach, contact, manipulation, and terminal states, \method concentrates the 100 full-resolution spatial groups on the Franka arm, grasped bowl or pot lid, and upcoming trajectory while coarsening background kitchen surfaces. %
-With faster per-query inference, \method completes \emph{Stack Bowls} in 32.8\,s at query $q=16$ versus 51.5\,s at $q=18$ for Full-context, and completes \emph{Open Lid} in 34.6\,s at $q=17$ versus 59.4\,s for Full-context. %[cite: 136]
-Additional real-robot execution rollouts are provided in the supplementary video.
-
-% \suppdraft{\Cref{fig:supp_real_robot_rollouts} shows recorded Full-context and \method rollouts on Stack Bowls and Open Lid, together with \method router scores aligned to the saved camera observations. The columns compare task phases in separate runs. The supplementary video provides additional real-robot demonstrations.}
-
-
-
-\subsection{Failure case analysis}
-\label{app:supp_failures}
-
-
-% To avoid choosing failures by eye, we recorded 100 LIBERO-Spatial episodes of the 10\% policy (10 trials per task), with the frames, the simulator segmentation and the allocation of every query, and fixed the selection rule before the run.
-% Because trial $t$ of a task uses the same initial state in every run, each episode pairs with the full-context episode of the same task and trial.
-    % \ji{Across the 100 LIBERO-Spatial episodes at the 10\% future token budget, over-compression primarily harms episodes where a small or partially occluded target object is coarsened into merged groups while distractor receptacles elsewhere on the table retain distinguish the commanded target }
-
-\paragraph{Over-compression in cluttered scenes.}
-To analyze failure modes systematically without manual selection, we recorded 100 closed-loop episodes on LIBERO-Spatial (10 trials per task) under the 10\% future-token policy alongside simulator segmentation masks and per-query allocations, paired by task and initial state with Full-context rollouts.
-\Cref{fig:supp_failure_compression} ranks the 29 episodes where 10\% \method fails while Full-context succeeds by the share of task-object pixels assigned to merged $2{\times}2$ groups over the final five queries before failure, displaying the three highest-share episodes (Episodes 44, 50, and 47 on \emph{in top drawer} at 52\%, 51\%, and 49\%) and the median episode (Episode 100 on \emph{on wooden cabinet} at 36\%).
-% Keep the allocation and real-robot diagrams together on one figure page.
-\clearpage
-\begin{figure*}[!p]
+\begin{figure*}[!tp]
 \centering
   \includegraphics[width=0.90\textwidth]{supp/allocation_steps.pdf}
   \caption{\textbf{Allocation of one recorded query, step by step.}
@@ -130,15 +93,35 @@ To analyze failure modes systematically without manual selection, we recorded 10
   Columns align separate rollouts by task phase, with query index $q$ and elapsed video time $t$.}
   \label{fig:supp_real_robot_rollouts}
 \end{figure*}
-\clearpage
 
-% Put both failure figures above the remaining two-column discussion.
-\twocolumn[{%
-\begin{minipage}{\textwidth}
-\captionsetup{hypcap=false}
+
+
+\paragraph{Temporal tubelet segmentation.}
+
+\Cref{fig:supp_allocation_steps} traces a single closed-loop query on the first task of LIBERO-Spatial through both allocation stages.
+High per-position router scores $\max_t s_{t,p}$ in \Cref{fig:supp_allocation_steps}a retain the top 100 groups around the manipulator and bowls as four full-resolution tubes each while averaging remaining groups into single tubes in \cref{fig:supp_allocation_steps}b.
+In \cref{fig:supp_allocation_steps}c and \cref{fig:supp_allocation_steps}d, tube A on the moving gripper enters the highest priority tier and receives 4, 7, and 10 temporal segments across the 10\%, 20\%, and 30\% budgets.
+Tube B on the arm base enters the middle tier with 2, 5, and 8 segments due to a lower router score $S_g$ rather than lower feature variation, and tube C on the static tabletop enters the lowest tier with 1, 3, and 5 segments.
+Within each tube, the variation-balanced boundaries from \Cref{eq:supp_cuts} assign shorter segments over intervals of rapid feature change in \cref{fig:supp_allocation_steps}d, and contiguous-t maps the four segments of tube A at the 10\% budget to consecutive indices 0, 1, 2, and 3 instead of the gapped source-t indices 1, 4, 8, and 11 in \cref{fig:supp_allocation_steps}. 
+% \suppdraft{\Cref{fig:supp_allocation_steps}} follows one recorded query through the allocation.
+% Tube A, on the gripper, is in the highest tier and receives 4, 7 and 10 segments at the three budgets; tube C, on the table background, is in the lowest tier and receives 1, 3 and 5.
+% Tube B, on the arm base, is in the middle tier because its router score is lower than the gripper's, not because its features change less.
+% Within each tube, the boundaries follow the cumulative feature change (\suppdraft{\cref{eq:supp_cuts}}), so segments are shorter where the features change faster, and contiguous-t gives the segments consecutive temporal positions (e).
+
+\subsection{Real-robot rollout comparisons}
+\label{app:supp_vis_robot}
+\Cref{fig:supp_real_robot_rollouts} compares closed-loop rollouts of Full-context at 19,200 tokens and \method at 7,440 tokens (30\% future-token budget) across four task phases on \emph{Stack Bowls} and \emph{Open Lid}, paired with camera-aligned group relevance maps $S_g$.
+Across approach, contact, manipulation, and terminal states, \method concentrates the 100 full-resolution spatial groups on the Franka arm, grasped bowl or pot lid, and upcoming trajectory while coarsening background kitchen surfaces. %
+With faster per-query inference, \method completes \emph{Stack Bowls} in 32.8\,s at query $q=16$ versus 51.5\,s at $q=18$ for Full-context, and completes \emph{Open Lid} in 34.6\,s at $q=17$ versus 59.4\,s for Full-context. %[cite: 136]
+Additional real-robot execution rollouts are provided in the supplementary video.
+
+% \suppdraft{\Cref{fig:supp_real_robot_rollouts} shows recorded Full-context and \method rollouts on Stack Bowls and Open Lid, together with \method router scores aligned to the saved camera observations. The columns compare task phases in separate runs. The supplementary video provides additional real-robot demonstrations.}
+
+
+\begin{figure*}[!tp]
 \centering
   \includegraphics[width=\textwidth]{supp_failure_compression.pdf}
-  \captionof{figure}{\textbf{Failures observed at the 10\% budget.}
+  \caption{\textbf{Failures observed at the 10\% budget.}
   Episodes that fail with \method and succeed with the full-context policy, ranked by the share of task-object pixels in merged groups over the last five queries before failure.
   Per episode, from left to right: the allocation at the first query (merged groups darkened, target bowl outlined), then the frame at step 100 of the 10\% policy and of the full-context policy from the same initial state.
   Episodes 44, 50 and 47 (bowl in the top drawer) have the highest shares (52, 51 and 49\%); episode 100 (bowl on the wooden cabinet) is the median of the 29 episodes (36\%).}
@@ -146,13 +129,29 @@ To analyze failure modes systematically without manual selection, we recorded 10
 \par\vspace{8pt}
 \centering
   \includegraphics[width=\textwidth]{supp_failure_shared.pdf}
-  \captionof{figure}{\textbf{Failures shared with the full-context policy.}
+  \caption{\textbf{Failures shared with the full-context policy.}
   Episodes that fail with both policies although at least 90\% of the task-object and robot pixels are in full-resolution groups.
   Layout as in \cref{fig:supp_failure_compression}, at the last step (219); the target bowl is entirely at full resolution in both episodes.}
   \label{fig:supp_failure_shared}
-\end{minipage}
-\par\vspace{10pt}
-}]
+\end{figure*}
+
+\subsection{Failure case analysis}
+\label{app:supp_failures}
+
+
+% To avoid choosing failures by eye, we recorded 100 LIBERO-Spatial episodes of the 10\% policy (10 trials per task), with the frames, the simulator segmentation and the allocation of every query, and fixed the selection rule before the run.
+% Because trial $t$ of a task uses the same initial state in every run, each episode pairs with the full-context episode of the same task and trial.
+    % \ji{Across the 100 LIBERO-Spatial episodes at the 10\% future token budget, over-compression primarily harms episodes where a small or partially occluded target object is coarsened into merged groups while distractor receptacles elsewhere on the table retain distinguish the commanded target }
+
+\paragraph{Over-compression in cluttered scenes.}
+To analyze failure modes systematically without manual selection, we recorded 100 closed-loop episodes on LIBERO-Spatial (10 trials per task) under the 10\% future-token policy alongside simulator segmentation masks and per-query allocations, paired by task and initial state with Full-context rollouts.
+\Cref{fig:supp_failure_compression} ranks the 29 episodes where 10\% \method fails while Full-context succeeds by the share of task-object pixels assigned to merged $2{\times}2$ groups over the final five queries before failure, displaying the three highest-share episodes (Episodes 44, 50, and 47 on \emph{in top drawer} at 52\%, 51\%, and 49\%) and the median episode (Episode 100 on \emph{on wooden cabinet} at 36\%).
+% Keep the allocation and real-robot diagrams together on one figure page.
+
+
+
+
+% Put both failure figures above the remaining two-column discussion.
 
 Consistent with \Cref{tab:supp_pertask_libero}, 10\%-budget failures concentrate on tasks where the target bowl rests inside the dark drawer, beside the cookie box, or atop the dark cabinet.
 In all four episodes in \Cref{fig:supp_failure_compression}, Full-context grasps and lifts the target bowl within 100 steps, whereas the 10\% allocation keeps the high-contrast ramekin and destination plate at full resolution while leaving all of the target bowl merged in the three drawer episodes and 73\% merged in Episode 100.
@@ -167,12 +166,12 @@ Lacking fine detail on the low-contrast target bowl, the robot arm approaches th
 % The videos do not show why the arm goes to the ramekin; we note only that the ramekin stands where the bowl is picked up in two other tasks of the suite.
 
 % Keep the two failure discussions in separate native columns below the figures.
-\newpage
+
 \paragraph{Failures shared with the full-context policy.}
 \Cref{fig:supp_failure_shared} shows episodes from the same 100-trial campaign where both 10\% \method and Full-context fail even though at least 90\% of task-object and robot pixels remain in full-resolution groups.
 Two of the four dual-failure episodes meet this high-coverage criterion, with the target bowl retained entirely at full resolution in both cases.
-In Episode 3 (\emph{between plate and ramekin}), the 10\% policy closes the gripper slightly above the bowl and moves empty to the plate, while Full-context lifts the bowl but fails to release before the step-219 limit.
-In Episode 53 (\emph{on ramekin}), both policies grasp the bowl, transport it across the workspace, and release it onto the rim of the plate.
+In Episode 3 (\texttt{between plate and ramekin}), the 10\% policy closes the gripper slightly above the bowl and moves empty to the plate, while Full-context lifts the bowl but fails to release before the step-219 limit.
+In Episode 53 (\texttt{on ramekin}), both policies grasp the bowl, transport it across the workspace, and release it onto the rim of the plate.
 Although shared failure alone does not rule out temporal compression or adapter effects in Episode 3, Episode 53 exhibits the identical terminal placement error under both policies, reflecting a base-policy precision limit rather than spatial under-allocation.
 
 
