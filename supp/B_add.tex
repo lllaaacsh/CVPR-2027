@@ -4,13 +4,8 @@
 \subsection{Equal-token baseline comparisons}
 \label{app:supp_equal_token}
 
-
 In \mainref{tab:main_results}, VLA-Pruner~\cite{liu2025vlapruner} and ADP~\cite{pei2026adp} exceed the nominal compressed token budgets because of full-context warm-start or motion-gated fallback queries.
 Here we evaluate the selection rules of all baselines under strict fixed token budgets across three evaluation seeds with 500 episodes per suite and seed.
-
-
-% VLA-Pruner and ADP exceed their compressed budgets because of dense calls in \mainref{tab:main_results}.
-% Here we compare their selection components under strict fixed budgets, using three evaluation seeds and 500 episodes per suite and seed.
 
 \paragraph{Fixed-budget evaluation on mimic-video.}
 \Cref{tab:supp_fixed_mimic} restricts every action-generating query on mimic-video to exactly 4,080, 5,760, or 7,440 total tokens, including the 2,400 observation tokens. %
@@ -19,10 +14,6 @@ ADP-sel.\ disables the end-effector motion gate and all full-context fallback qu
 Without dense fallback calls, ADP-sel.\ drops to 24.9\%, 51.3\%, and 62.7\% mean success across the 10\%, 20\%, and 30\% future-token budgets, and VLA-sel.\ drops to 51.3\%, 73.7\%, and 82.1\%.
 In contrast, \method reaches 79.8\%, 90.5\%, and 92.9\% mean success at matched single-pass FLOPs and latency, while CF-sel.\ trails \method in accuracy at more than twice the query latency.
 
-% \paragraph{Fixed-budget evaluation on mimic-video.}
-% In \suppdraft{\cref{tab:supp_fixed_mimic}}, VLA-sel.\ replaces the three dense warm-start queries with compressed semantic-only queries and uses the resulting action attention to initialize its history.
-% ADP-sel.\ removes the motion gate and dense fallback; CF-sel.\ retains its additional full-context probe.
-
 
 \input{tables/supp_fixed_budget_mimic}
 
@@ -30,10 +21,6 @@ In contrast, \method reaches 79.8\%, 90.5\%, and 92.9\% mean success at matched 
 \Cref{tab:supp_fixed_dit4dit} fixes the action-generating context on DiT4DiT to 391, 442, and 589 total tokens, corresponding to observed/future token quotas of 293/98, 344/98, and 392/197.
 Every selection rule uses a dedicated Stage-2 decoder LoRA adapter trained at the target budget.
 Across all three budgets, \method achieves the highest mean success at 98.1\%, 98.4\%, and 99.3\%, outperforming VLA-sel.\ by 12.2\% and ADP-sel.\ by 55.4\% at 391 tokens while matching the lowest single-pass latency and FLOPs.
-
-% \paragraph{Fixed-budget evaluation on DiT4DiT.}
-% \suppdraft{\Cref{tab:supp_fixed_dit4dit}} fixes the action-generating context to 391, 442 and 589 tokens, with observed/future quotas of 293/98, 344/98 and 392/197.
-% Every selection port uses a budget-specific decoder adapter.
 
 
 
@@ -44,12 +31,8 @@ Across all three budgets, \method achieves the highest mean success at 98.1\%, 9
 
 We conduct component ablations on mimic-video using paired evaluation runs with dedicated Stage-2 decoder adapters following \Cref{tab:supp_hparams}.
 
-% Unless a suite is explicitly specified, the ablations in \suppdraft{\cref{tab:supp_depth,tab:supp_objectives,tab:supp_split,tab:supp_temporal}} run on LIBERO-Spatial with the deployed allocation, and each trained variant gets a fresh adapter with the Stage~2 budget-specific adaptation recipe (\suppdraft{\cref{tab:supp_hparams}}).
-% Each is compared with a reference evaluated in the same campaign on the same GPU type.
-
 \input{tables/supp_depth}
 
-% Declare the page-wide diagnostic early so it lands beside its discussion.
 \begin{figure*}[!t]
   \centering
   \includegraphics[width=\textwidth]{Figure_B1.pdf}
@@ -62,10 +45,6 @@ We conduct component ablations on mimic-video using paired evaluation runs with 
 
 \paragraph{Routing layer depth}
 Originally \method routes after the second of the 20 blocks that a query runs, so only two blocks process all 19,200 tokens. \Cref{tab:supp_depth} tests whether block 2 is a good place to route. It moves the routing point once in each direction and compares each arm with the block-2 cell it would compete with in deployment. Block 1 is the only earlier point where the router still reads the output of a transformer block; any earlier point would have to score the raw patch embeddings. Routing after block 1 runs one fewer block at full resolution , so it is compared with block 2 at the same 4,080 tokens. Block 6 is the deeper point whose estimated cost at 10\% (about 445 ms) matches block 2 at 20\% (440.7 ms). It asks whether the extra compute is better spent on four more full-resolution blocks or on keeping 1,680 more tokens. Points much deeper than block 6 fall outside the range that matters: beyond about block 9, routing at 10\% would cost more than block 2 at 30\% (477.1 ms), and that cell already exceeds the full-context policy on this suite (92.0 vs. 90.4\%).
-
-
-
-
 
 \input{tables/supp_objectives}
 
@@ -121,11 +100,10 @@ With 50--250 groups kept at full resolution, router-guided insertion gives the l
 Reversing the scores to $1-S_g$ increases distortion and reduces success at all three token budgets, even with a separately retrained decoder adapter.
 
 
-\FloatBarrier
+\input{tables/supp_region_coverage}
+
 \subsection{Coverage analysis}
 \label{app:supp_diagnostics}
-
-\input{tables/supp_region_coverage}
 
 
 
@@ -135,13 +113,9 @@ Reversing the scores to $1-S_g$ increases distortion and reduces success at all 
 
 \Cref{tab:supp_region_coverage} compares which regions the five selection rules keep when each keeps the same 100 groups of the same frame.
 
-
-
-\FloatBarrier
 \subsection{Per-task results}
 \label{app:supp_pertask}
 
-% Declare each table before its discussion so it can use the preceding column space.
 \input{tables/supp_pertask_libero}
 
 \paragraph{LIBERO.}
@@ -157,9 +131,3 @@ At the 10\% budget, LIBERO-Object remains close to Full-context at 93.8\%, where
 \method matches or exceeds Full-context on all four tasks at 13,200 tokens, improving overall success rate from 47.9\% to 50.0\%.
 At 12,300 tokens, 139 successes across 288 episodes correspond to 48.3\%, where 48.4\% in \mainref{tab:transfer} reflects seed-level rounding.
 \Cref{tab:supp_pertask_gr1} reports successful episode counts out of 150 trials per task across the 24 tabletop tasks of RoboCasa-GR1, where \method maintains consistent task-level performance down to 466 tokens.
-
-
-% \paragraph{\suppdraft{Per-task breakdown on simulation benchmarks.}}
-% \suppdraft{Per-task successful episode counts are reported in \suppdraft{\cref{tab:supp_pertask_libero,tab:supp_pertask_bridge,tab:supp_pertask_gr1}}.}
-
-\FloatBarrier

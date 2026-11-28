@@ -278,68 +278,44 @@ At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac
 \label{app:supp_benchmarks}
 
 \paragraph{LIBERO.}
-LIBERO-Spatial, LIBERO-Object, and LIBERO-Goal~\cite{liu2023libero} each contain 10 manipulation tasks simulated in MuJoCo 3.3.4.
-For each of three evaluation seeds, we evaluate 50 benchmark initial states per task (500 episodes per suite; 1,500 episodes per method and suite in total).
-All compared methods share identical task-specific initial states within each seed to support paired comparisons, and reported success rates average across the three seeds.
-On mimic-video~\cite{pai2025mimicvideo}, we use the released suite-specific checkpoints conditioned on 5 RGB frames (2 latent observation frames) and robot state, running 1 video denoising step per query and executing 5 actions per predicted chunk before replanning.
-LIBERO-Long is excluded because our reproduction setup lacks a corresponding checkpoint and evaluation configuration.
-Main-table evaluations run on NVIDIA H100 GPUs; extended ablations in \Cref{tab:supp_depth,tab:supp_objectives,tab:supp_split,tab:supp_temporal} run on A100 or H100 GPUs, with all paired comparisons matched on the same GPU type.
+LIBERO-Spatial, LIBERO-Object, and LIBERO-Goal~\cite{liu2023libero} each contain 10 tabletop manipulation tasks in MuJoCo 3.3.4.
+We evaluate each task over 50 fixed initial states across three evaluation seeds and report the mean success rate.
+Shared initial states within each seed enable paired comparisons across methods.
+For mimic-video~\cite{pai2025mimicvideo}, we use the released suite-specific checkpoints with the robot state and five RGB frames, which correspond to two latent observation frames.
+Each policy query runs one video denoising step and executes five actions per chunk before replanning.
+We exclude LIBERO-Long because our reproduction lacks a corresponding checkpoint and evaluation configuration.
+Main evaluations use NVIDIA H100 GPUs, while the ablations in \Cref{tab:supp_depth,tab:supp_objectives,tab:supp_split,tab:supp_temporal} use A100 or H100 GPUs on matched hardware per comparison.
 
-% Each of LIBERO-Spatial, -Object and -Goal~\suppdraft{\cite{liu2023libero}} has ten tasks; we evaluate 50 initial states per task, 500 episodes per suite, with the benchmark's initial states and episode limits.
-% Every method is evaluated on the same task-specific initial states within each evaluation seed, enabling paired comparisons. For each seed, we evaluate 50 episodes per task across 10 tasks, yielding 500 episodes per suite. We use three evaluation seeds, resulting in 1,500 evaluation episodes per method per suite. The reported success rates are averaged over the three seeds.
-
-% mimic-video~\suppdraft{\cite{pai2025mimicvideo}} uses the released suite-specific checkpoints and conditions on five RGB frames (two latent observation frames) and the robot state. The video model runs a single step at the deployment noise level, and five actions of each predicted chunk are executed before replanning.
-
-% LIBERO-Long is excluded because our reproduction lacks a corresponding checkpoint and evaluation configuration.
-% LIBERO recordings use MuJoCo 3.3.4; SIMPLER-Bridge uses its SAPIEN-based simulator, and RoboCasa-GR1 uses the released RoboCasa-GR1 environment.
-% Main-table runs used H100 GPUs. Additional ablations use A100 or H100 GPUs as identified in \suppdraft{\cref{tab:supp_depth,tab:supp_objectives,tab:supp_split,tab:supp_temporal}}; paired ablation tests use references from the same GPU campaign.
 
 \paragraph{SIMPLER-Bridge.}
-We evaluate on the four WidowX manipulation tasks in SIMPLER-Bridge~\cite{li2024simpler}: \emph{carrot on plate}, \emph{spoon on towel}, \emph{green block on yellow block}, and \emph{eggplant in basket}.
-Each of the three evaluation seeds runs 24 fixed episodes per task, yielding 96 episodes per seed and 288 episodes in total.
-Both the released Bridge video backbone and the action decoder remain frozen, and each query follows the LIBERO protocol of five observed frames and five executed actions before replanning.
-
-% We use the four WidowX tasks of SIMPLER-Bridge~\suppdraft{\cite{li2024simpler}}: put the carrot on the plate, put the spoon on the towel, stack the green block on the yellow block, and put the eggplant in the basket, with 24 fixed episodes per task and evaluation seed (96 per seed). The reported protocol uses three evaluation seeds.
-% The released Bridge video model and action decoder are frozen; the observation and execution horizons match LIBERO (five frames, five executed actions).
+    We evaluate mimic-video on the four WidowX manipulation tasks in SIMPLER-Bridge~\cite{li2024simpler}: \texttt{put carrot on plate}, \texttt{put spoon on towel}, \texttt{stack green block on yellow block}, and \texttt{put eggplant in basket}.
+    Each task is evaluated over 24 episodes across three evaluation seeds from shared initial states.
+    We use the released Bridge checkpoint with both the video backbone and the action decoder frozen.
+    Following the LIBERO horizon, each policy query conditions on five RGB frames and the robot state and executes five actions per chunk.
 
 \paragraph{RoboCasa-GR1.}
-RoboCasa-GR1~\cite{nasiriany2024robocasa} comprises 24 tabletop manipulation tasks for the GR1 humanoid, as listed in \Cref{tab:supp_pertask_gr1}.
-Six tasks put an object into an articulated container and close the container, while 18 tasks transfer a novel object between two receptacles.
-We evaluate 50 episodes per task across three evaluation seeds for 1,200 episodes per seed and 3,600 episodes overall, pairing comparisons by seed, task, and episode index.
-DiT4DiT~\cite{ma2026dit4dit} uses the released GR1 checkpoint conditioned on the robot state and a single letterboxed $224{\times}224$ egocentric RGB view.
-The video backbone processes one observed latent frame and two future latent frames of $14{\times}14$ tokens each, totaling 588 tokens per query.
-
-% RoboCasa-GR1~\suppdraft{\cite{nasiriany2024robocasa}} has 24 tabletop tasks for the GR1 humanoid: six place an object into an articulated container and close it, and 18 move a novel object between two receptacles (\suppdraft{\cref{tab:supp_pertask_gr1}}).
-% We evaluate 50 episodes per task and seed (1,200 per seed), with three evaluation seeds in the reported protocol. Pairing is by (seed, task, episode) when seed-level records are available.
-% DiT4DiT~\suppdraft{\cite{ma2026dit4dit}} uses the released GR1 checkpoint with a single $224{\times}224$ egocentric view and the robot state; its video model sees one observed and two future latent frames of $14{\times}14$ tokens (588 tokens), and part of the view is letterbox padding.
+    RoboCasa-GR1~\cite{nasiriany2024robocasa} consists of 24 tabletop manipulation tasks for the GR1 humanoid, as listed in \Cref{tab:supp_pertask_gr1}.
+    Six tasks store an object in an articulated container and close the door or drawer, while 18 tasks transfer a novel object between tabletop receptacles.
+    We evaluate 50 episodes per task across three evaluation seeds from shared initial states.
+    DiT4DiT~\cite{ma2026dit4dit} uses the released GR1 checkpoint conditioned on the robot state and a $224\times 224$ egocentric RGB image with aspect-ratio padding.
+    The video backbone processes one observed latent frame and two future latent frames of $14\times 14$ tokens each, totaling 588 tokens per query.
 
 \input{tables/supp_schedules}
 \input{tables/supp_hyperparameters}
 
 \paragraph{Real-robot kitchen tasks.}
-Real-world experiments use a 7-DoF Franka Emika Panda arm with a Robotiq 2F-85 gripper in a tabletop kitchen observed by a side-view RGB camera whose $1280{\times}720$ frames are resized to $480{\times}640$.
-At a 5Hz cadence, each policy query takes five frames from $t-0.8$s to $t$s alongside the current end-effector state.
-The policy predicts 15 relative pose increments in the end-effector frame at 0.2s intervals for a Cartesian impedance controller, executes the first five steps, and replans.
-\Cref{tab:supp_robot_tasks} summarizes the six tasks and success criteria across 15 trials per task and method.
-All policies in \mainref{tab:real_robot} share the frozen Bridge video backbone and start from task-specific full-context action decoders fine-tuned for 5,000 steps on task demonstrations.
-Router and adapter training use the corresponding demonstration splits, normalization statistics, and instruction embeddings.
-Stage 1 jointly trains the router and a temporary LoRA adapter for 1,500 steps, and Stage 2 trains a fresh budget-specific LoRA adapter for 1,500 steps with the router frozen.
-Both stages use AdamW at batch size 1 with 8 gradient-accumulation steps, 100 warm-up steps, and cosine decay to 5\%, with peak learning rates of $10^{-4}$ for the router and $4\times10^{-5}$ for the LoRA adapter of rank 16 and $\alpha=8$.
-At deployment, \method retains the 30\% future-token budget with $F=100$ full-resolution groups and $K=5/8/10$ segments across priority tiers of 120, 180, and 300 tubes, giving 5,040 future tokens and 7,440 total tokens.
-
-% The robot is a 7-DoF Franka Emika Panda with a Robotiq 2F-85 gripper in a toy kitchen, observed by one side-view RGB camera whose $1280{\times}720$ frames are resized to $480{\times}640$.
-% The observation and target-action streams use a 5\,Hz cadence: a query reads frames at $t-0.8,\dots,t$\,s and the end-effector state, predicts 15 end-effector targets at 0.2\,s spacing, executes the first five and replans.
-% Predicted actions are pose increments in the current end-effector frame, tracked by a Cartesian impedance controller.
-% All methods share the frozen Bridge video model and use task-specific action decoders fine-tuned on demonstrations of each task.
-% \suppdraft{\Cref{tab:supp_robot_tasks}} lists task descriptions and reported success criteria; every method is run for 15 trials per task.
-% \method retains 30\% of the future tokens (7,440 tokens in total).
-% The real-robot policies in \mainref{tab:real_robot} start from the task-specific 5,000-step \suppdraft{full-context} decoder checkpoints.
-% Router and adapter training use the corresponding demonstration splits, normalization statistics and instruction embeddings.
-% The two adaptation stages comprise 1,500 steps of joint router/temporary-LoRA training followed by 1,500 steps for a fresh budget-specific LoRA with the router frozen.
-% The two adaptation stages use AdamW, batch size one with eight accumulated samples, router/adapter learning rates $10^{-4}$/$4\times10^{-5}$, 100 warm-up steps and cosine decay to 5\%.
-% LoRA has rank 16 and $\alpha=8$; the deployment allocation retains $F=100$ groups with $K=(5,8,10)$ and counts $(120,180,300)$, giving 5,040 future and 7,440 total tokens.
-
-
+    Real-world experiments use a 7-DoF Franka Emika Panda arm, a Robotiq 2F-85 gripper, and a side-view RGB camera in a tabletop kitchen environment.
+    Camera frames are captured at $1280\times 720$ resolution and resized to $480\times 640$ at 5\,Hz.
+    At each policy query, the model receives the current end-effector state and five RGB frames spanning the preceding 0.8\,s.
+    The policy predicts a 15-step chunk of relative end-effector poses at 0.2\,s intervals for a Cartesian impedance controller.
+    Following a receding-horizon setup, the robot executes the first five actions before replanning.
+    All methods in \mainref{tab:real_robot} share the frozen Bridge video backbone and start from task-specific full-context action decoders fine-tuned for 5,000 steps.
+    Router and adapter training uses the corresponding demonstration splits, normalization statistics, and instruction embeddings.
+    Stage 1 jointly trains the router and a temporary LoRA adapter for 1,500 steps, and Stage 2 trains a fresh budget-specific LoRA adapter for 1,500 steps with the router frozen.
+    Both stages use AdamW with batch size 1, 8 gradient accumulation steps, 100 warmup steps, and cosine decay to 5\%.
+    Peak learning rates are $10^{-4}$ for the router and $4\times 10^{-5}$ for the rank-16 LoRA adapter with $\alpha=8$.
+    At inference, \method uses the 30\% future-token schedule in \Cref{tab:supp_schedules}, retaining $F=100$ full-resolution groups and 5, 8, and 10 segments across tiers of 120, 180, and 300 tubes for 7,440 total tokens.
+    
 \begin{table}[!htbp]
   \centering
   \caption{\textbf{Real-robot tasks.}
@@ -361,11 +337,9 @@ At deployment, \method retains the 30\% future-token budget with $F=100$ full-re
   \end{tabularx}
 \end{table}
 
-\Cref{tab:supp_robot_tasks} pairs each task name with the verbatim training prompt and the evaluation success criterion. %
-The task labeled \textit{Pick Cup from Sink} in \mainref{fig:real_robot} moves the cup into the sink; \mainref{tab:real_robot} and \cref{tab:supp_robot_tasks} use the name \textit{Pick Cup to Sink}.
-This task uses the verbatim prompt \texttt{pick the cup to the pool}, and success requires releasing the cup into the sink after a handle grasp.
-
-% \suppdraft{The display names in \suppdraft{\cref{tab:supp_robot_tasks}} follow \mainref{tab:real_robot}. Training instructions are listed separately from display names. For Pick Cup to Sink, the evaluated movement is into the sink, and success requires the cup to be released in the sink. The instruction for this task is \texttt{pick the cup to the pool}. In the submitted task figure, the label \textit{Pick Cup from Sink} refers to this same cup-to-sink task and should read \textit{Pick Cup to Sink}.}
+    \Cref{tab:supp_robot_tasks} lists the six real-robot tasks, verbatim training instructions, and evaluation success criteria across 15 trials per task and method.
+    The task labeled \texttt{Pick Cup from Sink} in \mainref{fig:real_robot} moves the cup into the sink, whereas \mainref{tab:real_robot} and \Cref{tab:supp_robot_tasks} use the name \texttt{Pick Cup to Sink}.
+    This task uses the verbatim instruction \texttt{pick the cup to the pool}, where success requires grasping the cup handle and releasing the cup into the sink.
 
 \input{tables/dit4dit_deployment}
 
@@ -373,39 +347,29 @@ This task uses the verbatim prompt \texttt{pick the cup to the pool}, and succes
 \label{app:supp_schedules}
 
 \paragraph{Token budgets and tier schedules.}
-\Cref{tab:supp_schedules} summarizes the token budgets and allocation schedules across all backbones and benchmarks.
-On mimic-video for LIBERO, all 2,400 observation tokens remain unpooled and each budget specifies the retained future tokens after video block 2.
-Keeping $F=100$ of the $G=300$ spatial $2{\times}2$ groups per frame at full resolution produces $P=600$ spatial tubes across the 14 future frames.
-Sorting tubes by priority into tiers of 120, 180, and 300 tubes, \method assigns 1/2/4, 3/5/7, and 5/8/10 temporal segments at the 10\%, 20\%, and 30\% budgets to yield 1,680, 3,360, and 5,040 future tokens.
-On SIMPLER-Bridge, $F=100$ caps total context at 10,800 tokens.
-\method therefore retains $F=200$ groups for $P=900$ tubes with the same 20\%/30\%/50\% tier split of 180, 270, and 450 tubes.
-On DiT4DiT for LIBERO, the backbone uses a single future latent frame of $G=98$ spatial groups, which restricts future allocation to spatial merging with $K=1$.
-The 75\% budget keeps $F=33$ future groups and all 392 observation tokens, whereas the 55\% and 50\% budgets merge all future groups into 98 tokens and apply the $2{\times}2$ spatial rule to the observed frame with $F=82$ and $F=65$.
-On DiT4DiT for RoboCasa-GR1, the two future latent frames allow 1 or 2 segments per tube.
-The 539-token and 490-token budgets apply temporal pooling over all $P=196$ tubes, while the 466-token budget combines spatial merging at $F=41$ with temporal pooling across 74 tubes.
+    \Cref{tab:supp_schedules} details the token budgets and allocation schedules across all backbones and benchmarks.
+    On mimic-video for LIBERO, all 2,400 observation tokens remain uncompressed, and each budget specifies the future tokens retained after video block 2.
+    Each future frame of $30\times 40$ tokens forms $G=300$ spatial $2\times 2$ groups.
+    Retaining $F=100$ full-resolution groups and merging the remaining 200 groups produces $P=600$ spatial tubes across the 14 future frames.
+    Tubes are ranked into priority tiers of 120, 180, and 300 tubes and assigned 1/2/4, 3/5/7, and 5/8/10 temporal segments, giving 1,680, 3,360, and 5,040 future tokens at the 10\%, 20\%, and 30\% budgets.
+    On SIMPLER-Bridge, setting $F=100$ limits the maximum context to 10,800 tokens across the 14 future frames.
+    We therefore set $F=200$ to form $P=900$ tubes while preserving the 20\%/30\%/50\% tier proportions of 180, 270, and 450 tubes.
+    On DiT4DiT for LIBERO, the backbone predicts a single future latent frame of $G=98$ spatial groups, leaving $K=1$ temporal segment per tube.
+    The 75\% budget keeps all 392 observation tokens and $F=33$ future groups.
+    At the 55\% and 50\% budgets, all future groups are merged into 98 tokens, and $2\times 2$ spatial merging is also applied to the observed frame with $F=82$ and $F=65$.
+    On DiT4DiT for RoboCasa-GR1, the two future latent frames allow 1 or 2 segments per tube.
+    The 539 and 490 token budgets apply temporal pooling alone across all $P=196$ tubes, whereas the 466 token budget combines spatial merging at $F=41$ with temporal pooling across 74 tubes.
 
 \paragraph{Optimization hyperparameters.}
-\method decouples router learning in Stage 1 from budget-specific decoder adaptation in Stage 2, with mimic-video settings listed in \Cref{tab:supp_hparams}.
-In Stage 1, the router and a temporary decoder LoRA adapter are jointly trained under $\mathcal{L}_{\text{task}} + \mathcal{L}_{\text{router}}$. 
-On mimic-video for LIBERO, Stage 1 pairs $2{\times}2$ spatial merging at $F=100$ with uniform temporal pooling into 12, 10, or 8 segments on LIBERO-Spatial and LIBERO-Goal, and 8, 6, or 4 segments on LIBERO-Object. 
-In Stage 2, we freeze the router and train a freshly initialized rank-16 LoRA adapter ($\alpha=8$, 3.9M parameters on decoder cross-attention layers) for each target budget under the deployed schedule in \Cref{tab:supp_schedules}.
-Both stages optimize $\mathcal{L}_{\text{task}}$ in \Cref{eq:supp_task} with $\lambda_{\text{GT}}=0.02$ for 1,500 steps using AdamW at batch size 1 with 8 accumulated batches, gradient clipping at 1, 100 warm-up steps, and cosine decay to 5\%.
-Peak learning rates are $10^{-4}$ for the router in Stage 1 and $4\times 10^{-5}$ for the LoRA adapter in both stages.
-DiT4DiT follows the same two-stage protocol on LIBERO and RoboCasa-GR1, running 1,500 steps in Stage 1 and 1,500 steps per budget in Stage 2 with peak learning rates of $10^{-4}$ and $4\times 10^{-5}$.
-%  ARROW separates relevance learning from budget-specific decoder adaptation. In Stage 1, the router and a temporary decoder LoRA are jointly optimized using the task objective and router supervision. Spatial allocation uses 2 by 2 groups with F = 100, while the training-stage temporal operator employs uniform pooling. For LIBERO-Spatial and LIBERO-Goal, the temporal pooling configurations use 12, 10, or 8 segments; LIBERO-Object uses 8, 6, or 4 segments. The resulting compressed contexts provide task-gradient supervision for learning the router's relevance scores.
-
-% In Stage 2, the learned router is frozen, and the temporary decoder adapter is replaced by a freshly initialized, budget-specific LoRA. This adapter is trained using the actual deployment allocation schedule in \suppdraft{\cref{tab:supp_schedules}}, including relevance- and dynamics-aware temporal allocation. Thus, Stage 1 learns the routing scores, whereas Stage 2 adapts the action decoder to the final compressed context at each target budget. Both stages use the task objective in \suppdraft{\cref{eq:supp_task}}, with \suppdraft{$\lambda_{\mathrm{GT}}=0.02$}.
-
-% \paragraph{\suppdraft{DiT4DiT training recipe.}}
-% \suppdraft{Both LIBERO and RoboCasa-GR1 use the same two-stage organization: Stage~1 jointly training, and Stage~2 fresh adapter training for each deployment budget.
-% For each benchmark, the adopted Stage~1 router checkpoint is saved after 1,500 optimization steps; the budget-specific Stage~2 adapter is trained for 1,500 steps.
-% The Stage~1 peak learning rates are $10^{-4}$ for the router and $4\times10^{-5}$ for the adapter.
-% In Stage~2, the router remains frozen and the adapter peak learning rate is $4\times10^{-5}$.}
-
-
+    Training proceeds in two stages, with mimic-video hyperparameters summarized in \Cref{tab:supp_hparams}.
+    In Stage 1, the router and a temporary decoder LoRA adapter are jointly trained under $\mathcal{L}_{\mathrm{task}} + \mathcal{L}_{\mathrm{router}}$.
+    On mimic-video for LIBERO, Stage 1 combines $2\times 2$ spatial merging at $F=100$ with uniform temporal pooling into 12, 10, or 8 segments on LIBERO-Spatial and LIBERO-Goal, and 8, 6, or 4 segments on LIBERO-Object.
+    In Stage 2, we freeze the router and train a fresh rank-16 LoRA adapter with $\alpha=8$ and 3.9M parameters on the decoder cross-attention layers under each deployed schedule in \Cref{tab:supp_schedules}.
+    Both stages minimize $\mathcal{L}_{\mathrm{task}}$ in \Cref{eq:supp_task} with $\lambda_{\mathrm{GT}}=0.02$ for 1,500 steps using AdamW with batch size 1, 8 gradient accumulation steps, maximum gradient norm 1.0, 100 warmup steps, and cosine decay to 5\%.
+    Peak learning rates are $10^{-4}$ for the router in Stage 1 and $4\times 10^{-5}$ for the LoRA adapter in both stages.
+    DiT4DiT follows the same two-stage protocol on LIBERO and RoboCasa-GR1 for 1,500 steps per stage with peak learning rates of $10^{-4}$ and $4\times 10^{-5}$.
 
 \paragraph{Inference profiling.}
-% Detail H100 and RTX 4090 batch-1 latency/FLOPs measurement protocols.
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{fig10_latency_breakdown.pdf}
@@ -414,14 +378,15 @@ DiT4DiT follows the same two-stage protocol on LIBERO and RoboCasa-GR1, running 
   \label{fig:supp_latency_breakdown}
 \end{figure}
 
-On LIBERO, mimic-video latency is measured at batch size 1 on a dedicated NVIDIA H100 GPU with the LIBERO-Spatial checkpoints, folded LoRA weights, and CUDA graphs, whose outputs match eager unmerged adapters on fixed inputs.
-After 3 warm-up calls, we run 8 interleaved rounds of 4 queries per configuration and report the median across the 32 synchronized wall-clock times, including text encoding.
-As shown in \Cref{fig:supp_latency_breakdown}, text encoding takes about 150\,ms across all budgets, whereas at the 20\% budget the video DiT and action decoder run 1.87$\times$ and 1.98$\times$ faster than Full-context.
-DiT4DiT uses the same interleaved protocol across the VAE, cached text retrieval, router scoring and allocation, the video DiT pass, and all 4 action-flow steps.
-\Cref{tab:dit4dit_deployment} details the latency gains from FP32 LoRA folding and action/video CUDA graphs across all budgets, including a diagnostic 367-token setting and the Full-context baseline.
-Real-robot latency is measured on an RTX 4090 shared with the control desktop over 210 batch-1 queries per method, including text encoding. 
-FLOPs are counted with PyTorch's FLOP counter across all linear and convolutional layers on identical inputs, including the VAE and text encoder for mimic-video and excluding the VAE for DiT4DiT. 
-
+    On LIBERO, mimic-video latency is measured at batch size 1 on a dedicated NVIDIA H100 GPU using the LIBERO-Spatial checkpoints, merged LoRA weights, and CUDA graphs.
+    We verify on fixed inputs that weight merging and CUDA graph capture preserve identical policy outputs.
+    After 3 warmup queries, we execute 8 interleaved rounds of 4 queries per method and report the median CUDA-synchronized wall-clock latency across the 32 queries, including text encoding.
+    As shown in \Cref{fig:supp_latency_breakdown}, text encoding takes roughly 150\,ms across all budgets, while at the 20\% budget the video DiT and action decoder run 1.87$\times$ and 1.98$\times$ faster than Full-context.
+    DiT4DiT latency is profiled under the same interleaved protocol across VAE encoding, cached text lookup, routing, the video DiT pass, and 4 flow-matching denoising steps.
+    \Cref{tab:dit4dit_deployment} reports the latency gains from FP32 LoRA merging and action/video CUDA graphs across all budgets, including a diagnostic 367-token setting and Full-context.
+    Real-robot latency is measured on an RTX 4090 shared with the control workstation across 210 queries per method at batch size 1, including text encoding.
+    FLOPs are measured with the PyTorch FLOP counter across all linear and convolutional layers on identical inputs, including the VAE and text encoder on mimic-video and excluding the VAE on DiT4DiT.
+    
 % \emph{Latency.}
 % mimic-video is timed on an exclusively allocated H100 at batch size one with the Spatial checkpoints, including text encoding: three warm-up calls are followed by eight interleaved rounds of four calls per configuration, and we report the median of the 32 synchronized wall-clock times.
 % All configurations use CUDA graphs and folded adapters; on fixed inputs the folded and graphed policies match the eager trained adapters.
@@ -430,82 +395,48 @@ FLOPs are counted with PyTorch's FLOP counter across all linear and convolutiona
 % On the robot, an RTX 4090 shared with the control desktop runs the same protocol over 210 queries per method, including text encoding.
 
 \paragraph{Statistical protocol.}
-Each configuration uses one training seed and is evaluated with fixed weights across three evaluation seeds that govern stochastic policy execution.
-All comparisons pair episodes by benchmark, task, initial-state index, and evaluation seed against the corresponding reference run.
-For evaluation seed $s \in \{1, 2, 3\}$ with $N_s$ episodes and binary outcomes $y_{s,i} \in \{0, 1\}$, let $\text{SR}_s = 100 N_s^{-1}\sum_{i=1}^{N_s} y_{s,i}$ denote the seed success rate.
-We report the arithmetic mean $\text{SR} = \frac{1}{3}\sum_{s=1}^{3} \text{SR}_s$, which equals the pooled success rate across all $3N_s$ episodes under equal per-seed episode counts.
-Point differences $\Delta = \text{SR}_{\text{variant}} - \text{SR}_{\text{reference}}$ are computed from unrounded rates, matching the mean paired outcome difference across all three seeds, while per-task tables sum successful episodes across seeds.
-
-% \emph{FLOPs.}
-% FLOPs are counted with PyTorch's FLOP counter on the same inputs.
-% TFLOPs cover the linear and convolution layers, consistently for all methods; mimic-video counts include the VAE and text encoder.
-
-% \suppdraft{\emph{Statistics.}
-% Each trained configuration uses one training seed.
-% The resulting checkpoint is evaluated with three evaluation seeds, keeping its trained weights fixed.
-% The training seed controls training randomness, whereas evaluation seeds control the stochastic policy execution during evaluation.
-% Variation across evaluation seeds therefore describes repeated evaluations of the same trained model.
-
-% For each evaluation seed, LIBERO uses 50 episodes per task across ten tasks, giving 500 episodes per suite and 1,500 episodes across the three seeds.
-% SIMPLER-Bridge uses 24 episodes per task across four tasks, giving 96 episodes per seed and 288 in total.
-% RoboCasa-GR1 uses 50 episodes per task across 24 tasks, giving 1,200 episodes per seed and 3,600 in total.
-% Methods are paired by benchmark, task, initial-state index, and evaluation seed; each comparison uses the corresponding episodes of its listed reference.
-
-% For evaluation seed $s$, the success rate is
-% $\mathrm{SR}_s=100\,N_s^{-1}\sum_{i=1}^{N_s}y_{s,i}$,
-% where $y_{s,i}\in\{0,1\}$ is the episode outcome.
-% The reported rate is the arithmetic mean
-% $\mathrm{SR}=\frac{1}{3}\sum_{s=1}^{3}\mathrm{SR}_s$.
-% With equal episode counts per seed, this also equals the success rate pooled over all three seeds.
-% We compute $\Delta=\mathrm{SR}_{\mathrm{variant}}-\mathrm{SR}_{\mathrm{reference}}$ in percentage points from the unrounded rates, equivalently averaging the paired episode-outcome differences over the three seeds.
-% Per-task count tables sum successful episodes across these seeds.
-% }
+    Each model is trained once and evaluated with fixed weights across three evaluation seeds.
+    Within each benchmark, task, and evaluation seed, all methods run from identical initial states to form paired episodes.
+    For evaluation seed $s \in \{1, 2, 3\}$ with $N_s$ episodes and binary outcomes $y_{s,i} \in \{0, 1\}$, we define the seed success rate as $\mathrm{SR}_s = \frac{100}{N_s}\sum_{i=1}^{N_s} y_{s,i}$.
+    We report the mean success rate $\mathrm{SR} = \frac{1}{3}\sum_{s=1}^{3} \mathrm{SR}_s$, which equals the pooled success rate across all $3N_s$ episodes.
+    Differences $\Delta = \mathrm{SR}_{\mathrm{variant}} - \mathrm{SR}_{\mathrm{reference}}$ are computed from unrounded rates, and per-task tables report total successful episodes summed across the three evaluation seeds.
 
 \subsection{Baseline adaptation protocols}
 \label{app:supp_baselines}
-
-
-    As external token-reduction baselines were originally designed for observation pruning in VLAs or multi-step diffusion WAMs, we adapt their selection rules to single-pass future-conditioned WAMs under matched Stage-2 LoRA training (\cref{tab:hyperparams}).
-    On mimic-video, all baselines retain the 2,400 observation tokens, apply selection at video block 2, and preserve native source coordinates without feature rescaling.
-    VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp}, and CF-Prune~\cite{kim2026cfprune} score the 1,200 spatial positions of the final observed frame, retain 120 / 240 / 360 positions, and broadcast this spatial mask across all 14 future frames to yield 1,680 / 3,360 / 5,040 future tokens.
-    Semantic text-relevance scores use mean raw scaled query-key logits across instruction tokens and heads (since video DiT cross-attention uses text keys only, making softmax sums over keys constant), while action attention averages across all action queries (excluding the proprioceptive query) and all 10 flow steps in FP32.
-
-
+    Prior token-reduction methods target observation pruning in VLAs or multi-step denoising in diffusion WAMs.
+    To evaluate these methods in single-pass future-conditioned WAMs, we adapt each selection rule and train a dedicated Stage-2 decoder LoRA adapter per budget following \Cref{tab:supp_hparams}.
+    On mimic-video, all baselines keep the 2,400 observation tokens and select future tokens at video block 2 on native coordinates without feature rescaling.
+    VLA-Pruner~\cite{liu2025vlapruner}, ADP~\cite{pei2026adp}, and CF-Prune~\cite{kim2026cfprune} score the 1,200 spatial positions of the final observed frame and retain 120, 240, or 360 positions.
+    Applying the selected spatial mask across all 14 future frames yields 1,680, 3,360, or 5,040 future tokens.
+    Because video DiT cross-attention normalizes softmax weights over instruction keys, post-softmax weights sum to one at every visual token.
+    We therefore compute instruction-relevance scores as the mean pre-softmax query-key logits across instruction tokens and attention heads.
+    Action-attention scores average cross-attention weights in FP32 across all action queries and all 10 flow-matching steps, excluding the proprioceptive state token.
 
 \paragraph{FastV-style.}
-
-    Following FastV~\cite{chen2024fastv}, future tokens are ranked by received visual self-attention at video block 2 (averaged across attention heads and visual queries), retaining the top tokens up to the target budget at their native coordinates.
-
-
-
+    Following FastV~\cite{chen2024fastv}, we rank future tokens by the mean self-attention weight received from all visual queries across attention heads at video block 2.
+    The top-scoring future tokens up to the target budget are retained at native spatial and temporal coordinates.
 
 \paragraph{VLA-Pruner.}
-
-
-    Following VLA-Pruner~\cite{liu2025vlapruner}, we take the union of the top-$k$ semantic positions and top-$k$ historical action-attention positions, then prune back to $k$ positions via greedy max-min cosine diversity on block-2 features.
-    Historical action attention averages action-to-observation cross-attention over the deeper half of the decoder layers across the preceding 3 queries with exponential decay 0.8.
-    To initialize this history without cross-episode leakage, the first 3 queries of every episode run at full context, raising measured mean token counts to 5,535 / 7,240 / 8,788 (marked with $^*$ in \mainref{tab:main_results}).
-
-
+    Following VLA-Pruner~\cite{liu2025vlapruner}, we take the union of the top-$k$ instruction-relevant positions and the top-$k$ positions ranked by historical action attention.
+    This union is reduced to $k$ positions via greedy max-min cosine distance selection on block-2 features.
+    Historical action attention averages action-to-observation cross-attention over the upper half of the decoder layers across the preceding 3 queries with an exponential decay of 0.8.
+    To initialize this history without cross-episode leakage, the first 3 queries of each episode run at full context, resulting in mean context lengths of 5,535, 7,240, and 8,788 tokens as marked by $^*$ in \mainref{tab:main_results}.
 
 
 \paragraph{ADP.}
-
-    Following ADP~\cite{pei2026adp}, top-$k$ semantic token pruning is gated by end-effector displacement relative to the two preceding control steps: displacements below the prior two-step minimum trigger a full-context fallback, and at least one full-context query is forced after every three consecutive pruned queries.
-    These fallbacks yield measured mean contexts of 12,101 / 13,059 / 13,881 tokens per query.
+    Following ADP~\cite{pei2026adp}, top-$k$ instruction-based pruning is gated by end-effector displacement relative to the previous two control steps.
+    Queries with displacement below the minimum of the preceding two steps revert to full-context inference, and one full-context query is enforced after every three consecutive pruned queries.
+    Including these full-context fallback queries yields mean context lengths of 12,101, 13,059, and 13,881 tokens across the three budgets.
 
 
 
 \paragraph{CF-Prune.}
-
-
-    CF-Prune~\cite{kim2026cfprune} extracts instruction and action attention from an initial denoising step to prune subsequent steps.
-    Under single-step WAM inference, no prior denoising step exists; each query therefore runs an unadapted full-context probe pass (through video block 20 and the base decoder) to compute smoothed 50/50 complementary instruction-action scores (selecting low-entropy layers on the first episode query without multi-step phase gating), followed by the compressed LoRA-adapted pass.
-    Charging both passes causes total FLOPs and latency to exceed single-pass Full-context inference (\mainref{tab:main_results}).
-
-
+    CF-Prune~\cite{kim2026cfprune} extracts instruction and action attention from an initial denoising step to prune tokens in subsequent steps.
+    Because single-step WAM inference has no earlier denoising step, each query first runs an unadapted full-context probe through video block 20 and the base decoder without multi-step phase gating.
+    On the first query of each episode, CF-Prune selects minimum-entropy attention layers and combines smoothed instruction and action attention maps in equal 50/50 proportions.
+    A second forward pass then predicts actions from the pruned context using the dedicated LoRA adapter.
+    Executing both forward passes per query increases total FLOPs and latency above single-pass Full-context inference in \mainref{tab:main_results}.
 
 \paragraph{DiT4DiT.}
-
-    All four baselines follow the identical selection rules on DiT4DiT using observed/future token quotas of 392/197, 344/98, and 293/98 at the 589-, 442-, and 391-token budgets (thus pruning observation tokens as well at the two smaller budgets), each paired with a dedicated Stage-2 decoder LoRA.
-
+    We apply the same four selection rules on DiT4DiT using observed/future token quotas of 392/197, 344/98, and 293/98 for the 589, 442, and 391 token budgets.
+    At the 442 and 391 token budgets, each baseline prunes both observed and future tokens, and every configuration is paired with a dedicated Stage-2 decoder LoRA adapter.
