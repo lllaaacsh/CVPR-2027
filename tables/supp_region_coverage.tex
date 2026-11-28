@@ -1,10 +1,12 @@
 
 \begin{table}[!tbp]
   \centering
-  \caption{\textbf{Which regions each selection rule keeps.}
-  Share (\%) of each category's simulator pixels inside the 100 of 300 groups that each rule selects from the same frame, averaged over queries within an episode and then over 50 episodes; random selection gives 33.3.
-  Future path: pixels the robot occupies in later queries of the episode but not in the current one.Queries 0--2 are excluded to provide VLA-Pruner history. All rules see the same frames, from rollouts of the 20\% \method policy.
-  Bold: highest per column.}
+  \caption{\textbf{Semantic region coverage across selection rules.}
+  Percentage of simulator pixels per semantic category within the 100 selected spatial groups out of 300, averaged over queries within each episode and across 50 episodes per suite.
+  All rules score identical frames from rollouts of the 20\% \method policy, where uniform random selection yields 33.3\%.
+  Future path denotes pixels that the robot occupies in later queries of the episode but not in the current query.
+  Queries 0 to 2 are excluded to initialize the VLA-Pruner attention history.
+  }
   \label{tab:supp_region_coverage}
   \scriptsize
   \setlength{\tabcolsep}{3pt}

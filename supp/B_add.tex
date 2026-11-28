@@ -37,9 +37,9 @@
   \centering
   \includegraphics[width=\textwidth]{Figure_B1.pdf}
   \caption{\textbf{Insertion curves and ranking reversal on LIBERO-Spatial.}
-  (a) Geometric-mean normalized MSE of the first five decoded actions relative to full-context actions (200 held-out windows from 50 episodes; log scale).
-  The top-$n$ of 300 spatial groups retain full resolution and the rest are merged; all 14 future frames and the original decoder remain fixed.
-  (b) Closed-loop success rates extending \mainref{tab:ablations}. Dashed: uncompressed full-context policy (90.4\%).}
+  (a) Geometric-mean normalized MSE of the first five predicted actions relative to Full-context across 200 held-out windows from 50 episodes on a log scale.
+  The top-$n$ of 300 spatial groups retain full resolution while remaining groups are merged across all 14 future frames with the base action decoder fixed.
+  (b) Closed-loop success rates across future-token budgets complementing \mainref{tab:ablations}, where the dashed line denotes Full-context at 90.4\%.}
   \label{fig:supp_relevance}
 \end{figure*}
 

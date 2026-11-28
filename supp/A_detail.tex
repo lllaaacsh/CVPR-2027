@@ -141,136 +141,63 @@ At deployment, each LoRA-adapted projection matrix $W$ is folded into $W + \frac
 
 
 \begin{algorithm}[t]
-  \caption{Training \method\ on mimic-video (one suite).}
+  \caption{Two-stage training of \method on mimic-video.}
   \label{alg:supp_train}
   \footnotesize
   \begin{algorithmic}[1]
-    \Require Frozen video DiT $V$ and decoder $D$;
-    demonstrations; training and deployment
-    budget schedules (\cref{tab:supp_schedules})
+    \Require Frozen video DiT $V$ and decoder $D$, task demonstrations, Stage-1 schedule in \Cref{app:supp_schedules}, deployment schedules in \Cref{tab:supp_schedules}
 
-    \State Initialize router $R_\theta$,
-    temporary decoder LoRA $\phi$, and saliency
-    EMA state $m_g$
+    \State Initialize router $R_\theta$, temporary decoder LoRA $\phi$, and EMA state $m_g \gets 0$
 
-    \For{each Stage-1 training step}
-      \Comment{Joint adaptation}
-
-      \State Sample a batch of instructions,
-      observations, actions $a$, and robot states;
-      draw $\epsilon_v,\tau,\epsilon_a$
-
-      \State $Z \gets
-      V_{1:2}(\text{observation},\sigma\epsilon_v)$
-
-      \State $s \gets
-      R_\theta(Z_{\mathrm{fut}},\text{instruction})$;
-      compute $S_g$ by
-      \mainref{eq:group_score}
-
-      \State Apply the Stage-1 spatial and temporal
-      allocation; gate tubes by $\gamma_g$
-      (\cref{eq:supp_ste})
-
-      \State $C \gets V_{3:20}(\text{allocated }Z)$
-
-      \State $C_{\mathrm{full}}
-      \gets V_{3:20}(Z)$ without gradient
-
-      \State $v \gets
-      D_\phi(x_\tau,\tau,\text{state},C)$
-
-      \State $v_{\mathrm{full}}\gets
-      D(x_\tau,\tau,\text{state},C_{\mathrm{full}})$
-
-      \State Compute per-sample
-      $\mathcal{L}_{\mathrm{task}}^{(i)}$
-      by \cref{eq:supp_task}
-
-      \State $r_g^{(i)} \gets
-      \max(0,
-      -\partial\mathcal{L}_{\mathrm{task}}^{(i)}
-      /\partial S_g^{(i)})$
-
-      \State $\bar r_g \gets
-      \operatorname{mean}_i r_g^{(i)}$
-
-      \State $m_g \gets
-      \mu m_g+(1-\mu)\bar r_g$
-      \Comment{EMA update}
-
-      \State $\tilde r_g^{(i)}
-      \gets \mu m_g+(1-\mu)r_g^{(i)}$
-
-      \State $y_g^{(i)}
-      \gets \mathbb{I}
-      [g\in\operatorname{TopF}(\tilde r^{(i)})]$
-
-      \State Detach pseudo-labels;
-      compute $\mathcal{L}_{\mathrm{router}}$
-      by \mainref{eq:router_loss}
-
-      \State Update $\theta,\phi$ using
-      $\nabla(\mathcal{L}_{\mathrm{task}}
-      +\mathcal{L}_{\mathrm{router}})$
-
+    \For{each Stage-1 training step} \Comment{Joint adaptation}
+      \State Sample a mini-batch of instructions, observations, actions $a$, and robot states
+      \State Draw $\epsilon_v, \tau, \epsilon_a$ and set $x_\tau \gets (1-\tau)a + \tau\epsilon_a$
+      \State $[Z_{\text{obs}}, Z_{\text{fut}}] \gets V_{1:2}(\text{observations}, \sigma\epsilon_v)$
+      \State $s \gets R_\theta(Z_{\text{fut}}, \text{instructions})$ and compute $S_g$ via \mainref{eq:group_score}
+      \State Allocate $Z_{\text{fut}}$ under the Stage-1 schedule and scale tubes by $\gamma_g$ via \Cref{eq:supp_ste} into $\tilde{Z}_{\text{fut}}$
+      \State $C \gets V_{3:20}([Z_{\text{obs}}, \tilde{Z}_{\text{fut}}])$
+      \State $C_{\text{full}} \gets V_{3:20}([Z_{\text{obs}}, Z_{\text{fut}}])$ without gradient
+      \State $v \gets D_\phi(x_\tau, \tau, \text{states}, C)$ and $v_{\text{full}} \gets D(x_\tau, \tau, \text{states}, C_{\text{full}})$
+      \State Compute per-sample $\mathcal{L}_{\text{task}}^{(i)}$ via \Cref{eq:supp_task} and $\mathcal{L}_{\text{task}} \gets \operatorname{mean}_i \mathcal{L}_{\text{task}}^{(i)}$
+      \State $r_g^{(i)} \gets \max(0, -\partial\mathcal{L}_{\text{task}}^{(i)} / \partial S_g^{(i)})$ and $\bar{r}_g \gets \operatorname{mean}_i r_g^{(i)}$
+      \State $m_g \gets \mu m_g + (1-\mu)\bar{r}_g$ \Comment{EMA update}
+      \State $\tilde{r}_g^{(i)} \gets \mu m_g + (1-\mu)r_g^{(i)}$
+      \State $y_g^{(i)} \gets \mathbb{I}[g \in \operatorname{Top-}F(\tilde{r}^{(i)})]$
+      \State Compute $\mathcal{L}_{\text{router}}$ from $S_g$ and stop-gradient $y_g^{(i)}$ via \mainref{eq:router_loss}
+      \State Update $\theta, \phi$ using $\nabla_{\theta,\phi}(\mathcal{L}_{\text{task}} + \mathcal{L}_{\text{router}})$
     \EndFor
 
     \State Freeze the learned router $R_\theta$
 
-    \For{each target token budget $b$}
-      \Comment{Stage 2}
-
-      \State Initialize a fresh rank-16
-      decoder LoRA $\phi_b$
-
+    \For{each target token budget $b$} \Comment{Stage 2}
+      \State Initialize a fresh rank-16 decoder LoRA $\phi_b$
       \For{each Stage-2 training step}
-
-        \State Sample demonstrations and
-        flow-matching noise
-
-        \State Compute early features $Z$
-        and input-conditioned router scores
-
-        \State Allocate future tokens using
-        the deployed schedule for budget $b$
-
-        \State Compute compressed context
-        $C_b$ and full-context teacher
-        features $C_{\mathrm{full}}$
-
-        \State Compute student velocity
-        $v_b$ and teacher velocity
-        $v_{\mathrm{full}}$
-
-        \State Compute $\mathcal{L}_{\mathrm{task}}$
-        by \cref{eq:supp_task}
-
-        \State Update only $\phi_b$
-        using $\nabla_{\phi_b}
-        \mathcal{L}_{\mathrm{task}}$
-
+        \State Sample demonstrations and draw $\epsilon_v, \tau, \epsilon_a$
+        \State Compute $[Z_{\text{obs}}, Z_{\text{fut}}]$ via $V_{1:2}$ and group scores $S_g$ via $R_\theta$
+        \State Allocate $\hat{Z}_{\text{fut}}$ from $Z_{\text{fut}}$ under the schedule for budget $b$ in \Cref{tab:supp_schedules}
+        \State Compute compressed context $C_b$ and teacher features $C_{\text{full}}$ via $V_{3:20}$
+        \State Compute student velocity $v_b$ via $D_{\phi_b}$ and teacher velocity $v_{\text{full}}$ via $D$
+        \State Compute $\mathcal{L}_{\text{task}}$ via \Cref{eq:supp_task} and update $\phi_b$ using $\nabla_{\phi_b}\mathcal{L}_{\text{task}}$
       \EndFor
     \EndFor
 
-    \State \Return $R_\theta$ and
-    budget-specific adapters $\{\phi_b\}$
-
+    \State \Return $R_\theta$ and budget-specific adapters $\{\phi_b\}$
   \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[t]
-  \caption{One mimic-video policy query of \method.}
+  \caption{Single-query inference of \method on mimic-video.}
   \label{alg:supp_infer}
   \footnotesize
   \begin{algorithmic}[1]
-    \Require observation frames, instruction, robot state; merged LoRA weights; budget schedule
-    \State $Z \gets V_{1:2}(\text{observation},\text{noisy future latents})$ \Comment{19,200 tokens}
-    \State $s \gets R(Z_{\text{fut}},\text{instruction})$; $S_g$; keep the top-$F$ groups, merge the rest
-    \State $u_p \gets S_{g(p)}\Delta_p$; assign $K_p$ by tier; cut tubes by \cref{eq:supp_cuts}; mean-pool segments
-    \State spatial positions from the source grid; temporal positions contiguous
-    \State $C \gets V_{3:20}([Z_{\text{obs}};\,\text{pooled future}])$ \Comment{$N$ + 2,400 tokens}
-    \State sample the action chunk on $C$ (10 flow steps); execute its first 5 actions
+    \Require Observation frames, instruction, robot state, decoder $D_{\phi_b}$ with merged LoRA weights, budget schedule in \Cref{tab:supp_schedules}
+    \State $[Z_{\text{obs}}, Z_{\text{fut}}] \gets V_{1:2}(\text{observations}, \sigma\epsilon_v)$ \Comment{19,200 tokens}
+    \State $s \gets R_\theta(Z_{\text{fut}}, \text{instruction})$ and compute group scores $S_g$ via \mainref{eq:group_score}
+    \State Retain the top-$F$ groups at full resolution and spatially average remaining groups
+    \State Assign segment counts $K_p$ by priority $u_p = S_{g(p)}\Delta_p$ and mean-pool segments via \Cref{eq:supp_cuts}
+    \State Assign source-grid spatial coordinates and contiguous-t temporal indices to $\hat{Z}_{\text{fut}}$
+    \State $C \gets V_{3:20}([Z_{\text{obs}}, \hat{Z}_{\text{fut}}])$ \Comment{2,400 + $N$ tokens}
+    \State Sample the action chunk from $C$ via $D_{\phi_b}$ over 10 flow steps and execute the first 5 actions
   \end{algorithmic}
 \end{algorithm}
 
@@ -319,7 +246,8 @@ Main evaluations use NVIDIA H100 GPUs, while the ablations in \Cref{tab:supp_dep
 \begin{table}[!htbp]
   \centering
   \caption{\textbf{Real-robot tasks.}
-  Display names matched to the submitted main paper, original training instructions, and success criteria; every method is run for 15 trials per task.}
+  Task names, verbatim training instructions, and evaluation success criteria for the six kitchen manipulation tasks.
+  Each method is evaluated over 15 trials per task.}
   \label{tab:supp_robot_tasks}
   \scriptsize
   \setlength{\tabcolsep}{3pt}
@@ -339,7 +267,7 @@ Main evaluations use NVIDIA H100 GPUs, while the ablations in \Cref{tab:supp_dep
 
     \Cref{tab:supp_robot_tasks} lists the six real-robot tasks, verbatim training instructions, and evaluation success criteria across 15 trials per task and method.
     The task labeled \texttt{Pick Cup from Sink} in \mainref{fig:real_robot} moves the cup into the sink, whereas \mainref{tab:real_robot} and \Cref{tab:supp_robot_tasks} use the name \texttt{Pick Cup to Sink}.
-    This task uses the verbatim instruction \texttt{pick the cup to the pool}, where success requires grasping the cup handle and releasing the cup into the sink.
+    This task uses the verbatim instruction \texttt{Pick the Cup to the Pool}, where success requires grasping the cup handle and releasing the cup into the sink.
 
 \input{tables/dit4dit_deployment}
 
@@ -373,8 +301,8 @@ Main evaluations use NVIDIA H100 GPUs, while the ablations in \Cref{tab:supp_dep
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{fig10_latency_breakdown.pdf}
-  \caption{\textbf{Where the time of one query goes on mimic-video.}
-  Median stage times on an H100 at batch size one, with CUDA graphs and merged LoRA weights.}
+  \caption{\textbf{Per-query latency breakdown on mimic-video.}
+  Median per-stage latency measured on an NVIDIA H100 GPU at batch size 1 with merged LoRA weights and CUDA graphs.}
   \label{fig:supp_latency_breakdown}
 \end{figure}
 

@@ -2,9 +2,9 @@
 \begin{table*}[t]
   \centering
   \caption{\textbf{DiT4DiT deployment optimizations.}
-  Median latency (ms) includes VAE and cached-text retrieval; TFLOPs exclude VAE.
-  Fold: FP32 LoRA weight merging; AG/VG: action/video CUDA graphs.
-  The 367-token row is diagnostic.}
+  Median latency in ms includes VAE encoding and cached text lookup, whereas TFLOPs exclude the VAE.
+  Fold denotes FP32 LoRA weight merging, and AG and VG denote action and video CUDA graphs.
+  The 367-token row reports a diagnostic setting.}
   \label{tab:dit4dit_deployment}
   \footnotesize
   \setlength{\tabcolsep}{4pt}

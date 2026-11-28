@@ -2,8 +2,9 @@
 % Table B.1, split out of tables/fixed_budget_ports.tex (panel a) on 2026-11-19 for the advisor's outline.
 \begin{table}[!htbp]
   \centering
-  \caption{\textbf{Fixed-budget selection on mimic-video (LIBERO).}
-  Success rates are means over three evaluation seeds, with 500 episodes per suite and seed. Every action-generating call reads exactly 4,080/5,760/7,440 total tokens, including 2,400 observation tokens.}
+  \caption{\textbf{Fixed-budget evaluation on mimic-video for LIBERO.}
+  Success rates are averaged across three evaluation seeds with 500 episodes per suite and seed.
+  Each action-prediction pass processes 4,080, 5,760, or 7,440 total tokens, including the 2,400 observation tokens.}
   \label{tab:supp_fixed_mimic}
   \scriptsize
   \setlength{\tabcolsep}{2.5pt}

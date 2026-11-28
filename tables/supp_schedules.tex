@@ -5,10 +5,10 @@
 \begin{table*}[!t]
   \centering
   \caption{\textbf{Token budgets and allocation schedules.}
-  Obs./Fut.: observation and future tokens after allocation.
-  $G$: $2{\times}2$ groups per future frame; $F$: groups kept at full resolution; $P=G+3F$: tubes.
-  Tiers list the segment counts $K$ of the lowest to highest priority tier, with the number of tubes in each tier.
-  On DiT4DiT/LIBERO the single future latent frame leaves nothing to pool in time ($K=1$), and the observed frame is coarsened with the same $2{\times}2$ rule at the two smaller budgets.}
+  Obs.\ and Fut.\ denote observation and future tokens after allocation.
+  $G$ and $F$ denote total and full-resolution $2\times 2$ spatial groups per future frame, forming $P=G+3F$ spatial tubes.
+  The Tiers column lists segment counts $K$ from lowest to highest priority alongside tube counts per tier.
+  On DiT4DiT for LIBERO, a single future latent frame fixes $K=1$, and the 55\% and 50\% budgets also apply $2\times 2$ spatial merging to the observed frame.}
   \label{tab:supp_schedules}
   \scriptsize
   \setlength{\tabcolsep}{4pt}
